@@ -36,15 +36,18 @@
               </span>
             </a>
             <div class="dropdown-menu">
-              <a class="dropdown-item active" href="/manage-bank-accounts">
-              Manage Bank Account
+              <a class="dropdown-item active" href="/bank-accounts">
+                Bank Account
               </a>
-            
+              <a class="dropdown-item" href="/journal-accounts">
+                Journal Account
+                </a>
             </div>
+            
           </li>
   
           <li class="nav-item">
-            <a class="nav-link" href="./form-elements.html" >
+            <a class="nav-link" href="#" >
               <span class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/checkbox -->
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-settings" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -56,9 +59,6 @@
               </span>
             </a>
           </li>
-        
-        
-          
         </ul>
         <div class="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
           <form action="." method="get">
@@ -74,6 +74,7 @@
       </div>
     </div>
   </div>
+</div>
 </div>
       <div class="page-wrapper">
         <div class="container-xl">
@@ -131,8 +132,8 @@
                             </span>
                           </div>
                           <div class="col">
-                            <div class="font-weight-small">QAR</div>
-                            <div class="h2"> 
+                            <div class="currency-formated">QAR</div>
+                            <div class="number-formated"> 
                               500,239,234.13 
                             </div>
                             <div class="text-muted">
@@ -158,8 +159,8 @@
                              </svg>                            </span>
                           </div>
                           <div class="col">
-                            <div class="font-weight-small">QAR</div>
-                            <div class="h2"> 
+                            <div class="currency-formated">QAR</div>
+                            <div class="number-formated"> 
                               230,129,534.23
                             </div>
                             <div class="text-muted">
@@ -189,8 +190,9 @@
                              </svg>                            </span>
                           </div>
                           <div class="col">
-                            <div class="font-weight-small">QAR</div>
-                            <div class="h2"> 
+                          
+                            <div class="currency-formated">QAR</div>
+                            <div class="number-formated"> 
                               644,234,344.11
                             </div>
                             <div class="text-muted">
@@ -215,8 +217,8 @@
                              </svg>                            </span>
                           </div>
                           <div class="col">
-                            <div class="font-weight-small">QAR</div>
-                            <div class="h2">
+                            <div class="currency-formated">QAR</div>
+                            <div class="number-formated">
                                345,755,123.53
                             </div>
                             <div class="text-muted">
@@ -289,7 +291,7 @@
                             </div>
                           </td>
                           <td>
-                            <%=account.bank_name%>
+                            <div class="text-formated-tbl"> <%=account.bank_name%> </div>
                           </td>
                           <td>
                             <%=account.account_number%>
@@ -298,11 +300,11 @@
                             <%=account.account_type%>
                           </td>
                           <td>
-                            <%=account.current_balance%>
+                            <div class="currency-formated">QAR</div> <div class="number-formated-tbl"> <%= (account.current_balance).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')%></div>
                           </td>
                           <td><%=account.bank_address%></td>
                           <td class="text-end">
-                              <button class="btn btn-white btn-pill" data-bs-boundary="viewport" data-bs-toggle="dropdown"> New Transsaction</button>
+                              <button class="btn btn-white btn-pill" data-bs-boundary="viewport" data-bs-toggle="dropdown"> New Transaction</button>
                           </td>
                         </tr>
                         <%  }) %>
@@ -337,5 +339,6 @@
             </div>
           </div>
         </div>
-
+        
+        <%- include("create/modals") -%>
         <%- include("partial/footer") -%>

@@ -36,10 +36,12 @@
                     </span>
                   </a>
                   <div class="dropdown-menu">
-                    <a class="dropdown-item" href="/manage-bank-accounts">
-                    Manage Bank Account
+                    <a class="dropdown-item" href="/bank-accounts">
+                    Bank Account
                     </a>
-                  
+                    <a class="dropdown-item" href="/journal-accounts">
+                      Journal Account
+                    </a>
                   </div>
                 </li>
         
@@ -75,6 +77,7 @@
           </div>
         </div>
       </div>
+    </div>
 
       <div class="page-wrapper">
         <div class="container-xl">
@@ -1463,6 +1466,6 @@
             </div>
           </div>
         </div>
-
+        <%- include("create/modals") -%>
 
         <%- include("partial/footer") -%>
