@@ -21012,3 +21012,17 @@ img {
     -webkit-font-smoothing: auto;
     -moz-osx-font-smoothing: auto
 }
+
+.user-details {
+    float: right;
+    margin-left: 6px;
+    padding-top: 24px;
+  }
+  
+  .user-image{
+  float: left;
+  }
+  
+  .user-option {
+    float: right;
+  }

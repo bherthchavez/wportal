@@ -1,16 +1,44 @@
+
+require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const _ = require("lodash");
 const { get } = require("lodash");
 
+const session = require('express-session');
+const passport =require("passport");
+const passportLocalMongoose = require("passport-local-mongoose");
+
 const app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
+
+app.use(session({
+  secret: "secret",
+  resave: false,
+  saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 mongoose.connect("mongodb://localhost:27017/accountingDB", {useNewUrlParser: true});
 
+const userSchema = new mongoose.Schema ({
+  email: String,
+  password: String
+});
 
+userSchema.plugin(passportLocalMongoose);
+
+const User = new mongoose.model("User", userSchema);
+
+
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 const bank_accountsSchema = {
   bank_name: String,
@@ -68,7 +96,58 @@ const defaultJournalAccount = [journal1];
 const defaultBankAccount = [account1,account2,account3];
 
 app.get("/",function(req,res){
-res.render("index");
+  if (req.isAuthenticated()){
+    res.render("index");
+   }else{
+    res.redirect("/sign-in");
+   }
+});
+
+app.get("/sign-in",function(req,res){
+  res.render("sign-in");
+  });
+  
+app.post("/sign-in", function(req, res){
+  const user = new User({
+    username: req.body.username,
+    passport: req.body.passport
+  });
+
+ req.login(user, function(err){
+  if(err){
+    console.log(err);
+  }else{
+    passport.authenticate("local")(req, res, function(){
+      res.redirect("/");
+    });
+   
+  }
+ });
+});
+
+
+app.get("/sign-up",function(req,res){
+  res.render("sign-up");
+  });
+
+app.post("/sign-up", function(req, res){
+  User.register({username: req.body.username},req.body.password, function(err,user){
+    if(err){
+      console.log(err);
+      res.redirect("/sign-up");
+    }else{
+      passport.authenticate("local")(req, res, function(){
+        res.redirect("/");
+      });
+    }
+  });
+});
+
+app.get('/logout', function(req, res){
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
 });
 
 app.get("/view-journal",function(req,res){
