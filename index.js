@@ -1,43 +1,15 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const ejs = requrie("ejs");
 const mongoose = require("mongoose");
 const _ = require("lodash");
 const { get } = require("lodash");
-const session = require('express-session');
-const passport = require("passport");
-const passportLocalMongoose = require("passport-local-mongoose");
 
 const app = express();
-
-
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
-
-app.use(session({
-  secret: "Our little secret.",
-  resave: false,
-  saveUninitialized: false
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
-
 mongoose.connect("mongodb://localhost:27017/accountingDB", {useNewUrlParser: true});
 
-const userSchema = new mongoose.Schema ({
-  email: String,
-  password: String,
-});
-
-userSchema.plugin(passportLocalMongoose);
-
-const User = mongoose.model("User", userSchema);
-
-passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
 
 
 const bank_accountsSchema = {
@@ -95,38 +67,8 @@ const account3 = new bank_Account({
 const defaultJournalAccount = [journal1];
 const defaultBankAccount = [account1,account2,account3];
 
-app.get("/accountingDashboard",function(req,res){
-  if (req.isAuthenticated()){
-    res.render("/index");
-  }else{
-    res.redirect("/sign-in")
-  }
- 
-  });
-
 app.get("/",function(req,res){
-res.render("sign-in");
-});
-
-app.get("/sign-up",function(req,res){
-  res.render("sign-up");
-  });
-
-app.get("/sign-up",function(req,res){
-  res.render("sign-up");
-  });
-
-app.post("/sign-up", function(req,res){
-User.register({username:req.body.email},req.body.password, function(err,user){
-  if (err) {
-    console.log(err);
-    res.redirect("/sign-up");
-  }else{
-    passport.authenticate("local")(req,res, function(){
-      res.redirect("/accountingDashboard");
-    })
-  }
-})
+res.render("index");
 });
 
 app.get("/view-journal",function(req,res){
@@ -169,7 +111,7 @@ app.get("/bank-accounts", function(req,res){
 });
 
 app.post("/view-journal", function(req,res){
-res.redirect("view-journal");
+res.redirect("/view-journal");
 });
 
 
@@ -189,7 +131,7 @@ app.post("/bank-accounts", function(req, res){
     current_balance: currentBalanace
   });
   account.save();
-  res.redirect("bank-accounts");
+  res.redirect("/bank-accounts");
 })
 
 
@@ -198,7 +140,7 @@ app.post("/deleteAccount", function(req,res){
 
   bank_Account.findByIdAndRemove(accountID, function(err){
     if (!err) {
-      res.redirect("bank-accounts");
+      res.redirect("/bank-accounts");
     }
   });
 });
@@ -220,13 +162,14 @@ app.post("/viewAccount",function(req, res){
 
 app.get("/view-update-account", function(req,res){
   
+  let format = (2500).toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
+  console.log(format);
   res.render("view-update-account");
 })
 
-app.get("/users", function(req,res){
-  
-  res.render("users");
-});
 
 app.post("/updateAccount", function(req,res){
   const accountID = req.body.accountID;
@@ -252,6 +195,9 @@ app.post("/updateAccount", function(req,res){
 });
 
 
+app.get("/users", function(req, res){
+  res.render("users");
+})
 
 
 
