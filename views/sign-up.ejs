@@ -29,10 +29,20 @@
         <form class="card card-md" action="/sign-up" method="post">
           <div class="card-body">
             <h2 class="card-title text-center mb-4">Create new account</h2>
-            <!-- <div class="mb-3">
+            <div class="mb-3">
               <label class="form-label">Name</label>
               <input name="name" type="text" class="form-control" placeholder="Enter name">
-            </div> -->
+            </div>
+            <div class="mb-3">
+              <label class="form-label">User Role</label>
+              <select class="form-select" name="userRole">
+                <option value="Owner/GM" selected>
+                  Owner/GM
+                </option>
+                <option value="Manager">Manager</option>
+                <option value="User">User</option>
+              </select>
+            </div>
             <div class="mb-3">
               <label class="form-label">Email address</label>
               <input name="username" type="username" class="form-control" placeholder="Enter email">

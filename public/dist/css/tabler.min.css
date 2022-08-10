@@ -20356,54 +20356,6 @@ img {
     background: #626976 !important
 }
 
-.text-muted {
-    color: #626976 !important
-}
-
-.currency-formated {
-    color: #626976 !important;
-    display: inline-flex !important;
-    flex-direction: row !important;
-    font-size: 12px !important;
-    margin-right: 6px;
- 
-}
-
-.number-formated {
-    color: #3b5998 !important;
-    display: inline-flex !important;
-    flex-direction: row !important;
-    margin-top: 0;
-    margin-bottom: .5rem;
-    font-weight: 600;
-    line-height: 1.2;
-    font-size: 25px;
-    margin-top: 8px;
-}
-
-.number-formated-tbl {
-    color: #4299e1 !important;
-    display: inline-flex !important;
-    flex-direction: row !important;
-    margin-top: 0;
-    margin-bottom: .5rem;
-    font-weight: 600;
-    line-height: 1.2;
-    font-size: 17px;
-    margin-top: 8px;
-}
-
-.text-formated-tbl {
-    color: #4299e1 !important;
-    display: inline-flex !important;
-    flex-direction: row !important;
-    margin-top: 0;
-    margin-bottom: .5rem;
-    font-weight: 600;
-    line-height: 1.2;
-    font-size: 17px;
-    margin-top: 8px;
-}
 
 .bg-muted-lt {
     color: #626976 !important;
@@ -21026,3 +20978,70 @@ img {
   .user-option {
     float: right;
   }
+
+  .text-muted {
+    color: #626976 !important
+}
+
+.currency-formated {
+    color: #626976 !important;
+    display: inline-flex !important;
+    flex-direction: row !important;
+    font-size: 12px !important;
+    margin-right: 6px;
+ 
+}
+
+.number-formated {
+    color: #3b5998 !important;
+    display: inline-flex !important;
+    flex-direction: row !important;
+    margin-top: 0;
+    margin-bottom: .5rem;
+    font-weight: 600;
+    line-height: 1.2;
+    font-size: 25px;
+    margin-top: 8px;
+}
+
+.number-formated-tbl {
+    color: #4299e1 !important;
+    display: inline-flex !important;
+    flex-direction: row !important;
+    margin-top: 0;
+    margin-bottom: .5rem;
+    font-weight: 600;
+    line-height: 1.2;
+    font-size: 22px;
+    margin-top: 8px;
+}
+
+.text-formated-tbl {
+    color: #4299e1 !important;
+    display: inline-flex !important;
+    flex-direction: row !important;
+    margin-top: 0;
+    margin-bottom: .5rem;
+    font-weight: 600;
+    line-height: 1.2;
+    font-size: 17px;
+    margin-top: 8px;
+}
+
+
+.details-header {
+    color: #626976 !important;
+    font-size: 12px !important;
+    margin-top: 10px;
+ 
+}
+
+.number-details {
+
+    display: inline-flex !important;
+    flex-direction: row !important;
+    margin-top: 0;
+    line-height: 1.2;
+    font-size: 15px;
+
+}

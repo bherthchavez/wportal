@@ -136,36 +136,57 @@
               <div class="card">
                 <div class="card-body">
                   <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-3">
                       <div class="mb-3">
-                        <label class="form-label">Bank Name</label>
-                        <input type="text" class="form-control" name="bankName" value="<%= bankName %>" autocomplete="off">
+                        <label class="form-label">Bank Full Name</label>
+                        <input type="text" class="form-control" name="bankName" value="<%= bankName %>" autocomplete="off" required>
                       </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-3">
                       <div class="mb-3">
-                        <label class="form-label">Bank Address</label>
-                        <input type="text" class="form-control" name="bankAddress" value="<%= bankAddress %>">
+                        <label class="form-label">Account Number</label>
+                        <input type="text" class="form-control" name="accountNumber" value="<%= accountNumber %>" autocomplete="off" required>
                       </div>
                     </div>
-                    <div class="col-lg-4">
-                      <label class="form-label">Account Number</label>
-                      <input type="text" class="form-control" name="accountNumber" value="<%= accountNumber %>">
+                    <div class="col-lg-3">
+                      <div class="mb-3">
+                        <label class="form-label">Account Owner Name</label>
+                        <input type="text" class="form-control" name="ownerName" value="<%= ownerName %>" autocomplete="off" required>
+                      </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
+                      <div class="mb-3">
+                        <label class="form-label">Bank Email</label>
+                        <input type="email" class="form-control" name="bankEmail" value="<%= bankEmail %>" autocomplete="off" required>
+                      </div>
+                    </div>
+                   
+                    <div class="col-lg-3">
                       <div>
                         <label class="form-label">Account Type</label>
-                        <select class="form-select" name="accountType">
+                        <select class="form-select" name="accountType" required>
                           <option value="Current Account" <%=accountType==='Current Account' ? 'selected' : '' %>>Current Account</option>
                           <option value="Fixed Deposit"<%=accountType==='Fixed Deposit' ? 'selected' : '' %>>Fixed Deposit</option>
                           <option value="Fusion Account"<%=accountType==='Fusion Account' ? 'selected' : '' %>>Fusion Account</option>
                         </select>
                       </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
                       <div>
-                        <label class="form-label">Current Balance</label>
-                        <input type="number" class="form-control" name="currentBalance" value="<%= currentBalance %>" autocomplete="off">
+                        <label class="form-label">Deposited</label>
+                        <input type="number" class="form-control" name="deposited" value="<%= deposited %>" autocomplete="off" required>
+                      </div>
+                    </div>
+                    <div class="col-lg-3">
+                      <div>
+                        <label class="form-label">Withdrawal</label>
+                        <input type="number" class="form-control" name="withdrawal" value="<%= withdrawal %>" autocomplete="off" required>
+                      </div>
+                    </div>
+                    <div class="col-lg-3">
+                      <div>
+                        <label class="form-label">Balance Amount</label>
+                        <input type="number" class="form-control" name="balanceAmount" value="<%= balanceAmount %>" autocomplete="off" required>
                       </div>
                     </div>
                   </div>

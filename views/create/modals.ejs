@@ -1,3 +1,6 @@
+
+<!-- Create Bank Account -->
+
 <div
   class="modal modal-blur fade"
   id="modal-addAccount"
@@ -21,31 +24,33 @@
           <div class="row">
             <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label">Bank Name</label>
+                <label class="form-label">Bank Full Name</label>
                 <div class="input-group input-group-flat">
                   <input
                     type="text"
                     name="bankName"
                     class="form-control"
-                    autocomplete="off"
+                    autocomplete="off" required
                   />
                 </div>
               </div>
             </div>
             <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label">Account Number</label>
-                <input type="text" name="accountNumber" class="form-control" />
+                <label class="form-label">Account Owner Name</label>
+                <input type="text" name="ownerName" class="form-control" required/>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="modal-body">
-          <div class="row">
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">Account Number</label>
+                <input type="text" name="accountNumber" class="form-control" required/>
+              </div>
+            </div>
             <div class="col-lg-6">
               <div class="mb-3">
                 <label class="form-label">Account Type</label>
-                <select class="form-select" name="accountType">
+                <select class="form-select" name="accountType" required>
                   <option value="Current Account" selected>
                     Current Account
                   </option>
@@ -54,27 +59,28 @@
                 </select>
               </div>
             </div>
+          </div>
+        </div>
+        
+        <div class="modal-body">
+          <div class="row">
             <div class="col-lg-6">
               <div class="mb-3">
-                <label class="form-label">Current Balance</label>
+                <label class="form-label">Bank Email</label>
+                <input type="email" name="bankEmail" class="form-control" required/>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">Opening Balance</label>
                 <input
                   type="number"
                   class="form-control"
-                  name="currentBalance"
-                />
+                  name="openingBalance"
+                  required/>
               </div>
             </div>
-            <div class="col-lg-12">
-              <div>
-                <label class="form-label">Bank Address</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="bankAddress"
-                  autocomplete="off"
-                />
-              </div>
-            </div>
+         
           </div>
         </div>
         <div class="modal-footer">
@@ -88,7 +94,7 @@
           <button
             type="submit"
             class="btn btn-primary ms-auto"
-            data-bs-dismiss="modal"
+            
           >
             <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
             <svg
@@ -118,9 +124,12 @@
   </div>
 </div>
 
+
+
+<!-- Create Journal Entry -->
 <div
   class="modal modal-blur fade"
-  id="modal-addjournal"
+  id="modal-addJournal"
   tabindex="-1"
   role="dialog"
   aria-hidden="true"
@@ -303,3 +312,113 @@
   </div>
 </div>
 
+
+<!-- Create User Account -->
+
+<div
+  class="modal modal-blur fade"
+  id="modal-addUser"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form action="/sign-up" method="post">
+        <div class="modal-header">
+          <h5 class="modal-title">Create New User</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">Name</label>
+                <div class="input-group input-group-flat">
+                  <input
+                    type="text"
+                    name="name"
+                    class="form-control"
+                    autocomplete="off"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">User Role</label>
+                <select class="form-select" name="userRole">
+                  <option value="Owner/GM" selected>
+                    Owner/GM
+                  </option>
+                  <option value="Manager">Manager</option>
+                  <option value="User">User</option>
+                </select>
+               
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">Email Address</label>
+                <input name="username" type="username" class="form-control" placeholder="Enter email">
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input name="password" type="password" class="form-control"  placeholder="Password"  autocomplete="off">
+
+              </div>
+            </div>
+        
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a
+            href="#"
+            class="btn btn-link link-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </a>
+          <button
+            type="submit"
+            class="btn btn-primary ms-auto"
+            data-bs-dismiss="modal"
+          >
+            <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="icon icon-tabler icon-tabler-device-floppy"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+              <path
+                d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"
+              ></path>
+              <circle cx="12" cy="14" r="2"></circle>
+              <polyline points="14 4 14 8 8 8 8 4"></polyline>
+            </svg>
+            Create
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

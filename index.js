@@ -27,6 +27,8 @@ app.use(passport.session());
 mongoose.connect("mongodb://localhost:27017/accountingDB", {useNewUrlParser: true});
 
 const userSchema = new mongoose.Schema ({
+  name: String,
+  userRole: String,
   email: String,
   password: String
 });
@@ -42,10 +44,13 @@ passport.deserializeUser(User.deserializeUser());
 
 const bank_accountsSchema = {
   bank_name: String,
+  account_name: String,
   account_number: String,
   account_type: String,
-  bank_address: String,
-  current_balance: Number
+  bank_email: String,
+  deposited: Number,
+  withdrawal: Number,
+  balance_amount: Number
 }
 const bank_Account = mongoose.model("bank_Account", bank_accountsSchema);
 
@@ -70,26 +75,35 @@ const journal1 = new journal_Entry({
 
 const account1 = new bank_Account({
   bank_name: "Arab Bank",
+  account_name: "DR. Nasser Abdulghani",
   account_number: "65753213216",
   account_type: "Current Account",
-  bank_address: "Doha",
-  current_balance: 140300000
+  bank_email: "jhon@arabbank.com",
+  deposited: 140300000,
+  withdrawal: 0,
+  balance_amount: 140300000
 });
 
 const account2 = new bank_Account({
   bank_name: "Industrial Credit Bank",
+  account_name: "DR. Nasser Abdulghani",
   account_number: "216545432",
   account_type: "Fixed Deposit",
-  bank_address: "Doha",
-  current_balance: 1706000
+  bank_email: "go@icb.com",
+  deposited: 1706000,
+  withdrawal: 0,
+  balance_amount: 1706000
 });
 
 const account3 = new bank_Account({
   bank_name: "Doha bank",
+  account_name: "Nafeesa Ahmed",
   account_number: "98198291",
   account_type: "Fusion Account",
-  bank_address: "Doha",
-  current_balance: 17303750
+  bank_email: "mark@dohabank.com",
+  deposited: 17303750,
+  withdrawal: 0,
+  balance_amount: 17303750
 });
 
 const defaultJournalAccount = [journal1];
@@ -110,7 +124,7 @@ app.get("/sign-in",function(req,res){
 app.post("/sign-in", function(req, res){
   const user = new User({
     username: req.body.username,
-    passport: req.body.passport
+    password: req.body.password
   });
 
  req.login(user, function(err){
@@ -131,14 +145,11 @@ app.get("/sign-up",function(req,res){
   });
 
 app.post("/sign-up", function(req, res){
-  User.register({username: req.body.username},req.body.password, function(err,user){
+  User.register({name: req.body.name, userRole: req.body.userRole, username: req.body.username},req.body.password, function(err, user){
     if(err){
       console.log(err);
-      res.redirect("/sign-up");
     }else{
-      passport.authenticate("local")(req, res, function(){
-        res.redirect("/");
-      });
+      res.redirect("/users")
     }
   });
 });
@@ -189,29 +200,44 @@ app.get("/bank-accounts", function(req,res){
   });
 });
 
+
+
 app.post("/view-journal", function(req,res){
-res.redirect("/view-journal");
+  if (req.isAuthenticated()){
+    res.redirect("/view-journal");
+  }else{
+    res.redirect("/sign-in");
+  }
+
 });
 
 
 app.post("/bank-accounts", function(req, res){
- 
+  if (req.isAuthenticated()){
   const bankName = req.body.bankName;
+  const ownerName =  req.body.ownerName;
   const accountNumber = req.body.accountNumber;
   const accountType = req.body.accountType;
-  const currentBalanace = parseFloat(req.body.currentBalance);
-  const bankAddress = req.body.bankAddress;
+  const bankEmail = req.body.bankEmail;
+  const balanceAmount = parseFloat(req.body.openingBalance);
+ 
 
   const account = new bank_Account({
     bank_name: bankName,
+    account_name: ownerName,
     account_number: accountNumber,
     account_type: accountType,
-    bank_address: bankAddress,
-    current_balance: currentBalanace
+    bank_email: bankEmail,
+    deposited: balanceAmount,
+    withdrawal: 0,
+    balance_amount: balanceAmount
   });
   account.save();
   res.redirect("/bank-accounts");
-})
+  }else{
+    res.redirect("/sign-in");
+  }
+});
 
 
 app.post("/deleteAccount", function(req,res){
@@ -230,10 +256,15 @@ app.post("/viewAccount",function(req, res){
     
     res.render("view-update-account", {accountID:foundList._id ,
       bankName: foundList.bank_name, 
+      ownerName: foundList.account_name,
       accountNumber: foundList.account_number,
       accountType: foundList.account_type, 
-      currentBalance: foundList.current_balance,
-      bankAddress: foundList.bank_address});
+      bankEmail: foundList.bank_email,
+      deposited: foundList.deposited,
+      withdrawal:foundList.withdrawal,
+      balanceAmount: foundList.balance_amount
+      
+    });
   });
 });
 
@@ -241,29 +272,37 @@ app.post("/viewAccount",function(req, res){
 
 app.get("/view-update-account", function(req,res){
   
-  let format = (2500).toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  });
-  console.log(format);
-  res.render("view-update-account");
-})
+    let format = (2500).toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+    console.log(format);
+    res.render("view-update-account");
+
+});
 
 
 app.post("/updateAccount", function(req,res){
   const accountID = req.body.accountID;
   const bankName = req.body.bankName;
+  const ownerName = req.body.ownerName;
   const accountNumber = req.body.accountNumber;
   const accountType = req.body.accountType;
-  const currentBalance = req.body.currentBalance;
-  const bankAddress = req.body.bankAddress;
-  
+  const bankEmail = req.body.bankEmail;
+  const deposited = req.body.deposited;
+  const withdrawal = req.body.withdrawal;
+  const balanceAmount = req.body.balanceAmount;
+
+
   bank_Account.findOneAndUpdate({_id: accountID},
-     {$set: {bank_name: bankName, 
+     {$set: {bank_name: bankName,
+      account_name:  ownerName,
       account_number: accountNumber, 
       account_type: accountType, 
-      bank_address: bankAddress, 
-      current_balance: currentBalance }}, function(err, foundList){
+      bank_email: bankEmail, 
+      deposited: deposited,
+      withdrawal: withdrawal,
+      balance_amount: balanceAmount }}, function(err, foundList){
     if (!err){
       res.redirect("/bank-accounts");
     }else{
@@ -275,10 +314,16 @@ app.post("/updateAccount", function(req,res){
 
 
 app.get("/users", function(req, res){
-  res.render("users");
-})
+  if (req.isAuthenticated()){
 
+    User.find({}, function(err, foundItems){
+      res.render("users", {UsersList: foundItems});
+    });
 
+   }else{
+    res.redirect("/sign-in");
+   }
+});
 
 
 
