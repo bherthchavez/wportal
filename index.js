@@ -42,6 +42,9 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+
+let alert = 0;
+
 const bank_accountsSchema = {
   bank_name: String,
   account_name: String,
@@ -110,8 +113,9 @@ const defaultJournalAccount = [journal1];
 const defaultBankAccount = [account1,account2,account3];
 
 app.get("/",function(req,res){
+  
   if (req.isAuthenticated()){
-    res.render("index");
+    res.render("index", {userName: req.user.name, userRole: req.user.userRole});
    }else{
     res.redirect("/sign-in");
    }
@@ -140,6 +144,7 @@ app.post("/sign-in", function(req, res){
 });
 
 
+
 app.get("/sign-up",function(req,res){
   res.render("sign-up");
   });
@@ -162,7 +167,7 @@ app.get('/logout', function(req, res){
 });
 
 app.get("/view-journal",function(req,res){
-  res.render("view-journal");
+  res.render("view-journal", {userName: req.user.name, userRole: req.user.userRole});
   });
 
 app.get("/journal-accounts",function(req,res){
@@ -177,7 +182,7 @@ app.get("/journal-accounts",function(req,res){
     });
     res.redirect("journal-accounts");
    } else {
-    res.render("journal-accounts", {journalAccounts: foundItems});
+    res.render("journal-accounts", {journalAccounts: foundItems, userName: req.user.name, userRole: req.user.userRole});
   }
   });
   });
@@ -195,7 +200,8 @@ app.get("/bank-accounts", function(req,res){
       });
       res.redirect("bank-accounts");
     } else {
-      res.render("bank-accounts", {bankAccount: foundItems});
+      res.render("bank-accounts", {bankAccount: foundItems, userName: req.user.name, userRole: req.user.userRole, alert: alert});
+    alert= 0;
     }
   });
 });
@@ -233,6 +239,7 @@ app.post("/bank-accounts", function(req, res){
     balance_amount: balanceAmount
   });
   account.save();
+  alert = 1;
   res.redirect("/bank-accounts");
   }else{
     res.redirect("/sign-in");
@@ -245,6 +252,7 @@ app.post("/deleteAccount", function(req,res){
 
   bank_Account.findByIdAndRemove(accountID, function(err){
     if (!err) {
+      alert=2;
       res.redirect("/bank-accounts");
     }
   });
@@ -261,7 +269,7 @@ app.post("/viewAccount",function(req, res){
       accountType: foundList.account_type, 
       bankEmail: foundList.bank_email,
       deposited: foundList.deposited,
-      withdrawal:foundList.withdrawal,
+      withdrawal:foundList.withdrawal, userName: req.user.name, userRole: req.user.userRole,
       balanceAmount: foundList.balance_amount
       
     });
@@ -317,13 +325,15 @@ app.get("/users", function(req, res){
   if (req.isAuthenticated()){
 
     User.find({}, function(err, foundItems){
-      res.render("users", {UsersList: foundItems});
+      res.render("users", {UsersList: foundItems, userName: req.user.name, userRole: req.user.userRole});
     });
 
    }else{
     res.redirect("/sign-in");
    }
 });
+
+
 
 
 

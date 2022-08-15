@@ -30,4 +30,12 @@ $(function () {
   });
 
 
-  
+
+
+  function success() {
+    $(".alertSuccess" ).addClass("alertVisible");
+    setTimeout(function () {
+      $(".alertSuccess").removeClass("alertVisible");
+    }, 3000);
+  }
+ 

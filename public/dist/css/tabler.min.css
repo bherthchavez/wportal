@@ -21045,3 +21045,42 @@ img {
     font-size: 15px;
 
 }
+
+.alert-notif {
+    position: fixed;
+    /* top: 20px;
+    right: 20px; */
+    margin: auto;
+    color: #fff;
+    z-index: 1021;
+  
+    max-width: 300px;
+    padding: 6px;
+   
+    background-clip: border-box;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    padding: 1rem 1.23rem;
+
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s, top 0.2s, visibility 0.2s;
+    border-left: 0.25rem solid #2e3849;
+}
+
+.alert-visible {
+    top: 20px;
+    right: 20px;
+    opacity: 1;
+    visibility: visible;
+}
+
+.alert-green{
+    background-color: #18ba21;
+}
+.alert-red{
+    background-color: #d63939;
+}
+
+
+
