@@ -21082,5 +21082,13 @@ img {
     background-color: #d63939;
 }
 
+.hd-right{
+    display: inline-block;
+}
+
+.tb-add{
+    margin-top: 1rem;
+}
+
 
 

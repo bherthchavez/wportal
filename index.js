@@ -206,6 +206,18 @@ app.get("/bank-accounts", function(req,res){
   });
 });
 
+app.get("/create-voucher", function(req,res){
+res.render("payment-voucher",{userName: req.user.name, userRole: req.user.userRole, alert: alert});
+});
+
+app.post("/create-voucher", function(req,res){
+const acountID =  req.body.accountID;
+
+  bank_Account.find({_id: accountID}, function(err, foundItems){
+    res.render("payment-voucher", {accountID:foundItems._id, bankName: foundItems.bank_name, ownerName: foundItems.acount_name});
+  });
+});
+
 
 
 app.post("/view-journal", function(req,res){

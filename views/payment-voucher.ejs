@@ -1,0 +1,271 @@
+<%- include("partial/header") -%>
+
+  <div class="navbar-expand-md">
+    <div class="collapse navbar-collapse" id="navbar-menu">
+      <div class="navbar navbar-light">
+        <div class="container-xl">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="./">
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                    stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <polyline points="5 12 3 12 12 3 21 12 19 12" />
+                    <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+                    <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+                  </svg>
+                </span>
+                <span class="nav-link-title">
+                  Accounting
+                </span>
+              </a>
+            </li>
+            <li class="nav-item active dropdown">
+              <a class="nav-link dropdown-toggle" href="#navbar-help" data-bs-toggle="dropdown"
+                data-bs-auto-close="outside" role="button" aria-expanded="false">
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <!-- Download SVG icon from http://tabler-icons.io/i/lifebuoy -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-presentation-analytics"
+                    width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M9 12v-4"></path>
+                    <path d="M15 12v-2"></path>
+                    <path d="M12 12v-1"></path>
+                    <path d="M3 4h18"></path>
+                    <path d="M4 4v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-10"></path>
+                    <path d="M12 16v4"></path>
+                    <path d="M9 20h6"></path>
+                  </svg>
+
+                </span>
+                <span class="nav-link-title">
+                  Banking
+                </span>
+              </a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item " href="/bank-accounts">
+                  Bank Account
+                </a>
+                <a class="dropdown-item active" href="/journal-accounts">
+                  Journal Account
+                </a>
+              </div>
+
+            </li>
+
+            <li class="nav-item dropdown ">
+              <a class="nav-link dropdown-toggle" href="#navbar-help" data-bs-toggle="dropdown"
+                data-bs-auto-close="outside" role="button" aria-expanded="false">
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <!-- Download SVG icon from http://tabler-icons.io/i/lifebuoy -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-settings" width="24"
+                    height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path
+                      d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z">
+                    </path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+
+                </span>
+                <span class="nav-link-title">
+                  Settings
+                </span>
+              </a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="/users">
+                  User Management
+                </a>
+
+              </div>
+            </li>
+          </ul>
+          <div class="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
+            <form action="." method="get">
+              <div class="input-icon">
+                <span class="input-icon-addon">
+                  <!-- Download SVG icon from http://tabler-icons.io/i/search -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                    stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <circle cx="10" cy="10" r="7" />
+                    <line x1="21" y1="21" x2="15" y2="15" />
+                  </svg>
+                </span>
+                <input type="text" value="" class="form-control" placeholder="Search…" aria-label="Search in website">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="page-wrapper">
+    <div class="container-xl">
+      <!-- Page title -->
+      <div class="page-header d-print-none">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+
+            <h2 class="page-title">
+              Create Payment Voucher
+            </h2>
+          </div>
+         
+
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row row-cards">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header hd-right">
+                <div class="row align-items-center">
+                  <div class="col">
+                    <small class="text-muted"><i class="ti ti-building-bank"> </i>Bank Name / Account Name</small>
+                    <h2 class="m-0 mt-3 text-warning"></i> Industrial Credit Bank </h2>
+                    <p class=" text-muted"> DR.Nasser Abdulghani</p>
+                  </div>
+                  
+                
+
+
+                  <div class="col-auto">
+                    <a href="#" class="btn btn-ghost-primary "> Check Previous Payment <i class="ti ti-chevron-right"></i></a>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="card-body">
+                <div class="row mt-lg-4">
+                  <div class="col-lg-6">
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="mb-3">
+                          <div class="form-label">Transaction Type</div>
+                          <select class="form-select">
+                            <option value="1">Bank Transfer</option>
+                            <option value="2">Bank Payment</option>
+                            <option value="3">Internal Transfer</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="col-6">
+                        <div class="mb-4">
+                          <div class="form-label">Payment Mode</div>
+                          <select class="form-select">
+                            <option value="Cash">Cash</option>
+                            <option value="Cheque">Cheque</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="col-6">
+                        <div class="mb-3">
+                          <div class="form-label">Payment Date</div>
+                          <input type="date" class="form-control ">
+                        </div>
+                      </div>
+
+                      <div class="col-6">
+                        <div class="mb-3">
+                          <div class="form-label">Upload Document</div>
+                          <input type="file" class="form-control">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-6">
+                    <div class="mb-3">
+                      <label class="form-label">Description</label>
+                      <textarea class="form-control" name="example-textarea-input" rows="6"></textarea>
+                    </div>
+                   </div>
+                
+                   <div class="row">
+                    <div class="col-lg-12 ">
+                      <div class="col-12 mt-lg-4">
+                        <div class="card">
+                          <div class="table-responsive">
+                            <table id="tableAddAcc" class="table tableAdd table-vcenter card-table">
+                              <thead>
+                                <tr>
+                                  <th>Account</th>
+                                  <th>Memo</th>
+                                  <th class="text-end">Amount</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td><select class="form-select" name="accountType"><option value="" selected>--</option> <option value="Current Account"> Current Account</option> <option value="Fixed Deposit"> Fixed Deposit </option><option value="Fusion Account"> Fusion Account </option></select></td>
+                                 
+                                  <td class="text-muted">
+                                    <input type="text" name="accountNumber" class="form-control" />
+                                  </td>
+                                  <td class="text-end"><input type="text" name="accountNumber" class="form-control text-end pe-2" placeholder="0.0"/></td>
+                                </tr>
+        
+                                <tr>
+                                  <td>  
+                                    <button id="insertRowAcc" href="#" class="btn btn-secondary btn-pill">Add More</button>
+                                </td>
+                                 
+                                  <td colspan="2" class="text-end">
+                                   <h3><small class="me-3"> Net Amount (QAR) </small> 0.00 </h3>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                    
+                      </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+            </div>
+            <div class="card-footer">
+              <div class="row align-items-center">
+                <div class="col"></div>
+                <div class="col-auto">
+                  <a href="#" class="btn">
+                    Cancel
+                  </a>
+                  <a href="#" class="btn btn-primary ms-3">
+                    Save
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      $(function () {
+        $("#insertRowAcc").on("click", function (event) {
+          event.preventDefault();
+            var cols = "";
+            cols +=  '<tr><td><select class="form-select" name="accountType"><option value="" selected>--</option> <option value="Current Account"> Current Account</option> <option value="Fixed Deposit"> Fixed Deposit </option><option value="Fusion Account"> Fusion Account </option></select></td>';
+            cols +='<td ><input type="text" name="accountNumber" class="form-control" /></td>';
+            cols += '<td><input type="text" name="accountNumber" class="form-control text-end pe-2" placeholder="0.0"/></td></tr>';
+    
+          $('#tableAddAcc tr:last').eq(-1).before(cols);
+        });
+      });
+    </script>
+    
+     <%- include("create/modals") -%>
+      <%- include("partial/footer") -%>

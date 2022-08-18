@@ -347,7 +347,9 @@
                           </td>
                          
                           <td class="text-end">
-                              <button class="btn btn-white btn-pill" data-bs-toggle="modal" data-bs-target="#modal-addJournal"> New Transaction</button>
+                            <form action="/create-voucher" method="post"></form>
+                              <a href="/create-voucher" type="submit" name="accountID" value="<%=account._id%>" class="btn btn-white btn-pill"> New Transaction</a>
+                            </form>
                           </td>
                         </tr>
                        
@@ -371,7 +373,7 @@
                                       </a></div>
                                     <div class="col">
                                       <form action="/deleteAccount" method="post">
-                                      <button  name="deleteAccount" value="<%=account._id%>" class="btn btn-danger w-100" >Yes</button>
+                                      <button type="submit" name="deleteAccount" value="<%=account._id%>" class="btn btn-danger w-100" >Yes</button>
                                     </form>
                                     </div>
                                   </div>
