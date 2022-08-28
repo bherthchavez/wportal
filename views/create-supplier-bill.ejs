@@ -47,10 +47,10 @@
                 </span>
               </a>
               <div class="dropdown-menu">
-                <a class="dropdown-item active" href="/bank-accounts">
+                <a class="dropdown-item" href="/bank-accounts">
                 Bank
                 </a>
-                <a class="dropdown-item" href="/supplier-accounts">
+                <a class="dropdown-item active" href="/supplier-accounts">
                   Suppliers
                   </a>
                 <a class="dropdown-item" href="/journal-accounts">
@@ -117,13 +117,13 @@
           <div class="col">
 
             <h2 class="page-title">
-              Create Payment Voucher
+              Create Supplier Bill
             </h2>
           </div>
         </div>
       </div>
     </div>
-    <form action="/payment-voucher" method="post" id="add_form">
+    <form action="/supplier-bill" method="post" id="add_form">
 
     <div class="page-body">
       <div class="container-xl">
@@ -133,9 +133,9 @@
               <div class="card-header hd-right">
                 <div class="row align-items-center">
                   <div class="col">
-                    <small class="text-muted"><i class="ti ti-building-bank"> </i>Bank Name / Account Name</small>
-                    <h2 class="m-0 mt-3 text-warning"></i> <%= bankName %> </h2>
-                    <p class=" text-muted"> <%= ownerName%> </p>
+                    <small class="text-muted"><i class="ti ti-building-bank"> </i>Supplier Name</small>
+                    <h2 class="m-0 mt-3 text-warning"></i> <%= supplierName %> </h2>
+                    <p class=" text-muted"> <%= aName %> </p>
                   </div>
                   <div class="col-auto">
                     <a href="/voucher-item" class="btn btn-ghost-primary "> Check Previous Payment <i class="ti ti-chevron-right"></i></a>
@@ -146,34 +146,59 @@
               <div class="card-body">
                 <div class="row mt-lg-4">
                   <div class="col-lg-6">
+                    <div class="col"> 
+                      <div class="mb-3">
+                          
+                        <input type="text" name="accountID" value="<%= accountID %>" hidden>
+                        <input type="text" name="supplierName" value="<%= supplierName %>" hidden>
+                        <input type="text" id="numOfAcc" name="numOfItem" value="1" hidden>
+
+                        <div class="form-label">Cost Center</div>
+                          <select name="costCenter" class="form-select" required>
+                            <option value="">--</option>
+                            <option value="Abdulghani Abdulghani N Transport  Trad Est">Abdulghani Abdulghani N Transport Trad Est</option>
+                            <option value="Abdulghani Abdulghani Trading Company">Abdulghani Abdulghani Trading Company</option>
+                            <option value="Abdulghani Sons Company">Abdulghani Sons Company</option>
+                            <option value="Al Abdulghani Holding Co.">Al Abdulghani Holding Co.</option>
+                            <option value="Al Bacarrat Trading Co.">Al Bacarrat Trading Co.</option>
+                            <option value="Al Junoob for Transportation Projects">Al Junoob for Transportation Projects</option>
+                            <option value="Al Nasriya">Al Nasriya</option>
+                            <option value="El Naael Company">El Naael Company</option>
+                            <option value="El Naael for Consultating and Administrative Services">El Naael for Consultating and Administrative Services</option>
+                            <option value="El Naael Garage">El Naael Garage</option>
+                            <option value="El Naael Group Holding Co">El Naael Group Holding Co</option>
+                            <option value="El Naael Real Estate">El Naael Real Estate</option>
+                            <option value=">El Naael Rent a Car">El Naael Rent a Car</option>
+                            <option value="El Naael Servuce Center">El Naael Servuce Center</option>
+                            <option value="Nasser Abulghani & Sons">Nasser Abulghani & Sons</option>
+                            <option value="Qatar Eastern Language Center">Qatar Eastern Language Center</option>
+                            <option value="South for Real Estate">South for Real Estate</option>
+                          </select>
+                   </div>
+
+                    </div>
+                    
                     <div class="row">
                       <div class="col-6">
                         <div class="mb-3">
-                          
-                            <input type="text" name="accountID" value="<%= accountID %>" hidden>
-                            <input type="text" name="pVbankName" value="<%= bankName %>" hidden>
-                            <input type="text" id="numOfAcc" name="numOfAcc" value="1" hidden>
-
-                            <div class="form-label">Payment Mode</div>
-                          <select name="payment" class="form-select">
-                            <option value="Cash">Cash</option>
-                            <option value="Cheque">Cheque</option>
-                            <option value="Bank Transfer">Bank Transfer</option>
-                            <option value="Internal Transfer">Internal Transfer</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div class="col-6">
-                        <div class="mb-4">
-                          <div class="form-label">Payment Date</div>
-                          <input type="date" name="date" class="form-control" required>
+                            <div class="form-label">Bill Date</div>
+                          <input type="date" name="billDate" class="form-control" required>
+                        
                         </div>
                       </div>
                       <div class="col-6">
                         <div class="mb-3">
-                          <div class="form-label">Upload Document</div>
-                          <input type="file" name="document" class="form-control" required>
+                            <div class="form-label">Due Date</div>
+                          <input type="date" name="dueDate" class="form-control" required>
+                        
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="mb-3"> 
+                          <div class="mb-3">
+                          <div class="form-label">Upload Documents</div>
+                          <input type="file" name="documents" class="form-control" required>
+                        </div>
                         </div>
                       </div>
 
@@ -189,6 +214,7 @@
                   </div>
 
                   <div class="col-lg-6">
+                   
                     <div class="mb-3">
                       <label class="form-label">Description</label>
                       <textarea class="form-control" name="description" rows="6" required></textarea>
@@ -198,92 +224,66 @@
                    <div class="row">
                     <div class="col-lg-12 ">
                       <div class="col-12 mt-lg-4">
-                        <div class="card">
                           
-                            <ul class="nav nav-tabs" data-bs-toggle="tabs">
-                              <li class="nav-item">
-                                <a href="#tabs-Expenses-17" class="nav-link active" data-bs-toggle="tab">Expenses</a>
-                              </li>
-                              <li class="nav-item ">
-                                <a href="#tabs-profile-17" class="nav-link" data-bs-toggle="tab"> Cash</a>
-                              </li>
-                              <li class="nav-item ">
-                                <a href="#tabs-profile-17" class="nav-link" data-bs-toggle="tab"> Cheque</a>
-                              </li>
-                              <li class="nav-item ">
-                                <a href="#tabs-Expenses-17" class="nav-link " data-bs-toggle="tab"> Bank Transfer</a>
-                              </li>
-                              <li class="nav-item ">
-                                <a href="#tabs-Expenses-17" class="nav-link " data-bs-toggle="tab"> Internal Transfer</a>
-                              </li>
-                            
-                            </ul>
-                            <div class="card-body">
-                              <div class="tab-content">
-                                <div class="tab-pane fade active show" id="tabs-Expenses-17">
-                                  <div class="table-responsive">
-                                    <form action="/payment-voucher" method="post" id="add_form">
-        
-                                    <table id="tableAddAcc" class="table tableAdd table-vcenter card-table">
-                                      <thead>
-                                        <tr>
-                                         
-                                          <th class="w-25">Account</th>
-                                          <th class="w-35">Description</th>
-                                          <th class="text-end w-10">Amount</th>
-                                          <th class="text-end "> </th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        <tr>
-                                          
-                                          <td>
-                                            <select class="form-select" name="account" required>
-                                            <option value="" selected>--</option> 
-                                            <%  chartAccounts.forEach(function(account) { %>
-                                            <option value="<%=account.name%>"><%=account.name%> </option> 
-                                            <%  }) %>
-                                              </select>
-                                          </td>
-                                          <td class="text-muted">
-                                            <input type="text" name="memo" class="form-control" required>
-                                          </td>
-                                          <td class="text-end ">
-                                            <input type="text" class="accLAmount form-control form-control-rounded text-end me-5 " name="amount"  placeholder="0.00" required>
-                                          </td>
-                                           
-                                            <td class="text-end">
-                                              <button class="btn bg-red-lt rounded-pill"  id ="deleteRow">
-                                                <i class="ti ti-x"></i>
-                                              </button>
-                                            </td>
-                                          </tr>
-                
-                                        <tr>
-                                          <td>  
-                                            <button id="insertRowAcc" class="btn btn-secondary btn-pill">Add More</button>
-                                        </td>
-                                         
-                                          <td colspan="2" class="text-end">
-                                            <div class="currency-formated-a">Total Amount (QAR)</div>
-                                           <div id="totalAmount" class="number-details ms-3 text-danger totalAmount"> 0.00 </div>
-                                           <!-- <input type="text" id="totalAmount"> -->
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                </div>
-                                <div class="tab-pane fade" id="tabs-profile-17">
-                                  <div>Fringilla egestas nunc quis tellus diam rhoncus ultricies tristique enim at diam, sem nunc amet, pellentesque id egestas velit sed</div>
-                                </div>
-                           
-                              </div>
-                            </div>
-                          
+                              <div class="table-responsive">
+                                <form action="/payment-voucher" method="post" id="add_form">
+    
+                                <table id="tableAddAcc" class="table card-table table-vcenter text-nowrap datatable">
+                                  <thead>
+                                    <tr>
+                                     <th class="w-1"></th>
+                                      <th class="w-25">Item</th>
+                                      <th class="w-35">Description</th>
+                                      <th class="text-end w-10">Price</th>
+                                      <th class="text-end w-10">Qty</th>
+                                      <th class="text-end w-10">Total</th>
                        
-                    
-                      </div>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <td><button class="btn bg-red-lt rounded-pill m-0"  id ="deleteRow"><i class="ti ti-trash"></i> </button></td>
+                                      <td>
+                                        <select class="form-select" name="item" required>
+                                        <option value="" selected>--</option> 
+                                        <%  chartAccounts.forEach(function(account) { %>
+                                        <option value="<%=account.name%>"><%=account.name%> </option> 
+                                        <%  }) %>
+                                          </select>
+                                      </td>
+                                      <td class="text-muted">
+                                        <input type="text" name="itemDesc" class="form-control" required>
+                                      </td>
+                                      <td class="text-end ">
+                                        <input type="text" class="auto-calc price form-control form-control-rounded text-end me-5 " name="price" placeholder="0" required>
+                                      </td>
+                                      <td class="text-end">
+                                        <input type="text" class=" auto-calc qty form-control form-control-rounded text-end me-5 " name="qty" placeholder="0" required>
+                                      </td>
+                                      <td class="text-end">
+                                        <input type="text" class="accTotal form-control text-end me-5 " name="total" placeholder="0.00" hidden>
+                                        <div class="number-details ms-3 text-warning accTotalDiv"> 0.00 </div>
+                                      </td>
+                                      
+
+                                      </tr>
+            
+                                    <tr>
+                                      <td colspan="6" class="text-end">
+                                        <div class="currency-formated-a">Total Amount (QAR)</div>
+                                       <div class="number-details ms-3 text-danger totalAmount fw-bold">0.00</div>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                              <div class="row">
+                                <div class="col">
+                                  <button id="insertRowAcc" class="btn btn-secondary btn-pill">Add More</button>
+
+                                </div>
+                              </div>
+                     
                     </div>
                   </div>
               </div>
@@ -320,14 +320,16 @@
           event.preventDefault();
          
             var cols = "";
-            cols +=  '<tr><td><select class="form-select" name="account" required><option value="" selected>--</option>';
+            cols += '<tr><td><button class="btn bg-red-lt rounded-pill m-0"  id ="deleteRow"><i class="ti ti-trash"></i> </button></td>';
+            cols +=  '<td><select class="form-select" name="item" required><option value="" selected>--</option>';
               "<%  chartAccounts.forEach(function(account) { %>"
             cols+=   '<option value="<%=account.name%>"><%=account.name%> </option>';
             "<%  }) %>"
-            cols +=  '</select> </td> <td ><input type="text" name="memo" class="form-control" required /></td>';
-            cols +=  '<td><input type="text" class="accLAmount form-control form-control-rounded text-end me-5"  name="amount" placeholder="0.00" required/></td>';
-              cols += '<td class="text-end"><button class="btn bg-red-lt rounded-pill"  id ="deleteRow">  <i class="ti ti-x"></i></button></td></tr>';
-          
+            cols +=  '</select> </td> <td ><input type="text" name="itemDesc" class="form-control" required /></td>';
+            cols +=  '<td><input type="text" class="auto-calc price form-control form-control-rounded text-end me-5"  name="price" placeholder="0" required/></td>';
+            cols +=  '<td><input type="text" class="auto-calc qty form-control form-control-rounded text-end me-5"  name="qty" placeholder="0" required/></td>';
+            cols += ' <td class="text-end"><input type="text" class="accTotal form-control text-end me-5 " name="total" placeholder="0.00" hidden>  <div class="number-details ms-3 text-warning accTotalDiv"> 0.00 </div></td></tr>';
+
           $('#numOfAcc').val($('#tableAddAcc tr').length - 1);
           $('#tableAddAcc tr:last').eq(-1).before(cols);
               count++;
@@ -348,23 +350,51 @@
     <script>
      $(document).ready(function(){ 
 
-        $("#tableAddAcc").on('input', '.accLAmount', function () {
-        var calculated_total_sum = 0;
+        // $("#tableAddAcc").on('input', '.accLQty', function () {
+        // var calculated_total_sum = 0;
       
-        $("#tableAddAcc .accLAmount").each(function () {
-            var get_textbox_value = $(this).val();
-            if ($.isNumeric(get_textbox_value)) {
-                calculated_total_sum += parseFloat(get_textbox_value);
-                }                  
-              });
-                $("div .totalAmount").html((calculated_total_sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-                chanegPaymentAmmount();
+        // $("#tableAddAcc .accLQty").each(function () {
+        //     var get_textbox_value = $(this).val();
+        //     if ($.isNumeric(get_textbox_value)) {
+        //         calculated_total_sum += parseFloat(get_textbox_value);
+        //         }                  
+        //       });
+        //         $("div .totalAmount").html((calculated_total_sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+        //         chanegPaymentAmmount();
+        // });
+
+
+        $(document).on("keyup change paste", "td > input.auto-calc", function() {
+           // Determine parent row
+          row = $(this).closest("tr");
+          // Get first and second input values
+          price = row.find("td input.price").val();
+          qty = row.find("td input.qty").val();
+          // Print input values to output cell
+          row.find(".accTotal").val(price * qty);
+          
+         row.find(".accTotalDiv").html((price * qty).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+
+           // Update total invoice value
+         
+           var sum = 0;
+          // Cycle through each input with class total-cost
+          $("input.accTotal").each(function() {
+            // Add value to sum
+            sum += +$(this).val();
+          });
+
+            // Assign sum to text of #total-invoice
+          // Using the id here as there is only one of these
+          $("div .totalAmount").html((sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+
+          chanegPaymentAmmount();
         });
 
         $("#tableAddAcc").on('click','#deleteRow', function () {
           var calculated_total_sum = 0;
 
-          $("#tableAddAcc .accLAmount").each(function () {
+          $("#tableAddAcc .accTotal").each(function () {
             var get_textbox_value = $(this).val();
             if ($.isNumeric(get_textbox_value)) {
                 calculated_total_sum += parseFloat(get_textbox_value);
