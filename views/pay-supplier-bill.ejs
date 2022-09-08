@@ -1,0 +1,366 @@
+<%- include("partial/header") -%>
+
+
+  <div class="navbar-expand-md">
+    <div class="collapse navbar-collapse" id="navbar-menu">
+      <div class="navbar navbar-light">
+        <div class="container-xl">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="./">
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                    stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <polyline points="5 12 3 12 12 3 21 12 19 12" />
+                    <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+                    <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+                  </svg>
+                </span>
+                <span class="nav-link-title">
+                  Dashboard
+                </span>
+              </a>
+            </li>
+            <li class="nav-item active dropdown">
+              <a class="nav-link dropdown-toggle" href="#navbar-help" data-bs-toggle="dropdown"
+                data-bs-auto-close="outside" role="button" aria-expanded="false">
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <!-- Download SVG icon from http://tabler-icons.io/i/lifebuoy -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-presentation-analytics"
+                    width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M9 12v-4"></path>
+                    <path d="M15 12v-2"></path>
+                    <path d="M12 12v-1"></path>
+                    <path d="M3 4h18"></path>
+                    <path d="M4 4v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-10"></path>
+                    <path d="M12 16v4"></path>
+                    <path d="M9 20h6"></path>
+                  </svg>
+
+                </span>
+                <span class="nav-link-title">
+                  Accounts
+                </span>
+              </a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="/bank-accounts">
+                Bank
+                </a>
+                <a class="dropdown-item active" href="/supplier-accounts">
+                  Suppliers
+                  </a>
+                <a class="dropdown-item" href="/journal-accounts">
+                  Journal
+                </a>
+              </div>
+
+            </li>
+
+            <li class="nav-item dropdown ">
+              <a class="nav-link dropdown-toggle" href="#navbar-help" data-bs-toggle="dropdown"
+                data-bs-auto-close="outside" role="button" aria-expanded="false">
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <!-- Download SVG icon from http://tabler-icons.io/i/lifebuoy -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-settings" width="24"
+                    height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path
+                      d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z">
+                    </path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+
+                </span>
+                <span class="nav-link-title">
+                  Settings
+                </span>
+              </a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="/users">
+                  User Management
+                </a>
+                <a class="dropdown-item" href="/master">
+                  Master
+                 </a>
+
+              </div>
+            </li>
+          </ul>
+          <div class="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
+            <form action="." method="get">
+              <div class="input-icon">
+                <span class="input-icon-addon">
+                  <!-- Download SVG icon from http://tabler-icons.io/i/search -->
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                    stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <circle cx="10" cy="10" r="7" />
+                    <line x1="21" y1="21" x2="15" y2="15" />
+                  </svg>
+                </span>
+                <input type="text" value="" class="form-control" placeholder="Search…" aria-label="Search in website">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="page-wrapper">
+    <div class="container-xl">
+      <!-- Page title -->
+      <div class="page-header d-print-none">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+
+            <h2 class="page-title">
+              Pay Supplier Bill
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <form action="/supplier-bill" method="post" id="add_form">
+
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row row-cards">
+          <div class="col-12">
+            <div class="card">
+              
+                <div class="card-header hd-right">
+                  <div class="row align-items-center">
+                    <small class="text-muted"> </i>Supplier Name</small>
+                    <h2 class="m-0 mt-3 text-warning"></i> <%= supplierName %> </h2>
+                    <p class=" text-muted"> <%= aName %> </p>
+                  </div>
+                </div>
+                    <div class="card-body">
+                      <div class="row mt-lg-2">
+                        <div class="col-lg-6">
+                         
+                          <div class="col"> 
+                            <div class="mb-3">
+                                
+                              <input type="text" name="accountID" value="<%= accountID %>" hidden>
+                              <input type="text" name="supplierName" value="<%= supplierName %>" hidden>
+                              <input type="text" id="numOfAcc" name="numOfItem" value="1" hidden>
+      
+                              <div class="form-label">Payment From</div>
+                                <select name="paymentFrom" class="form-select" required>
+                                  <option value=""></option>
+                                  <%  bankAccounts.forEach(function(account) { %>
+                                  <option value="<%=account._id%> "><%=account.bank_name%> </option>
+                                  <%  }) %>
+
+                                </select>
+                            </div>
+                          </div>
+                          
+                          <div class="row">
+                            <div class="col-6">
+                              <div class="mb-3">
+                                  <div class="form-label">Payment Date</div>
+                                <input type="date" name="billDate" class="form-control" required>
+                              
+                              </div>
+                            </div>
+                            <div class="col-6">
+                              <div class="mb-3">
+                                <div class="form-label">Payment Mode</div>
+                                <select name="payment" class="form-select">
+                                  <option value=""></option>
+                                  <option value="Cash">Cash</option>
+                                  <option value="Cheque">Cheque</option>
+                                  <option value="Bank Transfer">Bank Transfer</option>
+                                </select>
+                              
+                              </div>
+                            </div>
+                            <div class="col-6">
+                              <div class="mb-3"> 
+                                <div class="mb-3">
+                                <div class="form-label">Upload Documents</div>
+                                <input type="file" name="documents" class="form-control" required>
+                              </div>
+                              </div>
+                            </div>
+      
+                            <div class="col-6">
+                              <div class="mb-3">
+                               
+                                <div class="form-label">Payment Amount (QAR)</div>
+                                <input type="text"  id="paymentAmount" class="form-control"  name="totalPayment"  placeholder="0.00" readonly required>
+      
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+      
+                        <div class="col-lg-6">
+                         
+                          <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" rows="9" required></textarea>
+                          </div>
+                         </div>
+                      
+                         <div class="row">
+                          
+                            <div class="col-12  mt-lg-4">
+                                
+                             
+                              
+                                    <div class="table-responsive">
+                                      <table class="table card-table table-vcenter text-nowrap datatable">
+                                        <thead>
+                                          <tr>
+                                            <th class="w-0">
+                                              <!-- <input id="selectAll" class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select all invoices"> -->
+                                            </th>
+                                            <th class="w-5">Bill No</th>
+                                            <th class="w-5">Bill Date</th>
+                                            <th class="w-5">Due Date</th>
+                                            <th class="w-5">Description</th>
+                                            <th class="w-5">Created By</th>
+                                            <th class="w-5"> Bill Amount</th>
+                                            <th  class="text-end w-5"> Amount to Pay</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                   <%  suppBills.forEach(function(bill){ %>
+                                          <tr>
+                                           <td>
+                                            <input class="form-check-input m-0 align-middle selectBill" type="checkbox" aria-label="Select bill" value=" <%= bill.total_payment %>">
+                                           </td>
+                                            <td>
+                                              <%=bill.bill_number%>
+                                            </td>
+                                            <td>
+                                              <%=bill.bill_date%>
+                                            </td>
+                                            <td>
+                                              <%=bill.due_date%>
+                                            </td>
+                                            <td>
+                                              <%=bill.description%>
+                                            </td>
+                                            <td>
+                                              <%=bill.created_by%>
+                                            </td>
+                                            <td>
+                                            
+                                              <div class="currency-formated">QAR</div> 
+                                              <div class="number-details text-danger bill"> <%= bill.total_payment %></div>
+                                             
+                                            </td>
+                                            <td>
+                                              <input type="text" class="amountPay qty form-control form-control-rounded text-end me-5 " name="qty" placeholder="0" required>
+
+                                            </td>
+                                    
+                                          </tr>
+                                          <%  }) %>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                          </div>
+                  </div>
+                </div>
+              </div>
+                  <div class="card-footer">
+                    <div class="row align-items-center">
+                      <div class="col"></div>
+                      <div class="col-auto">
+                        <a href="#" class="btn">
+                          Cancel
+                        </a>
+                        <button type="submit"  class="btn btn-primary ms-3" >Save</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+     <%- include("create/modals") -%>
+
+    
+
+
+    <script>
+     $(document).ready(function(){ 
+
+      $('#selectAll').click(function(e){     
+       
+        $(this).closest('table').find('td input:checkbox').prop('checked', this.checked);
+       
+     });
+
+   
+      $(".selectBill").click(function(e){ 
+        if ($(this).is(":checked")){
+          $(this).closest("tr").find("td input.amountPay").val($(this).val());
+        }else{
+          $(this).closest("tr").find("td input.amountPay").val("");
+        }
+
+        var sum =0;
+        $("input.amountPay").each(function() {
+            sum += +$(this).val();
+          });
+          console.log(sum);
+          $('#paymentAmount').val((sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+
+      });
+
+
+        $(document).on("keyup change paste", "td > input.auto-calc", function() {
+          row = $(this).closest("tr");
+          price = row.find("td input.price").val();
+          qty = row.find("td input.qty").val();
+          row.find(".accTotal").val(price * qty);
+          
+         row.find(".accTotalDiv").html((price * qty).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+
+         
+           var sum = 0;
+          $("input.accTotal").each(function() {
+            sum += +$(this).val();
+          });
+          $("div .totalAmount").html((sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+
+          chanegPaymentAmmount();
+        });
+
+        $("#tableAddAcc").on('click','#deleteRow', function () {
+          var calculated_total_sum = 0;
+
+          $("#tableAddAcc .accTotal").each(function () {
+            var get_textbox_value = $(this).val();
+            if ($.isNumeric(get_textbox_value)) {
+                calculated_total_sum += parseFloat(get_textbox_value);
+                }                  
+              });
+              $("div .totalAmount").html((calculated_total_sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                chanegPaymentAmmount();
+        });
+
+        function chanegPaymentAmmount(){
+          $('#paymentAmount').val($('div .totalAmount').html()); 
+        }
+
+    });
+
+    </script>
+
+      <%- include("partial/footer") -%>

@@ -84,6 +84,9 @@
                 <a class="dropdown-item" href="/users">
                   User Management
                 </a>
+                <a class="dropdown-item" href="/master">
+                  Master
+                 </a>
 
               </div>
             </li>
@@ -108,21 +111,21 @@
       </div>
     </div>
   </div>
-  </div>
+ 
   <div class="page-wrapper">
-    <div class="container-xl">
-      <!-- Page title -->
-      <div class="page-header d-print-none">
-        <div class="row g-2 align-items-center">
-          <div class="col">
+        <div class="container-xl">
+          <!-- Page title -->
+          <div class="page-header d-print-none">
+            <div class="row g-2 align-items-center">
+              <div class="col">
 
-            <h2 class="page-title">
-              Create Payment Voucher
-            </h2>
+                <h2 class="page-title">
+                  Create Payment Voucher
+                </h2>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
     <form action="/payment-voucher" method="post" id="add_form">
 
     <div class="page-body">
@@ -130,21 +133,21 @@
         <div class="row row-cards">
           <div class="col-12">
             <div class="card">
-              <div class="card-header hd-right">
-                <div class="row align-items-center">
-                  <div class="col">
-                    <small class="text-muted"><i class="ti ti-building-bank"> </i>Bank Name / Account Name</small>
-                    <h2 class="m-0 mt-3 text-warning"></i> <%= bankName %> </h2>
-                    <p class=" text-muted"> <%= ownerName%> </p>
+                  <div class="card-header hd-right">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <small class="text-muted"><i class="ti ti-building-bank"> </i>Bank Name / Account Name</small>
+                        <h2 class="m-0 mt-3 text-warning"></i> <%= bankName %> </h2>
+                        <p class=" text-muted"> <%= ownerName%> </p>
+                      </div>
+                      <div class="col-auto">
+                        <a href="/voucher-item" class="btn btn-ghost-primary "> Check Previous Payment <i class="ti ti-chevron-right"></i></a>
+                      </div>
+                    </div>
                   </div>
-                  <div class="col-auto">
-                    <a href="/voucher-item" class="btn btn-ghost-primary "> Check Previous Payment <i class="ti ti-chevron-right"></i></a>
-                  </div>
-                </div>
-
-              </div>
               <div class="card-body">
                 <div class="row mt-lg-4">
+                 
                   <div class="col-lg-6">
                     <div class="row">
                       <div class="col-6">
@@ -289,25 +292,28 @@
               </div>
             </div>
             </div>
-            <div class="card-footer">
-              <div class="row align-items-center">
-                <div class="col"></div>
-                <div class="col-auto">
-                  <a href="#" class="btn">
-                    Cancel
-                  </a>
-                  <button type="submit" class="btn btn-primary ms-3" id="add_btn">
-                    Save
-                  </>
-                </form>
-              
-                </div>
-              </div>
-            </div>
+                                      <div class="card-footer">
+                                        <div class="row align-items-center">
+                                          <div class="col"></div>
+                                          <div class="col-auto">
+                                            <a href="#" class="btn">
+                                              Cancel
+                                            </a>
+                                            <button type="submit" class="btn btn-primary ms-3" id="add_btn">
+                                              Save
+                                            </>
+                                          </form>
+                                        
+                                          </div>
+                                        </div>
+                                      </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
+    
 
      <%- include("create/modals") -%>
 

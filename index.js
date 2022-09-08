@@ -4,7 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const _ = require("lodash");
-const { get } = require("lodash");
+const { get, parseInt } = require("lodash");
 
 const session = require('express-session');
 const passport =require("passport");
@@ -66,9 +66,17 @@ const supplier_accountsSchema = {
   a_name: String,
   contact_person: String,
   email: String,
+  address: String,
+  opening_balance: Number,
+  beneficiary_name: String,
+  beneficiary_address: String,  
+  bank_name: String,
+  iban_no: String,
+  swift_code: String,
   billed: Number,
   paid: Number,
   balance_amount: Number,
+  active_status: Number,
   created_at:Date
 }
 
@@ -121,10 +129,20 @@ const payment_voucher = mongoose.model("payment_voucher", payment_vouchersSchema
 const chart_of_accountsSchema = {
   name: String,
   code: String,
+  created_by: String,
   created_at:Date
 }
 
 const chart_of_account = mongoose.model("chart_of_account", chart_of_accountsSchema);
+
+const cost_centerSchema = {
+  name: String,
+  code: String,
+  created_by: String,
+  created_at:Date
+}
+
+const cost_center = mongoose.model("cost_center", cost_centerSchema);
 
 const journal_EntrySchema = {
   journalId: Number,
@@ -213,10 +231,19 @@ const supplier1 = new supplier_account({
   a_name: "Arabic Name",
   contact_person: "Mark Go",
   email: "mark@acsupp.com",
+  address: "Al Mounsora Doha",
+  opening_balance: 521902,
+  beneficiary_name: "Al Nakeel",
+  beneficiary_address: "Doha City",  
+  bank_name: "QNB",
+  iban_no: "32CVE234",
+  swift_code: "CW4213DWE",
   billed: 0,
   paid: 0,
   balance_amount: 0,
+  active_status: 1,
   created_at: Date.now()
+
 });
 
 const supplier2 = new supplier_account({
@@ -224,9 +251,17 @@ const supplier2 = new supplier_account({
   a_name: "Arabic Name",
   contact_person: "Glen Go",
   email: "glen@amvps.com",
+  address: "City Center",
+  opening_balance: 7854234,
+  beneficiary_name: "Al Abdul Ghani",
+  beneficiary_address: "Doha City",  
+  bank_name: "CBQ",
+  iban_no: "FAW34323",
+  swift_code: "5HJR673",
   billed: 0,
   paid: 0,
   balance_amount: 0,
+  active_status: 0,
   created_at: Date.now()
 });
 
@@ -284,6 +319,7 @@ const defaultJournalAccount = [journal1];
 const defaultBankAccount = [account1,account2,account3];
 const defaultSupplierAccount = [supplier1,supplier2];
 
+
 app.get("/",(req,res)=>{
 
       // let dateNow = new Date();
@@ -302,17 +338,35 @@ app.get("/",(req,res)=>{
   
 
   if (req.isAuthenticated()){
-    res.render("index", {userName: req.user.name, userRole: req.user.userRole});
+    payment_voucher.find({}, function(err, foundItem){
+      if (err){
+        console.log(err);
+      }else{
+        res.render("index",{voucherItems: foundItem, userName: req.user.name, userRole: req.user.userRole, alert: alert});
+      alert=0;
+      }
+      
+    });
+    // res.render("index", {userName: req.user.name, userRole: req.user.userRole});
    }else{
     res.redirect("/sign-in");
    }
 });
 
 app.get("/sign-in",function(req,res){
-  res.render("sign-in");
+  res.render("sign-in", {alert: alert});
   });
+
+  app.get("/incorrect-sign-in",function(req,res){
+    alert = 1;
+    res.render("sign-in", {alert: alert});
+    alert = 0;
+    });
   
 app.post("/sign-in", function(req, res){
+
+
+
   const user = new User({
     username: req.body.username,
     password: req.body.password
@@ -321,16 +375,15 @@ app.post("/sign-in", function(req, res){
  req.login(user, function(err){
   if(err){
     console.log(err);
+    
   }else{
-    passport.authenticate("local")(req, res, function(){
+    passport.authenticate("local", { failureRedirect: '/incorrect-sign-in'})(req, res, function(){
       res.redirect("/");
     });
    
   }
  });
 });
-
-
 
 app.get("/sign-up",function(req,res){
   res.render("sign-up");
@@ -404,7 +457,7 @@ app.get("/bank-accounts", function(req,res){
 
 app.get("/supplier-accounts", function(req,res){
 
-  supplier_account.find({}, function(err, foundItems){
+  supplier_account.find({active_status: 1}, function(err, foundItems){
       if (foundItems.length === 0){
      
         supplier_account.insertMany(defaultSupplierAccount, function(err){
@@ -469,17 +522,82 @@ app.post("/create-supplier-bill", (req,res) =>{
       });
     }else{
       supplier_account.findOne({_id: req.body.accountID}, function(err, foundItem){
-        
-        res.render("create-supplier-bill", {chartAccounts: foundItems, 
-          accountID:foundItem._id,
-          supplierName: foundItem.supplier_name, 
-          aName: foundItem.a_name, 
-          userName: req.user.name, 
-          userRole: req.user.userRole });
-        
+        if (err){
+          console.log(err);
+        }else{
+          supplier_bill.find({supplier_id: foundItem._id}, function(err, foundBill){
+            if (err){
+              console.log(err);
+            }else{
+              res.render("create-supplier-bill", {chartAccounts: foundItems,
+                suppBills: foundBill,
+                accountID:foundItem._id,
+                supplierName: foundItem.supplier_name, 
+                aName: foundItem.a_name, 
+                userName: req.user.name, 
+                userRole: req.user.userRole });
+            }
+          });
+        }
       });
     }
   });
+});
+
+app.post("/pay-supplier-bill", (req,res) =>{
+ 
+  bank_account.find({}, function(err, foundItems){
+    if (foundItems.length === 0){
+      bank_account.insertMany(defaultBankAccount, function(err){
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Successfully saved default items to DB.");
+       
+        }
+      });
+    }else{
+      supplier_account.findOne({_id: req.body.accountID}, function(err, foundItem){
+        if (err){
+          console.log(err);
+        }else{
+          supplier_bill.find({supplier_id: foundItem._id}, function(err, foundBill){
+            if (err){
+              console.log(err);
+            }else{
+              // console.log(foundBill);
+              // console.log(req.body.accountID);
+              res.render("pay-supplier-bill", {bankAccounts: foundItems,
+                suppBills: foundBill,
+                accountID:foundItem._id,
+                supplierName: foundItem.supplier_name, 
+                aName: foundItem.a_name, 
+                userName: req.user.name, 
+                userRole: req.user.userRole });
+            }
+          });
+        }
+      });
+    }
+  });
+});
+
+app.post("/supplier-billed", (req,res) =>{
+
+  console.log(req.body.accountID)
+  res.redirect("supplier-accounts");
+ 
+  // supplier_account.findOne({_id: req.body.accountID}, function(err, foundItem){
+        
+  //   res.render("create-supplier-bill", {chartAccounts: foundItems, 
+  //     accountID:foundItem._id,
+  //     supplierName: foundItem.supplier_name, 
+  //     aName: foundItem.a_name, 
+  //     userName: req.user.name, 
+  //     userRole: req.user.userRole });
+    
+  // });
+
 });
 
 
@@ -489,9 +607,9 @@ app.get("/voucher-item", (req,res) =>{
     res.render("voucher-items",{voucherItems: foundItems, userName: req.user.name, userRole: req.user.userRole, alert: alert});
   
   });
-  });
+});
 
-  app.post("/voucher-item", (req,res) =>{
+app.post("/voucher-item", (req,res) =>{
   
     payment_voucher.findOne({_id: req.body.accountID}, function(err, foundItem){
       if (err){
@@ -501,8 +619,7 @@ app.get("/voucher-item", (req,res) =>{
       }
       
     });
-    });
-
+});
 
 
 app.post("/payment-voucher", function(req,res){
@@ -544,21 +661,31 @@ app.post("/payment-voucher", function(req,res){
 });
 
 app.post("/supplier-bill", function(req,res){
-  // let totalBalance = 0;
+  let totalBilled = 0;
 
-  // bank_account.findOne({_id: req.body.accountID,}, function(err, foundItem){ 
+    supplier_account.findOne({_id: req.body.accountID,}, function(err, foundItem){ 
+    if (err){
+      console.log(err);
+    }else{
 
-  //   totalBalance =  foundItem.balance_amount - req.body.totalPayment ;
+      for(var i = 0; i < req.body.total.length; i++ ) {
+        totalBilled += parseFloat(req.body.total[i]);
+      }
 
-  //   bank_account.findOneAndUpdate({_id: req.body.accountID},
-  //     {$set: {
-  //      withdrawal: req.body.totalPayment,
-  //      balance_amount: totalBalance }}, function(err, foundList){
-  //    });
+      totalBilled += foundItem.billed;
 
-  // });
+     console.log((totalBilled).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+    
+    supplier_account.findOneAndUpdate({_id: req.body.accountID},
+        {$set: {
+        billed: (totalBilled).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') }}, function(err){
+          if (err){
+            console.log(err);
+          }
+      });
+    }
+  });
 
-console.log(req.body);
   const bill = new supplier_bill({
     supplier_id:  req.body.accountID,
     supplier_name: req.body.supplierName,
@@ -584,7 +711,6 @@ console.log(req.body);
   res.redirect("/supplier-accounts")
 
 });
-
 
 app.post("/view-journal", function(req,res){
   if (req.isAuthenticated()){
@@ -641,15 +767,25 @@ app.post("/bank-accounts", function(req, res){
 app.post("/supplier-accounts", function(req, res){
   if (req.isAuthenticated()){
 
+console.log(typeof(req.body.status));
+console.log(req.body);
 
   const account = new supplier_account({
     supplier_name: req.body.supplierName,
     a_name: req.body.arabicName,
     contact_personal: req.body.contactPerson,
     email: req.body.supplierEmail,
+    address: req.body.address,
+    opening_balance: req.body.openingBalance,
+    beneficiary_name: req.body.bName,
+    beneficiary_address: req.body.bAddress,
+    bank_name: req.body.bBankName,
+    iban_no: req.body.ibanNo,
+    swift_code: req.body.swiftCode,
     billed: 0,
     paid: 0,
     balance_amount: 0,
+    active_status: parseInt(req.body.status),
     created_at: Date.now()
   });
   account.save();
@@ -659,7 +795,6 @@ app.post("/supplier-accounts", function(req, res){
     res.redirect("/sign-in");
   }
 });
-
 
 app.post("/deleteAccount", function(req,res){
   const accountID =  req.body.deleteAccount;
@@ -718,7 +853,6 @@ app.post("/viewSuppplier",function(req, res){
   });
 });
 
-
 app.post("/updateAccount", function(req,res){
 
   bank_account.findOneAndUpdate({_id: req.body.accountID},
@@ -753,7 +887,6 @@ app.post("/updateSupplier", function(req,res){
 
 });
 
-
 app.get("/users", function(req, res){
 
   if (req.isAuthenticated()){
@@ -768,7 +901,72 @@ app.get("/users", function(req, res){
 });
 
 
+app.get("/master", function(req, res){
+  if (req.isAuthenticated()){
+    cost_center.find({}, function(err,  costFoundItems){
+    chart_of_account.find({}, function(err, chartFoundItems){
+      res.render("account-ledger", {chartFoundItems: chartFoundItems, costFoundItems: costFoundItems, userName: req.user.name, userRole: req.user.userRole, alert: alert});
+      alert=0;
+    });
+  });
+   }else{
+    res.redirect("/sign-in");
+   }
+});
 
+app.post("/account-ledger", function(req, res){
+  if (req.isAuthenticated()){
+    const accountLedger = new chart_of_account({
+      name:  req.body.ledgerName,
+      code: req.body.ledgerCode,
+      created_at: Date.now()
+    });
+    accountLedger.save();
+    alert=1;
+    res.redirect("/master");
+   }else{
+    res.redirect("/sign-in");
+   }
+});
+
+app.post("/deleteAccLedger", function(req,res){
+  chart_of_account.findByIdAndRemove(req.body.deleteAccount, function(err){
+    if (!err) {
+      alert=2;
+      res.redirect("/master");
+    }
+  });
+});
+
+app.post("/update-account-ledger", function(req,res){
+
+  chart_of_account.findOneAndUpdate({_id: req.body.accountID},
+     {$set: {name:  req.body.ledgerName,
+      code:  req.body.ledgerCode}}, function(err, foundList){
+    if (!err){
+      alert=3;
+      res.redirect("/master");
+    }else{
+      console.log(err);
+    }
+  });
+
+});
+
+
+
+app.get("/cost-center", function(req, res){
+  if (req.isAuthenticated()){
+    chart_of_account.find({}, function(err, chartFoundItems){
+    cost_center.find({}, function(err,  costFoundItems){
+      res.render("cost-center", {costFoundItems: costFoundItems, chartFoundItems: chartFoundItems, userName: req.user.name, userRole: req.user.userRole, alert: alert});
+      alert=0;
+    });
+  });
+   }else{
+    res.redirect("/sign-in");
+   }
+});
 
 
 // Serrver setup -------------------------//
