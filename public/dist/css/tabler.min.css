@@ -21087,6 +21087,7 @@ img {
   
     max-width: 300px;
     padding: 6px;
+    background-color: #fff;
    
     background-clip: border-box;
     border-radius: 4px;
@@ -21096,7 +21097,7 @@ img {
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.2s, top 0.2s, visibility 0.2s;
-    border-left: 0.25rem solid #2e3849;
+   
 }
 
 .alert-visible {
@@ -21107,10 +21108,12 @@ img {
 }
 
 .alert-green{
-    background-color: #18ba21;
+    /* background-color: #18ba21; */
+    border-left: 0.25rem solid #18ba21;
 }
 .alert-red{
-    background-color: #d63939;
+    /* background-color: #d63939; */
+    border-left: 0.25rem solid #d63939;
 }
 
 .hd-right{

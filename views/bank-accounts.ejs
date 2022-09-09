@@ -4,23 +4,32 @@
 
   <script>
     var getAlert = "<%= alert %>";
-    if(getAlert == 1){
-    document.querySelector(".alert-notif " ).classList.add("alert-visible", "alert-green");
-    document.querySelector(".alert-notif ").innerHTML="Account is successfully added."; 
-     
-    setTimeout(function () {
-        document.querySelector(".alert-notif ").classList.remove("alert-visible", "alert-green");
-      }, 3500);
+      if(getAlert == 1){
+      $(".alert-notif" ).addClass("alert-visible alert-green");
+      $("div .alert-msg").text("Bank Account is successfully added."); 
+      
+      setTimeout(function () {
+          $(".alert-notif ").removeClass("alert-visible alert-green");
+        }, 4000);
 
-  }else if(getAlert == 2) {
+    }else if(getAlert == 2) {
 
-    document.querySelector(".alert-notif " ).classList.add("alert-visible", "alert-red");
-    document.querySelector(".alert-notif ").innerHTML="Account is successfully deleted."; 
-   
-       setTimeout(function () {
-         document.querySelector(".alert-notif ").classList.remove("alert-visible", "alert-red");
-       }, 3500);
-  }
+      $(".alert-notif " ).addClass("alert-visible alert-red");
+      $("div .alert-msg ").text("Bank Account is successfully deleted."); 
+    
+        setTimeout(function () {
+          $(".alert-notif ").removeClass("alert-visible alert-red");
+        }, 4000);
+
+    }else if(getAlert == 3) {
+
+    $(".alert-notif " ).addClass("alert-visible alert-green");
+    $("div .alert-msg ").text("Bank Account is successfully updated."); 
+
+      setTimeout(function () {
+        $(".alert-notif ").removeClass("alert-visible alert-green");
+      }, 4000);
+    }
   </script>
    
 

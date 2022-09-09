@@ -2,28 +2,29 @@
 <script>
   var getAlert = "<%= alert %>";
   if(getAlert == 1){
-  document.querySelector(".alert-notif " ).classList.add("alert-visible", "alert-green");
-  document.querySelector(".alert-notif ").innerHTML="Account is successfully added."; 
+  $(".alert-notif" ).addClass("alert-visible alert-green");
+  $("div .alert-msg").text("Cost Center is successfully added."); 
    
   setTimeout(function () {
-      document.querySelector(".alert-notif ").classList.remove("alert-visible", "alert-green");
+      $(".alert-notif ").removeClass("alert-visible alert-green");
     }, 4000);
 
 }else if(getAlert == 2) {
 
-  document.querySelector(".alert-notif " ).classList.add("alert-visible", "alert-red");
-  document.querySelector(".alert-notif ").innerHTML="Account is successfully deleted."; 
+  $(".alert-notif " ).addClass("alert-visible alert-red");
+  $("div .alert-msg ").text("Cost Center is successfully deleted."); 
  
      setTimeout(function () {
-       document.querySelector(".alert-notif ").classList.remove("alert-visible", "alert-red");
+       $(".alert-notif ").removeClass("alert-visible alert-red");
      }, 4000);
+
 }else if(getAlert == 3) {
 
-document.querySelector(".alert-notif " ).classList.add("alert-visible", "alert-green");
-document.querySelector(".alert-notif ").innerHTML="Account is successfully updated."; 
+$(".alert-notif " ).addClass("alert-visible alert-green");
+$("div .alert-msg ").text("Cost Center is successfully updated."); 
 
    setTimeout(function () {
-     document.querySelector(".alert-notif ").classList.remove("alert-visible", "alert-green");
+    $(".alert-notif ").removeClass("alert-visible alert-green");
    }, 4000);
 }
 
@@ -137,7 +138,7 @@ document.querySelector(".alert-notif ").innerHTML="Account is successfully updat
                 <!-- Page title actions -->
                 <div class="col-12 col-md-auto ms-auto d-print-none">
                   <div class="btn-list">
-                            <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-addLedger">
+                            <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-addcCenter">
                               <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                               <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                              CREATE
@@ -199,16 +200,16 @@ document.querySelector(".alert-notif ").innerHTML="Account is successfully updat
                       <table id="accLedger" class="table card-table table-vcenter text-nowrap datatable">
                         <thead>
                           <tr>
-                            <th>Name</th>
-                            <th>Code</th>
+                            <th>Cost Center</th>
+                            <th>Description</th>
                             <th class="text-end">Action</th>
                           </tr>
                         </thead>
                         <tbody>
                           <%  costFoundItems.forEach(function(account){ %>
                             <tr>
-                              <td><%= account.name %></td>
-                              <td> <%= account.code %>  </td>
+                              <td><%= account.cost_center %></td>
+                              <td> <%= account.description %>  </td>
                               
                               <td class="text-end">
 
@@ -246,7 +247,7 @@ document.querySelector(".alert-notif ").innerHTML="Account is successfully updat
                                   <div class="modal-body text-center py-4">
                                     <!-- Download SVG icon from http://tabler-icons.io/i/alert-triangle -->
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 9v2m0 4v.01" /><path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75" /></svg>
-                                    <h3>Delete <%=account.name%>?</h3>
+                                    <h3>Delete <%=account.cost_center%>?</h3>
                                     <!-- <div class="text-muted">Do you really want to delete this account?.</div> -->
                                   </div>
 
@@ -257,7 +258,7 @@ document.querySelector(".alert-notif ").innerHTML="Account is successfully updat
                                             Cancel
                                           </a></div>
                                         <div class="col">
-                                          <form action="/deleteAccLedger" method="post">
+                                          <form action="/deleteCostCenter" method="post">
                                           <button type="submit" name="deleteAccount" value="<%=account._id%>" class="btn btn-danger w-100" >Yes</button>
                                         </form>
                                         </div>
@@ -272,23 +273,24 @@ document.querySelector(".alert-notif ").innerHTML="Account is successfully updat
                             <div class="modal modal-blur fade" id="modal-addLedger<%=account._id%>" tabindex="-1" role="dialog" aria-hidden="true">
                               <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
-                                  <form action="/update-account-ledger" method="post">
+                                  <form action="/update-cost-center" method="post">
                                     <div class="modal-header">
-                                      <h5 class="modal-title">Update Account</h5>
+                                      <h5 class="modal-title">Update Cost Center</h5>
                                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                       <div class="row">
-                                        <div class="col-lg-8">
+                                        <div class="col-lg-6">
                                           <div class="mb-3">
-                                            <label class="form-label">Name</label>
-                                              <input type="text" name="ledgerName" class="form-control" value="<%= account.name %>"/>
+                                            <label class="form-label">Cost Center</label>
+                                              <input type="text" name="costCenter" class="form-control" value="<%= account.cost_center %>"/>
                                           </div>
                                         </div>
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-6">
                                           <div class="mb-3">
-                                            <label class="form-label">Code</label>
-                                            <input type="text" name="ledgerCode" class="form-control" value="<%= account.code %>"/>
+                                            <label class="form-label">Description</label>
+                                            <textarea class="form-control" name="cCenterDescription" rows="2" required><%= account.description %></textarea>
+
                                           </div>
                                         </div>
                                       </div>

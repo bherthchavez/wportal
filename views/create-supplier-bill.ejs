@@ -126,7 +126,7 @@
         </div>
       </div>
     </div>
-    <form action="/supplier-bill" method="post" id="add_form">
+    <form action="/supplier-bill" method="post">
 
     <div class="page-body">
       <div class="container-xl">
@@ -159,8 +159,8 @@
                               <thead>
                                 <tr>
                                   <!-- <th class="w-1">Action</th> -->
-                                  <th>Bill No</th>
-                                  <th>Bill Date</th>
+                                  <th>Purchase Voucher No</th>
+                                  <th>Date</th>
                                   <th>Due Date</th>
                                   <th>Supplier</th>
                                   <th>Description</th>
@@ -170,7 +170,7 @@
                                 </tr>
                               </thead>
                               <tbody>
-                         <%  suppBills.forEach(function(bill){ %>
+                                <%  suppBills.forEach(function(bill){ %>
                                 <tr>
                                  
                                   <td>
@@ -253,7 +253,7 @@
                     <p class=" text-muted"> <%= aName %> </p> 
                     
                     <div class="card-body">
-                      <div class="row mt-lg-4">
+                      <div class="row mt-lg-2">
                         <div class="col-lg-6">
                          
                           <div class="col"> 
@@ -262,43 +262,21 @@
                               <input type="text" name="accountID" value="<%= accountID %>" hidden>
                               <input type="text" name="supplierName" value="<%= supplierName %>" hidden>
                               <input type="text" id="numOfAcc" name="numOfItem" value="1" hidden>
-      
-                              <!-- <div class="form-label">Cost Center</div>
-                                <select name="costCenter" class="form-select" required>
-                                  <option value="">--</option>
-                                  <option value="Abdulghani Abdulghani N Transport  Trad Est">Abdulghani Abdulghani N Transport Trad Est</option>
-                                  <option value="Abdulghani Abdulghani Trading Company">Abdulghani Abdulghani Trading Company</option>
-                                  <option value="Abdulghani Sons Company">Abdulghani Sons Company</option>
-                                  <option value="Al Abdulghani Holding Co.">Al Abdulghani Holding Co.</option>
-                                  <option value="Al Bacarrat Trading Co.">Al Bacarrat Trading Co.</option>
-                                  <option value="Al Junoob for Transportation Projects">Al Junoob for Transportation Projects</option>
-                                  <option value="Al Nasriya">Al Nasriya</option>
-                                  <option value="El Naael Company">El Naael Company</option>
-                                  <option value="El Naael for Consultating and Administrative Services">El Naael for Consultating and Administrative Services</option>
-                                  <option value="El Naael Garage">El Naael Garage</option>
-                                  <option value="El Naael Group Holding Co">El Naael Group Holding Co</option>
-                                  <option value="El Naael Real Estate">El Naael Real Estate</option>
-                                  <option value=">El Naael Rent a Car">El Naael Rent a Car</option>
-                                  <option value="El Naael Servuce Center">El Naael Servuce Center</option>
-                                  <option value="Nasser Abulghani & Sons">Nasser Abulghani & Sons</option>
-                                  <option value="Qatar Eastern Language Center">Qatar Eastern Language Center</option>
-                                  <option value="South for Real Estate">South for Real Estate</option>
-                                </select> -->
                             </div>
                           </div>
                           
                           <div class="row">
                             <div class="col-6">
                               <div class="mb-3">
-                                  <div class="form-label">Date</div>
-                                <input type="date" name="billDate" class="form-control" required>
+                                  <div class="form-label">Purchase Voucher No.</div>
+                                 <input type="text" name="puvNo" class="form-control" value="#PUV0001" readonly>
                               
                               </div>
                             </div>
                             <div class="col-6">
                               <div class="mb-3">
-                                  <!-- <div class="form-label">Due Date</div> -->
-                                <input type="date" name="dueDate" class="form-control"  hidden>
+                                  <div class="form-label">Purchase Date</div>
+                                  <input type="date" name="date" class="form-control" required>
                               
                               </div>
                             </div>
@@ -371,33 +349,19 @@
                                             <td class="text-muted">
                                               <select name="costCenter" class="form-select" required>
                                                 <option value="">--</option>
-                                                <option value="Abdulghani Abdulghani N Transport  Trad Est">Abdulghani Abdulghani N Transport Trad Est</option>
-                                                <option value="Abdulghani Abdulghani Trading Company">Abdulghani Abdulghani Trading Company</option>
-                                                <option value="Abdulghani Sons Company">Abdulghani Sons Company</option>
-                                                <option value="Al Abdulghani Holding Co.">Al Abdulghani Holding Co.</option>
-                                                <option value="Al Bacarrat Trading Co.">Al Bacarrat Trading Co.</option>
-                                                <option value="Al Junoob for Transportation Projects">Al Junoob for Transportation Projects</option>
-                                                <option value="Al Nasriya">Al Nasriya</option>
-                                                <option value="El Naael Company">El Naael Company</option>
-                                                <option value="El Naael for Consultating and Administrative Services">El Naael for Consultating and Administrative Services</option>
-                                                <option value="El Naael Garage">El Naael Garage</option>
-                                                <option value="El Naael Group Holding Co">El Naael Group Holding Co</option>
-                                                <option value="El Naael Real Estate">El Naael Real Estate</option>
-                                                <option value=">El Naael Rent a Car">El Naael Rent a Car</option>
-                                                <option value="El Naael Servuce Center">El Naael Servuce Center</option>
-                                                <option value="Nasser Abulghani & Sons">Nasser Abulghani & Sons</option>
-                                                <option value="Qatar Eastern Language Center">Qatar Eastern Language Center</option>
-                                                <option value="South for Real Estate">South for Real Estate</option>
+                                                <%  costCenter.forEach(function(account) { %>
+                                                <option value="<%=account.cost_center%> "><%=account.cost_center%></option>
+                                                <%  }) %>
                                               </select>
                                             </td>
                                             <td class="text-muted">
-                                              <input type="text" name="itemDesc" class="form-control" required>
+                                              <input type="text" name="invNo" class="form-control" required>
                                             </td>
                                             <td class="text-muted">
-                                              <input type="date" name="dueDate" class="form-control" >
+                                              <input type="date" name="invDate" class="form-control" >
                                             </td>
                                             <td class="text-muted">
-                                              <input type="text" name="itemDesc" class="form-control" required>
+                                              <input type="text" name="lpo" class="form-control" required>
                                             </td>
                                             <td class="text-end ">
                                               <input type="text" class="auto-calc price form-control form-control-rounded text-end me-5 " name="price" placeholder="0" required>
@@ -472,15 +436,27 @@
             var cols = "";
             cols += '<tr><td><button class="btn bg-red-lt rounded-pill m-0"  id ="deleteRow"><i class="ti ti-trash"></i> </button></td>';
             cols +=  '<td><select class="form-select" name="item" required><option value="" selected>--</option>';
-              "<%  chartAccounts.forEach(function(account) { %>"
+            
+                        "<%  chartAccounts.forEach(function(account) { %>"
             cols+=   '<option value="<%=account.name%>"><%=account.name%> </option>';
-            "<%  }) %>"
+                        "<%  }) %>"
+
             cols +=  '</select> </td> <td ><input type="text" name="itemDesc" class="form-control" required /></td>';
+              
+            cols +=  '<td><select class="form-select" name="costCenter" required><option value="" selected>--</option>';
+
+                       "<%  costCenter.forEach(function(account) { %>"
+            cols+=   '<option value="<%=account.cost_center%>"><%=account.cost_center%> </option> ';
+                       "<%  }) %>"
+
+            cols +=  '</select> </td> <td ><input type="text" name="invNo" class="form-control" required /></td>';
+            cols +=  '<td ><input type="date" name="invDate" class="form-control" ></td>';
+            cols +=  '<td ><input type="text" name="lpo" class="form-control" ></td>';
             cols +=  '<td><input type="text" class="auto-calc price form-control form-control-rounded text-end me-5"  name="price" placeholder="0" required/></td>';
             cols +=  '<td><input type="text" class="auto-calc qty form-control form-control-rounded text-end me-5"  name="qty" placeholder="0" required/></td>';
             cols += ' <td class="text-end"><input type="text" class="accTotal form-control text-end me-5 " name="total" placeholder="0.00" hidden>  <div class="number-details ms-3 text-warning accTotalDiv"> 0.00 </div></td></tr>';
 
-          $('#numOfAcc').val($('#tableAddAcc tr').length - 1);
+          $('#numOfAcc').val($('#tableAddAcc tr').length);
           $('#tableAddAcc').append(cols);
               count++;
            
@@ -488,7 +464,7 @@
     
           $("#tableAddAcc").on("click", "#deleteRow", function (event) {
             $(this).closest("tr").remove();
-            $('#numOfAcc').val($('#tableAddAcc tr').length -2);
+            $('#numOfAcc').val($('#tableAddAcc tr').length -1);
              count -= 1;
             
         });

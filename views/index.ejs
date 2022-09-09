@@ -156,7 +156,7 @@
                           <tr>
                             <td>
                               <form action="/view-voucher" method="post">
-                                <button action="submit" value="<%=item._id%>" class="btn btn-outline-secondary w-70 btn--small">
+                                <button action="submit" value="<%=item._id%>" class="btn btn-outline-secondary w-70 btn-sm">
                                   <%=item.voucher_number%>
                                 </button>
                               </form>
@@ -184,8 +184,9 @@
                              
                             </td>
                             <td>
-                              
-                             <div class="text-danger"> <span class="badge bg-danger me-1"></span>  <%= (item.status)%></div>
+                             <span class="status status-red fs-5">  
+                                <%= (item.status)%>
+                            </span>
                             </td>
                         
   

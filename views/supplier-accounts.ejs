@@ -3,24 +3,33 @@
 
 
   <script>
-    var getAlert = "<%= alert %>";
-    if(getAlert == 1){
-    document.querySelector(".alert-notif " ).classList.add("alert-visible", "alert-green");
-    document.querySelector(".alert-notif ").innerHTML="Account is successfully added."; 
-     
-    setTimeout(function () {
-        document.querySelector(".alert-notif ").classList.remove("alert-visible", "alert-green");
-      }, 3500);
+     var getAlert = "<%= alert %>";
+      if(getAlert == 1){
+      $(".alert-notif" ).addClass("alert-visible alert-green");
+      $("div .alert-msg").text("Supplier Account is successfully added."); 
+      
+      setTimeout(function () {
+          $(".alert-notif ").removeClass("alert-visible alert-green");
+        }, 4000);
 
-  }else if(getAlert == 2) {
+    }else if(getAlert == 2) {
 
-    document.querySelector(".alert-notif " ).classList.add("alert-visible", "alert-red");
-    document.querySelector(".alert-notif ").innerHTML="Account is successfully deleted."; 
-   
-       setTimeout(function () {
-         document.querySelector(".alert-notif ").classList.remove("alert-visible", "alert-red");
-       }, 3500);
-  }
+      $(".alert-notif " ).addClass("alert-visible alert-red");
+      $("div .alert-msg ").text("Supplier Account is successfully deleted."); 
+    
+        setTimeout(function () {
+          $(".alert-notif ").removeClass("alert-visible alert-red");
+        }, 4000);
+
+    }else if(getAlert == 3) {
+
+    $(".alert-notif " ).addClass("alert-visible alert-green");
+    $("div .alert-msg ").text("Supplier Account is successfully updated."); 
+
+      setTimeout(function () {
+        $(".alert-notif ").removeClass("alert-visible alert-green");
+      }, 4000);
+    }
   </script>
    
 
@@ -220,16 +229,21 @@
                             <div class="currency-formated">QAR</div> <div class="number-formated-tbl"> <%= (account.paid).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')%></div>
                           </td>
                          
-                          <td class="text-end">
-                            
+                          <td >
+                            <div class="btn-list flex-nowrap float-end">
+                            <!-- <form action="/create-supplier-bill" method="post"> -->
+                              <button type="submit" name="accountID" value="<%=account._id%>" class="btn btn-outline-success btn-sm btn-pill"> Create LPO </button>
+                            <!-- </form> -->
+
                             <form action="/create-supplier-bill" method="post">
-                              <button type="submit" name="accountID" value="<%=account._id%>" class="btn btn-outline-success btn--small btn-pill"> Create Bill </button>
+                              <button type="submit" name="accountID" value="<%=account._id%>" class="btn btn-outline-success btn-sm btn-pill"> Create Bill </button>
                             </form>
-               
+                          
                     
                             <form action="/pay-supplier-bill" method="post">
-                              <button type="submit" name="accountID" value="<%=account._id%>" class="btn btn-outline-warning btn--small btn-pill my-2"> Pay Bill </button>
+                              <button type="submit" name="accountID" value="<%=account._id%>" class="btn btn-outline-warning btn-sm btn-pill ms-2"> Pay Bill </button>
                             </form>
+                          </div>
                           </td>
                         </tr>
                        

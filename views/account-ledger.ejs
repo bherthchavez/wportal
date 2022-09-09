@@ -1,29 +1,30 @@
 <%- include("partial/header") -%>
 <script>
-  var getAlert = "<%= alert %>";
+ var getAlert = "<%= alert %>";
   if(getAlert == 1){
-  document.querySelector(".alert-notif " ).classList.add("alert-visible", "alert-green");
-  document.querySelector(".alert-notif ").innerHTML="Account is successfully added."; 
+  $(".alert-notif" ).addClass("alert-visible alert-green");
+  $("div .alert-msg").text("Account Ledger is successfully added."); 
    
   setTimeout(function () {
-      document.querySelector(".alert-notif ").classList.remove("alert-visible", "alert-green");
+      $(".alert-notif ").removeClass("alert-visible alert-green");
     }, 4000);
 
 }else if(getAlert == 2) {
 
-  document.querySelector(".alert-notif " ).classList.add("alert-visible", "alert-red");
-  document.querySelector(".alert-notif ").innerHTML="Account is successfully deleted."; 
+  $(".alert-notif " ).addClass("alert-visible alert-red");
+  $("div .alert-msg ").text("Account Ledger is successfully deleted."); 
  
      setTimeout(function () {
-       document.querySelector(".alert-notif ").classList.remove("alert-visible", "alert-red");
+       $(".alert-notif ").removeClass("alert-visible alert-red");
      }, 4000);
+
 }else if(getAlert == 3) {
 
-document.querySelector(".alert-notif " ).classList.add("alert-visible", "alert-green");
-document.querySelector(".alert-notif ").innerHTML="Account is successfully updated."; 
+$(".alert-notif " ).addClass("alert-visible alert-green");
+$("div .alert-msg ").text("Account Ledger is successfully updated."); 
 
    setTimeout(function () {
-     document.querySelector(".alert-notif ").classList.remove("alert-visible", "alert-green");
+    $(".alert-notif ").removeClass("alert-visible alert-green");
    }, 4000);
 }
 

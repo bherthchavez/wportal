@@ -96,6 +96,10 @@ const supplier_billSchema = {
   status: String,
   items: Array,
   items_description: Array,
+  cost_center: Array,
+  inv_no: Array,
+  inv_date: Array,
+  lpo: Array,
   items_price:Array,
   items_qty:Array,
   sub_total:Array,
@@ -136,8 +140,8 @@ const chart_of_accountsSchema = {
 const chart_of_account = mongoose.model("chart_of_account", chart_of_accountsSchema);
 
 const cost_centerSchema = {
-  name: String,
-  code: String,
+  cost_center: String,
+  description: String,
   created_by: String,
   created_at:Date
 }
@@ -157,64 +161,76 @@ const journal_Entry = mongoose.model("journal_Entry", journal_EntrySchema);
 const chartOfAccount1 = new chart_of_account({
   name: "Office Stationery",
   code: "101",
+  created_by: "Admin",
   created_at: Date.now()
 });
 
 const chartOfAccount2 = new chart_of_account({
   name: "Petrol Expenses",
   code: "102",
+  created_by: "Admin",
   created_at: Date.now()
 });
 
 const chartOfAccount3 = new chart_of_account({
   name: "Repair and Maintenance",
   code: "103",
+  created_by: "Admin",
   created_at: Date.now()
 });
 
 const chartOfAccount4 = new chart_of_account({
   name: "Vehicle Insurance",
   code: "104",
+  created_by: "Admin",
   created_at: Date.now()
 });
 const chartOfAccount5 = new chart_of_account({
   name: "Life Insurance",
   code: "105",
+  created_by: "Admin",
   created_at: Date.now()
 });
 const chartOfAccount6 = new chart_of_account({
   name: "Ticket & Hotel Booking",
   code: "106",
+  created_by: "Admin",
   created_at: Date.now()
 });
 const chartOfAccount7 = new chart_of_account({
   name: "Travel Insurance",
   code: "107",
+  created_by: "Admin",
   created_at: Date.now()
 });
 const chartOfAccount8 = new chart_of_account({
   name: "Visa",
   code: "108",
+  created_by: "Admin",
   created_at: Date.now()
 });
 const chartOfAccount9 = new chart_of_account({
   name: "Rent for Villa",
   code: "109",
+  created_by: "Admin",
   created_at: Date.now()
 });
 const chartOfAccount10 = new chart_of_account({
   name: "Repair and Maintenance - Villa",
   code: "110",
+  created_by: "Admin",
   created_at: Date.now()
 });
 const chartOfAccount11 = new chart_of_account({
   name: "Repair and Maintenance - Vihicle",
   code: "111",
+  created_by: "Admin",
   created_at: Date.now()
 });
 const chartOfAccount12 = new chart_of_account({
   name: "Repair and Maintenance - Office",
   code: "112",
+  created_by: "Admin",
   created_at: Date.now()
 });
 
@@ -510,34 +526,35 @@ app.post("/create-voucher", (req,res) =>{
 
 app.post("/create-supplier-bill", (req,res) =>{
  
-  chart_of_account.find({}, function(err, foundItems){
-    if (foundItems.length === 0){
-      chart_of_account.insertMany(defaultChartAccount, function(err){
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("Successfully saved default items to DB.");
-       
-        }
-      });
+  chart_of_account.find({}, function(err, chartOfAccount){
+    if(err){
+      console.log(err);
     }else{
-      supplier_account.findOne({_id: req.body.accountID}, function(err, foundItem){
+    
+      cost_center.find({}, function(err, costCenter){
         if (err){
           console.log(err);
         }else{
-          supplier_bill.find({supplier_id: foundItem._id}, function(err, foundBill){
-            if (err){
-              console.log(err);
-            }else{
-              res.render("create-supplier-bill", {chartAccounts: foundItems,
-                suppBills: foundBill,
-                accountID:foundItem._id,
-                supplierName: foundItem.supplier_name, 
-                aName: foundItem.a_name, 
-                userName: req.user.name, 
-                userRole: req.user.userRole });
-            }
-          });
+        supplier_account.findOne({_id: req.body.accountID}, function(err, foundItem){
+          if (err){
+            console.log(err);
+          }else{
+            supplier_bill.find({supplier_id: foundItem._id}, function(err, foundBill){
+              if (err){
+                console.log(err);
+              }else{
+                res.render("create-supplier-bill", {chartAccounts: chartOfAccount, costCenter: costCenter,
+                  suppBills: foundBill,
+                  accountID:foundItem._id,
+                  supplierName: foundItem.supplier_name, 
+                  aName: foundItem.a_name, 
+                  userName: req.user.name, 
+                  userRole: req.user.userRole });
+              }
+            });
+          }
+        });
+
         }
       });
     }
@@ -663,6 +680,8 @@ app.post("/payment-voucher", function(req,res){
 app.post("/supplier-bill", function(req,res){
   let totalBilled = 0;
 
+  console.log(req.body);
+
     supplier_account.findOne({_id: req.body.accountID,}, function(err, foundItem){ 
     if (err){
       console.log(err);
@@ -689,7 +708,7 @@ app.post("/supplier-bill", function(req,res){
   const bill = new supplier_bill({
     supplier_id:  req.body.accountID,
     supplier_name: req.body.supplierName,
-    bill_number: "2022/0001",
+    bill_number: req.body.puvNo,
     cost_center:  req.body.costCenter,
     bill_date:  req.body.billDate,
     due_date:  req.body.dueDate,
@@ -700,6 +719,10 @@ app.post("/supplier-bill", function(req,res){
     status: "Pending",
     items: req.body.item,
     items_description:  req.body.itemDesc,
+    cost_center: req.body.costCenter,
+    inv_no: req.body.invNo,
+    inv_date: req.body.invDate,
+    lpo: req.body.lpo,
     items_price: req.body.price,
     items_qty: req.body.qty,
     sub_total: req.body.total,
@@ -901,6 +924,7 @@ app.get("/users", function(req, res){
 });
 
 
+//--------------------------------------------------------ACCOUNT LEDGER SETTINGS //
 app.get("/master", function(req, res){
   if (req.isAuthenticated()){
     cost_center.find({}, function(err,  costFoundItems){
@@ -954,7 +978,7 @@ app.post("/update-account-ledger", function(req,res){
 });
 
 
-
+//-------------------------------------------------------- COST CENTER SETTINGS //
 app.get("/cost-center", function(req, res){
   if (req.isAuthenticated()){
     chart_of_account.find({}, function(err, chartFoundItems){
@@ -968,8 +992,48 @@ app.get("/cost-center", function(req, res){
    }
 });
 
+app.post("/add-cost-center", function(req, res){
+  if (req.isAuthenticated()){
+    const constCenter = new cost_center({
+      cost_center:  req.body.costCenter,
+      description: req.body.cCenterDescription,
+      created_by: req.user.name,
+      created_at: Date.now()
+    });
+    constCenter.save();
+    alert=1;
+    res.redirect("/cost-center");
+   }else{
+    res.redirect("/sign-in");
+   }
+});
 
-// Serrver setup -------------------------//
+app.post("/deleteCostCenter", function(req,res){
+  cost_center.findByIdAndRemove(req.body.deleteAccount, function(err){
+    if (!err) {
+      alert=2;
+      res.redirect("/cost-center");
+    }
+  });
+});
+
+app.post("/update-cost-center", function(req,res){
+
+  cost_center.findOneAndUpdate({_id: req.body.accountID},
+     {$set: {cost_center:  req.body.costCenter,
+      description:  req.body.cCenterDescription}}, function(err, foundList){
+    if (!err){
+      alert=3;
+      res.redirect("/cost-center");
+    }else{
+      console.log(err);
+    }
+  });
+
+});
+
+
+//----------------------------------------------------------  Serrver setup//
 
 let port = process.env.PORT;
 if (port == null || port == "") {
