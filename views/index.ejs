@@ -69,6 +69,9 @@
                     <a class="dropdown-item" href="/master">
                       Master
                      </a>
+                     <a class="dropdown-item" href="/system-settings">
+                     System Settings
+                     </a>
                   </div>
                 </li>
                 
@@ -180,13 +183,13 @@
                             </td>
                             <td>
                               <div class="currency-formated">QAR</div> 
-                              <div class="text-info d-md-inline-flex"> <%= (item.total_payment)%></div>
+                              <div class="text-danger d-md-inline-flex"> <%= (item.total_payment)%></div>
                              
                             </td>
                             <td>
-                             <span class="status status-red fs-5">  
+                              <span class="status status-red  fs-5">
                                 <%= (item.status)%>
-                            </span>
+                              </span>
                             </td>
                         
   

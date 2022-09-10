@@ -26,6 +26,8 @@ app.use(passport.session());
 
 mongoose.connect("mongodb://localhost:27017/accountingDB", {useNewUrlParser: true});
 
+const Schema = mongoose.Schema;
+
 const userSchema = new mongoose.Schema ({
   name: String,
   userRole: String,
@@ -77,7 +79,9 @@ const supplier_accountsSchema = {
   paid: Number,
   balance_amount: Number,
   active_status: Number,
-  created_at:Date
+  created_by:String,
+  created_at:Date,
+  updated_at:Date
 }
 
 const supplier_account = mongoose.model("supplier_account", supplier_accountsSchema);
@@ -86,28 +90,37 @@ const supplier_billSchema = {
   supplier_id: String,
   supplier_name: String,
   bill_number: String,
-  cost_center: String,
   bill_date: String,
-  due_date: String,
   documents: String,
   description: String,
   total_payment: String,
   total_items: String,
   status: String,
-  items: Array,
-  items_description: Array,
-  cost_center: Array,
-  inv_no: Array,
-  inv_date: Array,
-  lpo: Array,
-  items_price:Array,
-  items_qty:Array,
-  sub_total:Array,
   created_by:String,
-  created_at:Date
+  created_at:Date,
+  updated_at:Date
 }
 
 const supplier_bill = mongoose.model("supplier_bill", supplier_billSchema);
+
+
+let bill_itemSchema = new Schema({
+  bill_number: String,
+  items: String,
+  items_description: String,
+  cost_center: String,
+  inv_no: String,
+  inv_date: String,
+  lpo: String,
+  items_price:String,
+  items_qty:String,
+  sub_total:String,
+  created_by:String,
+  created_at:Date,
+  updated_at:Date
+});
+
+let bill_item = mongoose.model("bill_item", bill_itemSchema);
 
 
 const payment_vouchersSchema = {
@@ -148,6 +161,17 @@ const cost_centerSchema = {
 
 const cost_center = mongoose.model("cost_center", cost_centerSchema);
 
+const settingsSchema = {
+  name: String,
+  prefix: String,
+  starting_no: String,
+  created_by: String,
+  created_at:Date,
+  updated_at:Date
+}
+
+const settings = mongoose.model("settings", settingsSchema);
+
 const journal_EntrySchema = {
   journalId: Number,
   date: Date,
@@ -157,6 +181,16 @@ const journal_EntrySchema = {
 };
   
 const journal_Entry = mongoose.model("journal_Entry", journal_EntrySchema);
+
+const settings1 = new settings({
+  name: "bill_settings",
+  prefix: "#PUV/2022/",
+  starting_no: "100",
+  created_by: "Admin",
+  created_at: Date.now(),
+  updated_at: Date.now()
+});
+
 
 const chartOfAccount1 = new chart_of_account({
   name: "Office Stationery",
@@ -258,7 +292,8 @@ const supplier1 = new supplier_account({
   paid: 0,
   balance_amount: 0,
   active_status: 1,
-  created_at: Date.now()
+  created_at: Date.now(),
+  updated_at: Date.now()
 
 });
 
@@ -277,8 +312,9 @@ const supplier2 = new supplier_account({
   billed: 0,
   paid: 0,
   balance_amount: 0,
-  active_status: 0,
-  created_at: Date.now()
+  active_status: 1,
+  created_at: Date.now(),
+  updated_at: Date.now()
 });
 
 
@@ -334,6 +370,7 @@ const defaultChartAccount = [chartOfAccount1,
 const defaultJournalAccount = [journal1];
 const defaultBankAccount = [account1,account2,account3];
 const defaultSupplierAccount = [supplier1,supplier2];
+const defaultSettings = [settings1];
 
 
 app.get("/",(req,res)=>{
@@ -543,13 +580,21 @@ app.post("/create-supplier-bill", (req,res) =>{
               if (err){
                 console.log(err);
               }else{
-                res.render("create-supplier-bill", {chartAccounts: chartOfAccount, costCenter: costCenter,
-                  suppBills: foundBill,
-                  accountID:foundItem._id,
-                  supplierName: foundItem.supplier_name, 
-                  aName: foundItem.a_name, 
-                  userName: req.user.name, 
-                  userRole: req.user.userRole });
+                settings.findOne({name: "bill_settings"}, function(err, billSetting){
+                  if (err) {
+                    console.log(err);
+                  }else{
+                    let puvno = billSetting.prefix + billSetting.starting_no;
+                    res.render("create-supplier-bill", {puvno: puvno, chartAccounts: chartOfAccount, costCenter: costCenter,
+                      suppBills: foundBill,
+                      accountID:foundItem._id,
+                      supplierName: foundItem.supplier_name, 
+                      aName: foundItem.a_name, 
+                      userName: req.user.name, 
+                      userRole: req.user.userRole });
+                  }
+                 
+                });
               }
             });
           }
@@ -705,32 +750,72 @@ app.post("/supplier-bill", function(req,res){
     }
   });
 
+ 
+  settings.findOne({name: "bill_settings"}, function(err, billSetting){
+   
+    let puvno = parseFloat(billSetting.starting_no) + 1;
+
+        settings.findOneAndUpdate({name: "bill_settings"},
+          {$set: {starting_no:  puvno}}, function(err, foundList){
+      
+        });
+
+    });    
+
+console.log(req.body);
+
   const bill = new supplier_bill({
     supplier_id:  req.body.accountID,
     supplier_name: req.body.supplierName,
     bill_number: req.body.puvNo,
-    cost_center:  req.body.costCenter,
-    bill_date:  req.body.billDate,
-    due_date:  req.body.dueDate,
-    documents:  req.body.document,
+    bill_date:  req.body.date,
+    documents:  req.body.documents,
     description:  req.body.description,
     total_payment: req.body.totalPayment,
     total_items: req.body.numOfItem,
     status: "Pending",
-    items: req.body.item,
-    items_description:  req.body.itemDesc,
-    cost_center: req.body.costCenter,
-    inv_no: req.body.invNo,
-    inv_date: req.body.invDate,
-    lpo: req.body.lpo,
-    items_price: req.body.price,
-    items_qty: req.body.qty,
-    sub_total: req.body.total,
     created_by: req.user.name,
-    created_at: Date.now()
-
+    created_at: Date.now(),
+    updated_at: Date.now()
   });
-  bill.save();
+  bill.save( function(err, docs){
+    if(err){
+      console.log(err);
+    }else{
+
+      let totalItem = +  req.body.numOfItem;
+      
+      for (var i = 0; i < totalItem; i++){
+
+
+        let newitem = new bill_item({
+          bill_number:  req.body.puvNo,
+          items:  req.body.item[i],
+          items_description: req.body.itemDesc[i],
+          cost_center:  req.body.costCenter[i],
+          inv_no:  req.body.invNo[i],
+          inv_date:  req.body.invDate[i],
+          lpo:  req.body.lpo[i],
+          items_price: req.body.price[i],
+          items_qty: req.body.qty[i],
+          sub_total: req.body.total[i], 
+          created_by:  req.user.name,
+          created_at: Date.now(),
+          updated_at: Date.now()
+        });
+        newitem.save();
+       }
+    
+
+    }
+  });
+
+
+
+ 
+
+
+
   res.redirect("/supplier-accounts")
 
 });
@@ -1025,6 +1110,53 @@ app.post("/update-cost-center", function(req,res){
     if (!err){
       alert=3;
       res.redirect("/cost-center");
+    }else{
+      console.log(err);
+    }
+  });
+
+});
+
+
+
+//-------------------------------------------------------- COST SYSTEM SETTINGS //
+app.get("/system-settings", function(req, res){
+  if (req.isAuthenticated()){
+
+    settings.find({}, function(err, foundItems){
+      if (foundItems.length === 0) {
+        settings.insertMany(defaultSettings, function(err){
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Successfully saved default items to DB.");
+          }
+      });
+      res.redirect("system-settings");
+     } else {
+
+      settings.findOne({name: "bill_settings"}, function(err, billSetting){
+          res.render("system-settings", {billSetting: billSetting, userName: req.user.name, userRole: req.user.userRole, alert: alert});
+          alert=0;  
+       
+      });
+     }
+    });
+
+   }else{
+    res.redirect("/sign-in");
+   }
+});
+
+
+app.post("/update-system-settings", function(req,res){
+
+  settings.findOneAndUpdate({_id: req.body.accountID},
+     {$set: {prefix:  req.body.billPrefix,
+      starting_no:  req.body.billStartingNo}}, function(err, foundList){
+    if (!err){
+      alert=3;
+      res.redirect("/system-settings");
     }else{
       console.log(err);
     }

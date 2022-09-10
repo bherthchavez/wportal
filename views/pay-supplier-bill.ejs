@@ -87,6 +87,9 @@
                 <a class="dropdown-item" href="/master">
                   Master
                  </a>
+                 <a class="dropdown-item" href="/system-settings">
+                  System Settings
+                  </a>
 
               </div>
             </li>
@@ -226,7 +229,6 @@
                                             </th>
                                             <th class="w-5">Bill No</th>
                                             <th class="w-5">Bill Date</th>
-                                            <th class="w-5">Due Date</th>
                                             <th class="w-5">Description</th>
                                             <th class="w-5">Created By</th>
                                             <th class="w-5"> Bill Amount</th>
@@ -246,9 +248,6 @@
                                               <%=bill.bill_date%>
                                             </td>
                                             <td>
-                                              <%=bill.due_date%>
-                                            </td>
-                                            <td>
                                               <%=bill.description%>
                                             </td>
                                             <td>
@@ -261,7 +260,7 @@
                                              
                                             </td>
                                             <td>
-                                              <input type="text" class="amountPay qty form-control form-control-rounded text-end me-5 " name="qty" placeholder="0" required>
+                                              <input type="text" class="amountPay qty form-control form-control-rounded text-end me-5 "placeholder="0" readonly>
 
                                             </td>
                                     

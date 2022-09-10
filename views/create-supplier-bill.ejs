@@ -87,6 +87,9 @@
                 <a class="dropdown-item" href="/master">
                   Master
                  </a>
+                 <a class="dropdown-item" href="/system-settings">
+                  System Settings
+                  </a>
 
               </div>
             </li>
@@ -159,9 +162,8 @@
                               <thead>
                                 <tr>
                                   <!-- <th class="w-1">Action</th> -->
-                                  <th>Purchase Voucher No</th>
-                                  <th>Date</th>
-                                  <th>Due Date</th>
+                                  <th>Bill No</th>
+                                  <th>Bill Date</th>
                                   <th>Supplier</th>
                                   <th>Description</th>
                                   <th>Created By</th>
@@ -180,9 +182,6 @@
                                     <%=bill.bill_date%>
                                   </td>
                                   <td>
-                                    <%=bill.due_date%>
-                                  </td>
-                                  <td>
                                     <%=bill.supplier_name%>
                                   </td>
                                   <td>
@@ -194,7 +193,7 @@
                                   <td>
                                   
                                     <div class="currency-formated">QAR</div> 
-                                    <div class="number-details text-danger"> <%= (parseFloat(bill.total_payment))%></div>
+                                    <div class="number-details text-danger"> <%= bill.total_payment%></div>
                                    
                                   </td>
                                   <td class="text-end">
@@ -218,29 +217,6 @@
                                 <%  }) %>
                               </tbody>
                             </table>
-                          </div>
-                          <div class="card-footer d-flex align-items-center">
-                            <p class="m-0 text-muted">Showing <span>1</span> to <span>8</span> of <span>16</span> entries</p>
-                            <ul class="pagination m-0 ms-auto">
-                              <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
-                                  <!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
-                                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="15 6 9 12 15 18" /></svg>
-                                  prev
-                                </a>
-                              </li>
-                              <li class="page-item"><a class="page-link" href="#">1</a></li>
-                              <li class="page-item active"><a class="page-link" href="#">2</a></li>
-                              <li class="page-item"><a class="page-link" href="#">3</a></li>
-                              <li class="page-item"><a class="page-link" href="#">4</a></li>
-                              <li class="page-item"><a class="page-link" href="#">5</a></li>
-                              <li class="page-item">
-                                <a class="page-link" href="#">
-                                  next <!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->
-                                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="9 6 15 12 9 18" /></svg>
-                                </a>
-                              </li>
-                            </ul>
                           </div>
                       </div>
                     </div>
@@ -269,7 +245,7 @@
                             <div class="col-6">
                               <div class="mb-3">
                                   <div class="form-label">Purchase Voucher No.</div>
-                                 <input type="text" name="puvNo" class="form-control" value="#PUV0001" readonly>
+                                 <input type="text" name="puvNo" class="form-control" value="<%=puvno%>" readonly>
                               
                               </div>
                             </div>
@@ -364,13 +340,13 @@
                                               <input type="text" name="lpo" class="form-control" required>
                                             </td>
                                             <td class="text-end ">
-                                              <input type="text" class="auto-calc price form-control form-control-rounded text-end me-5 " name="price" placeholder="0" required>
+                                              <input type="text" class="auto-calc price form-control form-control-rounded text-end me-5 " name="price[]" placeholder="0" required>
                                             </td>
                                             <td class="text-end">
-                                              <input type="text" class=" auto-calc qty form-control form-control-rounded text-end me-5 " name="qty" placeholder="0" required>
+                                              <input type="text" class=" auto-calc qty form-control form-control-rounded text-end me-5 " name="qty[]" placeholder="0" required>
                                             </td>
                                             <td class="text-end">
-                                              <input type="text" class="accTotal form-control text-end me-5 " name="total" placeholder="0.00" hidden>
+                                              <input type="text" class="accTotal form-control text-end me-5 " name="total[]" placeholder="0.00" hidden>
                                               <div class="number-details ms-3 text-warning accTotalDiv"> 0.00 </div>
                                             </td>
                                             </tr>
