@@ -627,15 +627,16 @@ app.post("/pay-supplier-bill", (req,res) =>{
             if (err){
               console.log(err);
             }else{
-              // console.log(foundBill);
-              // console.log(req.body.accountID);
-              res.render("pay-supplier-bill", {bankAccounts: foundItems,
-                suppBills: foundBill,
-                accountID:foundItem._id,
-                supplierName: foundItem.supplier_name, 
-                aName: foundItem.a_name, 
-                userName: req.user.name, 
-                userRole: req.user.userRole });
+           
+                  res.render("pay-supplier-bill", {bankAccounts: foundItems,
+                    suppBills: foundBill,
+                    accountID:foundItem._id,
+                    supplierName: foundItem.supplier_name, 
+                    aName: foundItem.a_name, 
+                    userName: req.user.name, 
+                    userRole: req.user.userRole });
+            
+             
             }
           });
         }
@@ -738,7 +739,7 @@ app.post("/supplier-bill", function(req,res){
 
       totalBilled += foundItem.billed;
 
-     console.log((totalBilled).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+    //  console.log((totalBilled).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
     
     supplier_account.findOneAndUpdate({_id: req.body.accountID},
         {$set: {
@@ -803,7 +804,13 @@ console.log(req.body);
           created_at: Date.now(),
           updated_at: Date.now()
         });
-        newitem.save();
+        newitem.save(function(err, saved){
+          if(err){
+            console.log(err);
+          }else{
+            console.log("Bill saved!!");
+          }
+        });
        }
     
 
@@ -814,8 +821,7 @@ console.log(req.body);
 
  
 
-
-
+  alert = 4;
   res.redirect("/supplier-accounts")
 
 });
@@ -894,7 +900,8 @@ console.log(req.body);
     paid: 0,
     balance_amount: 0,
     active_status: parseInt(req.body.status),
-    created_at: Date.now()
+    created_at: Date.now(),
+    updated_at: Date.now()
   });
   account.save();
   alert = 1;
@@ -985,8 +992,19 @@ app.post("/updateSupplier", function(req,res){
      {$set: {supplier_name:  req.body.supplierName,
       a_name:  req.body.arabicName,
       contact_person: req.body.contactPerson, 
-      email:  req.body.email}}, function(err, foundList){
+      email:  req.body.email,
+      address: req.body.address,
+      opening_balance: parseFloat(req.body.openingBalance),
+      beneficiary_name: req.body.bName,
+      beneficiary_address: req.body.bAddress,
+      bank_name: req.body.bBankName,
+      iban_no: req.body.ibanNo,
+      swift_code: req.body.swiftCode,
+      active_status: parseInt(req.body.status),
+      updated_at: Date.now()
+    }}, function(err, foundList){
     if (!err){
+      alert = 3;
       res.redirect("/supplier-accounts");
     }else{
       console.log(err);

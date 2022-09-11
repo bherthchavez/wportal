@@ -21141,3 +21141,23 @@ img {
     width: 190%;
   }
 
+  .example-content {
+    font-size: .875rem;
+    line-height: 1.4285714286;
+    color: #1e293b;
+    flex: 1;
+    max-width: 100%;
+}
+
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

@@ -53,9 +53,9 @@
                 <a class="dropdown-item active" href="/supplier-accounts">
                   Suppliers
                   </a>
-                <a class="dropdown-item" href="/journal-accounts">
+                <!-- <a class="dropdown-item" href="/journal-accounts">
                   Journal
-                </a>
+                </a> -->
               </div>
 
             </li>
@@ -177,7 +177,7 @@
                             <div class="col-6">
                               <div class="mb-3">
                                 <div class="form-label">Payment Mode</div>
-                                <select name="payment" class="form-select">
+                                <select name="payment" class="form-select"  onchange="changePayment(this)">
                                   <option value=""></option>
                                   <option value="Cash">Cash</option>
                                   <option value="Cheque">Cheque</option>
@@ -215,61 +215,107 @@
                          </div>
                       
                          <div class="row">
-                          
-                            <div class="col-12  mt-lg-4">
-                                
-                             
-                              
-                                    <div class="table-responsive">
-                                      <table class="table card-table table-vcenter text-nowrap datatable">
-                                        <thead>
-                                          <tr>
-                                            <th class="w-0">
-                                              <!-- <input id="selectAll" class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select all invoices"> -->
-                                            </th>
-                                            <th class="w-5">Bill No</th>
-                                            <th class="w-5">Bill Date</th>
-                                            <th class="w-5">Description</th>
-                                            <th class="w-5">Created By</th>
-                                            <th class="w-5"> Bill Amount</th>
-                                            <th  class="text-end w-5"> Amount to Pay</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                   <%  suppBills.forEach(function(bill){ %>
-                                          <tr>
-                                           <td>
-                                            <input class="form-check-input m-0 align-middle selectBill" type="checkbox" aria-label="Select bill" value=" <%= bill.total_payment %>">
-                                           </td>
-                                            <td>
-                                              <%=bill.bill_number%>
-                                            </td>
-                                            <td>
-                                              <%=bill.bill_date%>
-                                            </td>
-                                            <td>
-                                              <%=bill.description%>
-                                            </td>
-                                            <td>
-                                              <%=bill.created_by%>
-                                            </td>
-                                            <td>
-                                            
-                                              <div class="currency-formated">QAR</div> 
-                                              <div class="number-details text-danger bill"> <%= bill.total_payment %></div>
-                                             
-                                            </td>
-                                            <td>
-                                              <input type="text" class="amountPay qty form-control form-control-rounded text-end me-5 "placeholder="0" readonly>
 
-                                            </td>
-                                    
-                                          </tr>
-                                          <%  }) %>
-                                        </tbody>
-                                      </table>
+                          <div class="col-12  mt-lg-4">
+                                  <div class="card">
+                                    <ul class="nav nav-tabs" data-bs-toggle="tabs">
+                                     
+                                      <li id="itemTotal" class="nav-item">
+                                        <a href="#tabs-home-17" class="nav-link active" data-bs-toggle="tab">Bill</a>
+                                      </li>
+                                    </ul>
+
+                                    <div class="card-body">
+                                      <div class="tab-content">
+                                        <div class="tab-pane fade active show" id="tabs-home-17">
+
+                                          <div class="table-responsive">
+                                            <table class="table card-table table-vcenter text-nowrap datatable">
+                                              <thead>
+                                                <tr>
+                                                  <th class="w-0">
+                                                    <!-- <input id="selectAll" class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select all invoices"> -->
+                                                  </th>
+                                                  <th class="w-5">Bill No</th>
+                                                  <th class="w-5">Bill Date</th>
+                                                  <th class="w-5">Description</th>
+                                                  <th class="w-5">Created By</th>
+                                                  <th class="w-5"> Bill Amount</th>
+                                                  <th  class="text-end w-5"> Amount to Pay</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                         <%  suppBills.forEach(function(bill){ %>
+                                                <tr>
+                                                 <td>
+                                                  <input class="form-check-input m-0 align-middle selectBill" type="checkbox" aria-label="Select bill" value=" <%= bill.total_payment %>">
+                                                 </td>
+                                                  <td>
+                                                    <%=bill.bill_number%>
+                                                  </td>
+                                                  <td>
+                                                    <%=bill.bill_date%>
+                                                  </td>
+                                                  <td>
+                                                    <%=bill.description%>
+                                                  </td>
+                                                  <td>
+                                                    <%=bill.created_by%>
+                                                  </td>
+                                                  <td>
+                                                  
+                                                    <div class="currency-formated">QAR</div> 
+                                                    <div class="number-details text-danger bill"> <%= bill.total_payment %></div>
+                                                   
+                                                  </td>
+                                                  <td>
+                                                    <input type="text" class="amountPay qty form-control form-control-rounded text-end me-5 "placeholder="0" readonly>
+      
+                                                  </td>
+                                          
+                                                </tr>
+                                                <%  }) %>
+                                              </tbody>
+                                            </table>
+                                          </div>                                        
+                                        </div>
+                                      
+                                        <div class="tab-pane fade" id="tabs-profile-17">
+                                        
+                                          <div class="table-responsive">
+                                          
+                                              
+                                            <table id="tableAddAcc" class="table table-vcenter table-nowrap" >
+                                              <thead>
+                                                <tr>
+                                                 <th class="w-1"></th>
+                                                  <th class="w-10">Cheque Number</th>
+                                                  <th  class="w-17">	Bank Name</th>
+                                                  <th  class="w-10">	Cheque Date</th>
+                                                  <th  class="w-10">Cheque Status</th>
+                                                  <th  class="text-end w-10">	 Amount</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                          <div class="row align-items-center mt-3">
+                                            <div class="col-lg-6">
+                                              <button id="insertRowAcc" class="btn btn-secondary btn-pill btn-sm">Add Cheque Details</button>
+                                            </div>
+                                          </div>
+
+
+                                        </div>
+
+
+                                      </div>
                                     </div>
-                          </div>
+                                  </div>
+                                </div>
+                          
+                        
                   </div>
                 </div>
               </div>
@@ -292,6 +338,46 @@
     </div>
 
      <%- include("create/modals") -%>
+    
+     <script>
+      $(function () {
+        var count = 2;
+    
+        $("#insertRowAcc").on("click",  event => {
+    
+          event.preventDefault();
+         
+            var cols = "";
+            cols += '<tr><td><button class="btn bg-red-lt rounded-pill m-0"  id ="deleteRow"><i class="ti ti-trash"></i> </button></td>';
+            cols += '  <td><input type="text" name="chequeNo" class="form-control" placeholder="Cheque No" required></td>';
+            
+            cols +=  '<td> <select name="chequeBankAcc" class="form-select" required> <option value="" selected>--</option>';
+            
+                        "  <%  bankAccounts.forEach(function(account) { %>"
+            cols+=   '<option value="<%=account.bank_name%>"><%=account.bank_name%> </option>';
+                        "<%  }) %>"
+
+            cols +=  '</select> </td> <td> <input type="date" name="chequeData" class="form-control" required></td>';
+              
+         
+
+            cols +=  '<td><select name="costCenter" class="form-select" required><option value="PDC">PDC</option><option value="Cleared">Cleared</option></select></td>';
+            cols +=  '<td ><input type="number" name="amount" class="form-control form-control-rounded text-end pe-4" placeholder="0.0"> </td></tr>';
+
+         
+          $('#tableAddAcc').append(cols);
+              count++;
+           
+        });
+    
+          $("#tableAddAcc").on("click", "#deleteRow", function (event) {
+            $(this).closest("tr").remove();
+             count -= 1;
+            
+        });
+    
+      });
+    </script>
 
     
 
@@ -317,7 +403,7 @@
         $("input.amountPay").each(function() {
             sum += +$(this).val();
           });
-          console.log(sum);
+        
           $('#paymentAmount').val((sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 
       });
@@ -358,7 +444,24 @@
           $('#paymentAmount').val($('div .totalAmount').html()); 
         }
 
+    
+    
     });
+
+    function changePayment(selectObject) {
+        var value = selectObject.value;  
+        console.log(value);
+         console.log( $("div .totalAmount").html());
+
+        if(value == "Cheque"){
+          $("#itemTotal").after('<li id="paymentCheque" class="nav-item"><a href="#tabs-profile-17" class="nav-link" data-bs-toggle="tab">Cheque</a></li>');
+        }else{
+          $("#paymentCheque").remove();
+        }
+        }
+   
+    
+       
 
     </script>
 
