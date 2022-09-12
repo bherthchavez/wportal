@@ -408,7 +408,7 @@
                     <div class="row align-items-center">
                       <div class="col"></div>
                       <div class="col-auto">
-                        <a href="#" class="btn">
+                        <a href="/supplier-accounts" class="btn">
                           Cancel
                         </a>
                         <button type="submit" class="btn btn-primary ms-3" id="add_btn">
@@ -483,27 +483,24 @@
      $(document).ready(function(){ 
 
         $(document).on("keyup change paste", "td > input.auto-calc", function() {
-           // Determine parent row
+
           row = $(this).closest("tr");
-          // Get first and second input values
+
           price = row.find("td input.price").val();
           qty = row.find("td input.qty").val();
-          // Print input values to output cell
+
           row.find(".accTotal").val(price * qty);
           
          row.find(".accTotalDiv").html((price * qty).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 
-           // Update total invoice value
+
          
            var sum = 0;
-          // Cycle through each input with class total-cost
+
           $("input.accTotal").each(function() {
-            // Add value to sum
             sum += +$(this).val();
           });
 
-            // Assign sum to text of #total-invoice
-          // Using the id here as there is only one of these
           $("div .totalAmount").html((sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
 
           chanegPaymentAmmount();

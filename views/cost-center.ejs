@@ -206,7 +206,7 @@ $("div .alert-msg ").text("Cost Center is successfully updated.");
                         <thead>
                           <tr>
                             <th>Cost Center</th>
-                            <th>Description</th>
+                            <th>Code</th>
                             <th class="text-end">Action</th>
                           </tr>
                         </thead>
@@ -214,7 +214,7 @@ $("div .alert-msg ").text("Cost Center is successfully updated.");
                           <%  costFoundItems.forEach(function(account){ %>
                             <tr>
                               <td><%= account.cost_center %></td>
-                              <td> <%= account.description %>  </td>
+                              <td> <%= account.code %>  </td>
                               
                               <td class="text-end">
 
@@ -282,9 +282,8 @@ $("div .alert-msg ").text("Cost Center is successfully updated.");
                                         </div>
                                         <div class="col-lg-6">
                                           <div class="mb-3">
-                                            <label class="form-label">Description</label>
-                                            <textarea class="form-control" name="cCenterDescription" rows="2" required><%= account.description %></textarea>
-
+                                            <label class="form-label">Code</label>
+                                            <input type="text" name="cCcode" class="form-control" value="<%= account.code %>"/>
                                           </div>
                                         </div>
                                       </div>

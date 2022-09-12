@@ -154,7 +154,7 @@ const chart_of_account = mongoose.model("chart_of_account", chart_of_accountsSch
 
 const cost_centerSchema = {
   cost_center: String,
-  description: String,
+  code: String,
   created_by: String,
   created_at:Date
 }
@@ -191,6 +191,14 @@ const settings1 = new settings({
   updated_at: Date.now()
 });
 
+const settings2 = new settings({
+  name: "payment_voucher_settings",
+  prefix: "#PAV/2022/",
+  starting_no: "100",
+  created_by: "Admin",
+  created_at: Date.now(),
+  updated_at: Date.now()
+});
 
 const chartOfAccount1 = new chart_of_account({
   name: "Office Stationery",
@@ -370,7 +378,7 @@ const defaultChartAccount = [chartOfAccount1,
 const defaultJournalAccount = [journal1];
 const defaultBankAccount = [account1,account2,account3];
 const defaultSupplierAccount = [supplier1,supplier2];
-const defaultSettings = [settings1];
+const defaultSettings = [settings1,settings2];
 
 
 app.get("/",(req,res)=>{
@@ -562,6 +570,7 @@ app.post("/create-voucher", (req,res) =>{
 });
 
 app.post("/create-supplier-bill", (req,res) =>{
+
  
   chart_of_account.find({}, function(err, chartOfAccount){
     if(err){
@@ -627,16 +636,22 @@ app.post("/pay-supplier-bill", (req,res) =>{
             if (err){
               console.log(err);
             }else{
+              settings.findOne({name: "payment_voucher_settings"}, function(err, paySetting){
+                if (err) {
+                  console.log(err);
+                }else{
+                  let pavno = paySetting.prefix + paySetting.starting_no;
            
-                  res.render("pay-supplier-bill", {bankAccounts: foundItems,
+                  res.render("pay-supplier-bill", {pavno:pavno, bankAccounts: foundItems,
                     suppBills: foundBill,
                     accountID:foundItem._id,
-                    supplierName: foundItem.supplier_name, 
+                    supplierName: foundItem.supplier_name,
+                    beneficiaryName: foundItem.beneficiary_name,
                     aName: foundItem.a_name, 
                     userName: req.user.name, 
                     userRole: req.user.userRole });
-            
-             
+                  }
+                });
             }
           });
         }
@@ -647,19 +662,9 @@ app.post("/pay-supplier-bill", (req,res) =>{
 
 app.post("/supplier-billed", (req,res) =>{
 
-  console.log(req.body.accountID)
+  console.log(req.body)
   res.redirect("supplier-accounts");
  
-  // supplier_account.findOne({_id: req.body.accountID}, function(err, foundItem){
-        
-  //   res.render("create-supplier-bill", {chartAccounts: foundItems, 
-  //     accountID:foundItem._id,
-  //     supplierName: foundItem.supplier_name, 
-  //     aName: foundItem.a_name, 
-  //     userName: req.user.name, 
-  //     userRole: req.user.userRole });
-    
-  // });
 
 });
 
@@ -739,7 +744,7 @@ app.post("/supplier-bill", function(req,res){
 
       totalBilled += foundItem.billed;
 
-    //  console.log((totalBilled).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+
     
     supplier_account.findOneAndUpdate({_id: req.body.accountID},
         {$set: {
@@ -1099,7 +1104,7 @@ app.post("/add-cost-center", function(req, res){
   if (req.isAuthenticated()){
     const constCenter = new cost_center({
       cost_center:  req.body.costCenter,
-      description: req.body.cCenterDescription,
+      code: req.body.cCcode,
       created_by: req.user.name,
       created_at: Date.now()
     });
@@ -1124,7 +1129,7 @@ app.post("/update-cost-center", function(req,res){
 
   cost_center.findOneAndUpdate({_id: req.body.accountID},
      {$set: {cost_center:  req.body.costCenter,
-      description:  req.body.cCenterDescription}}, function(err, foundList){
+      code:  req.body.cCcode}}, function(err, foundList){
     if (!err){
       alert=3;
       res.redirect("/cost-center");
@@ -1154,9 +1159,12 @@ app.get("/system-settings", function(req, res){
      } else {
 
       settings.findOne({name: "bill_settings"}, function(err, billSetting){
-          res.render("system-settings", {billSetting: billSetting, userName: req.user.name, userRole: req.user.userRole, alert: alert});
+        settings.findOne({name: "payment_voucher_settings"}, function(err, PAVSetting){
+
+          res.render("system-settings", {billSetting: billSetting,PAVSetting:PAVSetting, userName: req.user.name, userRole: req.user.userRole, alert: alert});
           alert=0;  
-       
+           
+         });
       });
      }
     });
@@ -1169,16 +1177,29 @@ app.get("/system-settings", function(req, res){
 
 app.post("/update-system-settings", function(req,res){
 
-  settings.findOneAndUpdate({_id: req.body.accountID},
+  settings.findOneAndUpdate({_id: req.body.billID},
      {$set: {prefix:  req.body.billPrefix,
-      starting_no:  req.body.billStartingNo}}, function(err, foundList){
+      starting_no:  req.body.billStartingNo}}, function(err, billFound){
     if (!err){
-      alert=3;
-      res.redirect("/system-settings");
+
+
+      settings.findOneAndUpdate({_id: req.body.payID},
+        {$set: {prefix:  req.body.payPrefix,
+         starting_no:  req.body.payStartingNo}}, function(err2, payFound){
+          if (!err2){
+            alert=3;
+            res.redirect("/system-settings");
+          }
+        });
+     
     }else{
       console.log(err);
     }
   });
+
+ 
+
+
 
 });
 
