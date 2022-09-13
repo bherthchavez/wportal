@@ -205,8 +205,18 @@
                             <div class="col-6">
                               <div class="mb-3">
                                
-                                <div class="form-label">Payment Amount (QAR)</div>
-                                <input type="text"  id="paymentAmount" class="form-control"  name="totalPayment"  placeholder="0.00" readonly required>
+          
+                                <div class="mb-3">
+                                  <label class="form-label">Payment Amount</label>
+                                  <div class="input-group mb-2">
+                                    <span class="input-group-text fs-5">
+                                      QAR
+                                    </span>
+                                    <input type="text" id="paymentAmount" class="form-control text-danger fw-bold "  name="totalPayment"  placeholder="0.00" readonly required>
+                                  </div>
+                                 
+                                
+                                </div>
       
                               </div>
                             </div>
@@ -225,8 +235,10 @@
                       
                          <div class="row">
 
-                          <div class="col-12  mt-lg-4 chequeInfo">
-                           
+                          <div class="col-12  mt-lg-4 totalInfo">
+                            <div class="mb-3 fs-4 fw-bold">
+                              <small class="text-danger paymentAmountInfo">The bank transfer should balance with the bill.</small>
+                            </div>
                                   <div class="card">
                                     <ul class="nav nav-tabs" data-bs-toggle="tabs">
                                      
@@ -235,6 +247,13 @@
                                           <label class="ms-2 billTotal text-danger"> 0.0</label>
                                         </a>
                                       </li>
+                                      <li  class="nav-item">
+                                        <a id="tabsBankTransfer" href="#tabs-bankTransfer-17" class="nav-link" data-bs-toggle="tab">Bank Transfer 
+                                          <label class="ms-2 bankTotal text-danger"> 0.0</label>
+                                        </a>
+                                      </li>
+
+                                    
                                     </ul>
 
                                     <div class="card-body">
@@ -242,6 +261,9 @@
                                         <div class="tab-pane fade active show" id="tabs-bill-17">
 
                                           <div class="table-responsive">
+                                            <div class="mb-3">
+                                            <small> Select the Bills below against which to pay the amount. </small>
+                                          </div>
                                             <table class="table card-table table-vcenter text-nowrap datatable">
                                               <thead>
                                                 <tr>
@@ -297,39 +319,179 @@
                                         <div class="tab-pane fade" id="tabs-cheque-17">
                                         
                                           <div id="cheque-17-details" class="table-responsive">
-                                          
-                                              
                                             <table id="tableAddAcc" class="table table-vcenter table-nowrap" >
                                               <thead>
                                                 <tr>
                                                   <th class="w-1"></th>
                                                   <th class="w-10">Cheque Number</th>
-                                                  <th  class="w-17">	Beneficiary Name</th>
-                                                  <th  class="w-10">	Cheque Date</th>
+                                                  <th  class="w-17">Beneficiary Name</th>
+                                                  <th  class="w-10">Cheque Date</th>
                                                   <th  class="w-10">Cheque Status</th>
                                                   <th  class="text-end w-10">	 Amount</th>
-                                                 
                                                 </tr>
                                               </thead> 
-                                                 
                                                     <tbody>
+                                                     
 
                                                     </tbody> 
-                                                
+                                              </table> 
+                                            </div>
+                                             
+                                          <div class="row align-items-center mt-3">
+                                              <div class="col-lg-6">
+                                                <button id="insertRowAcc" class="btn btn-secondary btn-pill btn--small"><i class="ti ti-plus"></i> Add Cheques </button> 
+                                            </div> 
+                                            <div class="col-lg-6">
+                                              <div class="user-option me-3">
+                                              <div class="currency-formated-a">Total Cheque Amount (QAR)</div>
+                                              <div class="number-details ms-3 text-danger totalAmount fw-bold">0.00</div>
+                                              </div>
+                                              </div>
+                                          </div>
+
+
+                                        </div>
+
+                                        <div class="tab-pane fade" id="tabs-cash-17">
+                                        
+                                          <div id="cash-17-details" class="table-responsive">
+                                            <table id="tableAddcash" class="table table-vcenter table-nowrap" >
+                                              <thead>
+                                                <tr>
+                                                  <th class="w-1"></th>
+                                                  <th class="w-10">Cheque Number</th>
+                                                  <th  class="w-17">Beneficiary Name</th>
+                                                  <th  class="w-10">Cheque Date</th>
+                                                  <th  class="w-10">Cheque Status</th>
+                                                  <th  class="text-end w-10">	 Amount</th>
+                                                </tr>
+                                              </thead> 
+                                                    <tbody>
+                                                     
+
+                                                    </tbody> 
                                               </table> 
                                             </div>
                                              
                                           <div class="row align-items-center mt-3">
                                             <div class="col-lg-6">
-                                              <button id="insertRowAcc" class="btn btn-secondary btn-pill btn--small"><i class="ti ti-plus"></i> Add Cheques </button> 
+                                              <button id="insertRowCash" class="btn btn-secondary btn-pill btn--small"><i class="ti ti-plus"></i> Add cash </button> 
                                           </div> 
                                           <div class="col-lg-6">
                                             <div class="user-option me-3">
-                                            <div class="currency-formated-a">Total Cheque Amount (QAR)</div>
+                                            <div class="currency-formated-a">Total Cash Amount (QAR)</div>
                                             <div class="number-details ms-3 text-danger totalAmount fw-bold">0.00</div>
                                           </div>
                                           </div>
                                         </div>
+
+
+                                        </div>
+
+                                        <div class="tab-pane fade" id="tabs-bankTransfer-17">
+                                        
+                                        
+                                            <div  id="bankTransfer-17-details" >
+                                             
+                                                <div class="row">
+                                                
+                                                  
+                                                  <div class="col-2">
+                                                    <div class="card-title">Beneficiary Details</div>
+                                                 
+                                                      
+                                                      <div class="mb-2 fs-5">
+                                                        Name: <strong>Al Nakeel</strong>
+                                                      </div>
+
+                                                      <div class="mb-2 fs-5">
+                                                        Address: <strong>Doha City</strong>
+                                                      </div>
+
+                                                      <div class="mb-2 fs-5">
+                                                        Bank Name: <strong>QNB</strong>
+                                                       </div>
+                                                      <div class="mb-2 fs-5">
+                                                       Iban No: <strong>32CVE234</strong>
+                                                      </div>
+  
+                                                      <div class="mb-2 fs-5">
+                                                        Swift Code: <strong>CW4213DWE</strong>
+                                                      </div>
+                                                </div>
+                                                
+                                                  <div class="col-3">
+
+                                                    <div class="form-group mb-2 btn--smal ">
+                                                      <label class="form-label"> Transfer Charge</label>
+                                                   
+                                                        <input type="email" class="form-control" >
+
+                                                    </div>
+
+                                                    <div class="form-group mb-2 btn--smal">
+                                                      <label class="form-label"> Reason</label>
+                                                   
+                                                        <input type="text" class="form-control" >
+
+                                                    </div>
+
+
+                                                  
+                                                  
+                                                
+                                                  </div>
+                                                  <div class="col-4">
+                                                  
+                                                   
+                                                      <div class=" form-group mb-2  ">
+                                                        <label class="form-label">Select Currency</label>
+                                                        <div class="input-group mb-3">
+                                                          <span>
+                                                            <select name="payment" class="form-select" >
+                                                              <option value="QAR"> QAR</option>
+                                                              <option value="USD">USD</option>
+                                                              <option value="PHP">PHP</option>
+                                                            </select>
+                                                          </span>
+                                                          <input type="number" name="number" class="form-control convert  fw-bold text-danger" placeholder="Enter Amount"/>
+                                                          <a class="btn btn-primary btn--small" onclick="toWords($('.convert').val())">Convert to Words</a>
+                                                        </div>
+                                                      </div>
+                                                      <div class=" form-group mb-3 fs-6">
+                                                        <textarea class="form-control 2word" name="description" rows="2" readonly></textarea>
+                                                      </div>
+                                                    
+                                                    
+                                                
+                                                  </div>
+                                                  <div class="col-3">
+                                                  
+                                                   
+                                                    <div class=" form-group mb-2  ">
+                                                      <label class="form-label text-end">Bank Transfer Amount</label>
+                                                      <div class="input-group mb-2">
+                                                        
+                                                        <input type="text" id="bankAmount" class="form-control pe-3 text-danger fw-bold text-end bankAmount"  name="bankAmount"  placeholder="0.00" required>
+                                                        <span class="input-group-text fs-5">
+                                                          QAR
+                                                        </span>
+                                                      </div>
+                                                      <div class="text-end bankInfo">
+                                                      <!-- <small class="form-hint mb-3 text-danger bankInfolbl"> The bank transfer should balance with the bill.</small> -->
+                                                    </div>
+                                                    </div>
+                                                   
+                                                  
+                                                  
+                                              
+                                                </div>
+                                                  
+                                                </div>
+                                            </div>
+                                          
+                                          
+                                   
 
 
                                         </div>
@@ -351,7 +513,7 @@
                         <a href="/supplier-accounts" class="btn">
                           Cancel
                         </a>
-                        <button type="submit"  class="btn btn-primary ms-3" disabled>Save</button>
+                        <button type="submit"  class="btn btn-primary ms-3 bankSubmit" disabled> Save</button>
                         </form>
                       </div>
                     </div>
@@ -373,7 +535,7 @@
           event.preventDefault();
          
             var cols = "";
-            cols += '<tr><td><button class="btn bg-red-lt rounded-pill m-0"  id ="deleteRow"><i class="ti ti-trash"></i> </button></td>';
+            cols += '<tr class="tableChequeRow"><td><button class="btn bg-red-lt rounded-pill m-0"  id ="deleteRow"><i class="ti ti-trash"></i> </button></td>';
           
             cols += '  <td><input type="text" name="chequeNo" class="form-control" placeholder="Cheque No" required></td>';
             
@@ -385,7 +547,7 @@
          
 
             cols +=  '<td><select name="costCenter" class="form-select" required><option value="PDC">PDC</option><option value="Cleared">Cleared</option></select></td>';
-            cols +=  '<td ><input type="text" name="chequeAmount" class="chequeAmount form-control form-control-rounded text-end pe-4" placeholder="0.0"> </td></tr>';
+            cols +=  '<td ><input type="text" name="chequeAmount" class="chequeAmount form-control form-control-rounded text-end pe-4" placeholder="0.0" required> </td></tr>';
 
          
           $('#tableAddAcc').append(cols);
@@ -398,10 +560,49 @@
              count -= 1;
             
         });
+
+   
+
     
       });
     </script>
+     <script>
+      $(function () {
+        var count = 2;
+    
+        $("#insertRowCash").on("click",  event => {
+    
+          event.preventDefault();
+         
+            var cols = "";
+            cols += '<tr class="tableChequeRow"><td><button class="btn bg-red-lt rounded-pill m-0"  id ="deleteRow"><i class="ti ti-trash"></i> </button></td>';
+          
+            cols += '  <td><input type="text" name="chequeNo" class="form-control" placeholder="Cheque No" required></td>';
+            
+            cols += '  <td><input type="text" name="chequeNo" class="form-control" value="Bearer"readonly></td>';
 
+
+            cols +=  ' <td> <input type="date" name="chequeData" class="form-control" required></td>';
+              
+         
+
+            cols +=  '<td><select name="costCenter" class="form-select" required><option value="PDC">PDC</option><option value="Cleared">Cleared</option></select></td>';
+            cols +=  '<td ><input type="text" name="chequeAmount" class="chequeAmount form-control form-control-rounded text-end pe-4" placeholder="0.0" required> </td></tr>';
+
+         
+          $('#tableAddcash').append(cols);
+              count++;
+           
+        });
+    
+          $("#tableAddcash").on("click", "#deleteRow", function (event) {
+            $(this).closest("tr").remove();
+             count -= 1;
+            
+        });
+    
+      });
+    </script>
     
 
 
@@ -448,6 +649,7 @@
                 chanegPaymentAmmount();
         });
 
+
         $("#tableAddAcc").on('click','#deleteRow', function () {
           var calculated_total_sum = 0;
 
@@ -462,12 +664,60 @@
         });
 
 
+        
+      $("#tableAddcash").on('input', '.chequeAmount', function () {
+        var calculated_total_sum = 0;
+      
+        $("#tableAddcash .chequeAmount").each(function () {
+            var get_textbox_value = $(this).val();
+            if ($.isNumeric(get_textbox_value)) {
+                calculated_total_sum += parseFloat(get_textbox_value);
+                }                  
+              });
+                $("div .totalAmount").html((calculated_total_sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                chanegPaymentAmmount();
+        });
 
+        $("#tableAddcash").on('click','#deleteRow', function () {
+          var calculated_total_sum = 0;
 
+          $("#tableAddcash .chequeAmount").each(function () {
+            var get_textbox_value = $(this).val();
+            if ($.isNumeric(get_textbox_value)) {
+                calculated_total_sum += parseFloat(get_textbox_value);
+                }                  
+              });
+              $("div .totalAmount").html((calculated_total_sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+                chanegPaymentAmmount();
+        });
+
+     
+        $("#bankAmount").keyup(()=>{
+       
+          var bankAmount = parseFloat($("#bankAmount").val())
+       
+          $(".bankTotal").text((bankAmount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')); 
+          
+          var bankTotal = $('.bankTotal').text()
+          var billTotal = $('.billTotal').text()
+          if (bankTotal === billTotal){
+            $('.paymentAmountInfo').text(""); 
+            $('.bankSubmit').prop("disabled", false);
+          }else{
+            $('.paymentAmountInfo').text("The bank transfer should balance with the bill."); 
+            $('.bankSubmit').prop("disabled", true);
+          }
+        
+        })
+
+        
+
+       
 
 
         function chanegPaymentAmmount(){
           $(".chequeTotal").text($('div .totalAmount').html()); 
+          $(".cashTotal").text($('div .totalAmount').html()); 
         }
 
     
@@ -477,29 +727,144 @@
         function changePayment(selectObject) {
             var value = selectObject.value;  
            
-            if(value === "Cheque"){
-              $('.chequeInfo').prepend('<small class="form-hint mb-3 text-danger chequeInfolbl"> The cheque should balance with the total bill.</small>');
+            if(value === "Cash"){  
 
+              $('.totalInfo').prepend('<small class="form-hint mb-3 text-danger cashInfolbl"> The cash should balance with the bill.</small>');
+
+              $("#itemTotal").after('<li id="paymentCash" class="nav-item"><a href="#tabs-cash-17" class="nav-link active" data-bs-toggle="tab">Cash<label class="ms-2 cashTotal text-danger"> 0.0</label></a></li>');
+              $("#tabs-cash-17").addClass("active show");
+              $("#tabsBill").removeClass("active");
+              $("#tabs-bill-17").removeClass("active show");
+
+
+              $('.tableChequeRow').remove();
+              $("#paymentCheque").remove();
+              $('.chequeInfolbl').remove()
+              $("#tabs-cheque-17").removeClass("active show");
+          
+          
+           
+            }else if(value === "Cheque"){
+              $('.totalInfo').prepend('<small class="form-hint mb-3 text-danger chequeInfolbl"> The cheque should balance with the bill.</small>');
+
+             
               $("#itemTotal").after('<li id="paymentCheque" class="nav-item"><a href="#tabs-cheque-17" class="nav-link active" data-bs-toggle="tab">Cheques<label class="ms-2 chequeTotal text-danger"> 0.0</label></a></li>');
               $("#tabsBill").removeClass("active");
               $("#tabs-bill-17").removeClass("active show");
               $("#tabs-cheque-17").addClass("active show");
-
-              
+                    
+              $('.tableChequeRow').remove();
+              $('.cashInfolbl').remove()
+              $("#paymentCash").remove();
+              $("#tabs-cash-17").removeClass("active show");
         
             }else{
               $('.chequeInfolbl').remove()
-
               $("#paymentCheque").remove();
               $("#tabsBill").addClass("active");
               $("#tabs-bill-17").addClass("active show");
               $("#tabs-cheque-17").removeClass("active show");
+
+              $('.cashInfolbl').remove()
+              $("#paymentCash").remove();
+              $("#tabs-cash-17").removeClass("active show");
+
+              $('.tableChequeRow').remove();
             }
         }
    
     
-       
-
+        
     </script>
+
+
+<script>
+  
+
+var th = ['', 'Thousand', 'Million', 'Billion', 'Trillion'];
+
+var dg = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+var tn = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+var tw = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+function toWords(s) {
+
+    s = s.toString();
+    s = s.replace(/[\, ]/g, '');
+    if (s != parseFloat(s)) return 'not a number';
+    var x = s.indexOf('.');
+	var fulllength=s.length;
+	
+    if (x == -1) x = s.length;
+    if (x > 15) return 'too big';
+	var startpos=fulllength-(fulllength-x-1);
+    var n = s.split('');
+	
+    var str = '';
+    var str1 = ''; //i added another word called cent
+    var sk = 0;
+    for (var i = 0; i < x; i++) {
+        if ((x - i) % 3 == 2) {
+            if (n[i] == '1') {
+                str += tn[Number(n[i + 1])] + ' ';
+                i++;
+                sk = 1;
+            } else if (n[i] != 0) {
+                str += tw[n[i] - 2] + ' ';
+
+                sk = 1;
+            }
+        } else if (n[i] != 0) {
+            str += dg[n[i]] + ' ';
+            if ((x - i) % 3 == 0) str += 'Hundred ';
+            sk = 1;
+        }
+        if ((x - i) % 3 == 1) {
+            if (sk) str += th[(x - i - 1) / 3] + ' ';
+            sk = 0;
+        }
+    }
+    if (x != s.length) {
+        
+        str += 'and '; //i change the word point to and 
+        str1 += 'Cents '; //i added another word called cent
+        //for (var i = x + 1; i < y; i++) str += dg[n[i]] + ' ' ;
+		 var j=startpos;
+		
+		 for (var i = j; i < fulllength; i++) {
+		 
+        if ((fulllength - i) % 3 == 2) {
+            if (n[i] == '1') {
+                str += tn[Number(n[i + 1])] + ' ';
+                i++;
+                sk = 1;
+            } else if (n[i] != 0) {
+                str += tw[n[i] - 2] + ' ';
+				
+                sk = 1;
+            }
+        } else if (n[i] != 0) {
+		
+            str += dg[n[i]] + ' ';
+            if ((fulllength - i) % 3 == 0) str += 'Hundred ';
+            sk = 1;
+        }
+        if ((fulllength - i) % 3 == 1) {
+		
+            if (sk) str += th[(fulllength - i - 1) / 3] + ' ';
+            sk = 0;
+        }
+    }
+    }
+	var result=str.replace(/\s+/g, ' ') + str1;
+    //return str.replace(/\s+/g, ' ');
+	$('.2word').text(result + "Only");
+    return result; //i added the word cent to the last part of the return value to get desired output
+	
+}
+
+
+      
+</script>
 
       <%- include("partial/footer") -%>

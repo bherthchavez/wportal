@@ -414,17 +414,17 @@ app.get("/",(req,res)=>{
    }
 });
 
-app.get("/sign-in",function(req,res){
+app.get("/sign-in",(req,res)=>{
   res.render("sign-in", {alert: alert});
   });
 
-  app.get("/incorrect-sign-in",function(req,res){
+  app.get("/incorrect-sign-in",(req,res)=>{
     alert = 1;
     res.render("sign-in", {alert: alert});
     alert = 0;
     });
   
-app.post("/sign-in", function(req, res){
+app.post("/sign-in", (req, res)=>{
 
 
 
@@ -446,11 +446,11 @@ app.post("/sign-in", function(req, res){
  });
 });
 
-app.get("/sign-up",function(req,res){
+app.get("/sign-up",(req,res)=>{
   res.render("sign-up");
   });
 
-app.post("/sign-up", function(req, res){
+app.post("/sign-up", (req, res)=>{
   let dateNow = Date.now;
   User.register({name: req.body.name, userRole: req.body.userRole, email: req.body.userEmail, created_at: dateNow, username: req.body.username},req.body.password, function(err, user){
     if(err){
@@ -462,18 +462,18 @@ app.post("/sign-up", function(req, res){
 });
 
 
-app.get('/logout', function(req, res){
+app.get('/logout', (req, res)=>{
   req.logout(function(err) {
     if (err) { return next(err); }
     res.redirect('/');
   });
 });
 
-app.get("/view-journal",function(req,res){
+app.get("/view-journal",(req,res)=>{
   res.render("view-journal", {userName: req.user.name, userRole: req.user.userRole});
   });
 
-app.get("/journal-accounts",function(req,res){
+app.get("/journal-accounts",(req,res)=>{
   journal_Entry.find({}, function(err, foundItems){
     if (foundItems.length === 0) {
       journal_Entry.insertMany(defaultJournalAccount, function(err){
@@ -490,7 +490,7 @@ app.get("/journal-accounts",function(req,res){
   });
   });
 
-app.get("/bank-accounts", function(req,res){
+app.get("/bank-accounts", (req,res)=>{
 
   bank_account.find({}, function(err, foundItems){
       if (foundItems.length === 0){
@@ -516,7 +516,7 @@ app.get("/bank-accounts", function(req,res){
   });
 });
 
-app.get("/supplier-accounts", function(req,res){
+app.get("/supplier-accounts", (req,res)=>{
 
   supplier_account.find({active_status: 1}, function(err, foundItems){
       if (foundItems.length === 0){
@@ -619,7 +619,7 @@ app.post("/pay-supplier-bill", (req,res) =>{
  
   bank_account.find({}, function(err, foundItems){
     if (foundItems.length === 0){
-      bank_account.insertMany(defaultBankAccount, function(err){
+      bank_account.insertMany(defaultBankAccount, (err)=>{
         if (err) {
           console.log(err);
         } else {
@@ -628,15 +628,15 @@ app.post("/pay-supplier-bill", (req,res) =>{
         }
       });
     }else{
-      supplier_account.findOne({_id: req.body.accountID}, function(err, foundItem){
+      supplier_account.findOne({_id: req.body.accountID}, (err, foundItem)=>{
         if (err){
           console.log(err);
         }else{
-          supplier_bill.find({supplier_id: foundItem._id}, function(err, foundBill){
+          supplier_bill.find({supplier_id: foundItem._id}, (err, foundBill)=>{
             if (err){
               console.log(err);
             }else{
-              settings.findOne({name: "payment_voucher_settings"}, function(err, paySetting){
+              settings.findOne({name: "payment_voucher_settings"}, (err, paySetting)=>{
                 if (err) {
                   console.log(err);
                 }else{
@@ -690,7 +690,7 @@ app.post("/voucher-item", (req,res) =>{
 });
 
 
-app.post("/payment-voucher", function(req,res){
+app.post("/payment-voucher", (req,res)=>{
   let totalBalance = 0;
 
   bank_account.findOne({_id: req.body.accountID,}, function(err, foundItem){ 
@@ -728,7 +728,7 @@ app.post("/payment-voucher", function(req,res){
 
 });
 
-app.post("/supplier-bill", function(req,res){
+app.post("/supplier-bill", (req,res)=>{
   let totalBilled = 0;
 
   console.log(req.body);
@@ -831,7 +831,7 @@ console.log(req.body);
 
 });
 
-app.post("/view-journal", function(req,res){
+app.post("/view-journal", (req,res)=>{
   if (req.isAuthenticated()){
     res.redirect("/view-journal");
   }else{
@@ -840,11 +840,11 @@ app.post("/view-journal", function(req,res){
 
 });
 
-app.get("/view-voucher",function(req,res){
+app.get("/view-voucher",(req,res)=>{
   res.render("view-voucher", {userName: req.user.name, userRole: req.user.userRole});
   });
 
-app.post("/view-voucher", function(req,res){
+app.post("/view-voucher", (req,res)=>{
   if (req.isAuthenticated()){
     res.redirect("/view-voucher");
   }else{
@@ -854,7 +854,7 @@ app.post("/view-voucher", function(req,res){
 });
 
 
-app.post("/bank-accounts", function(req, res){
+app.post("/bank-accounts", (req, res)=>{
   if (req.isAuthenticated()){
   const bankName = req.body.bankName;
   const ownerName =  req.body.ownerName;
@@ -883,7 +883,7 @@ app.post("/bank-accounts", function(req, res){
   }
 });
 
-app.post("/supplier-accounts", function(req, res){
+app.post("/supplier-accounts", (req, res)=>{
   if (req.isAuthenticated()){
 
 console.log(typeof(req.body.status));
@@ -916,7 +916,7 @@ console.log(req.body);
   }
 });
 
-app.post("/deleteAccount", function(req,res){
+app.post("/deleteAccount", (req,res)=>{
   const accountID =  req.body.deleteAccount;
 
   bank_account.findByIdAndRemove(accountID, function(err){
@@ -927,7 +927,7 @@ app.post("/deleteAccount", function(req,res){
   });
 });
 
-app.post("/deleteSupplier", function(req,res){
+app.post("/deleteSupplier", (req,res)=>{
   const accountID =  req.body.deleteAccount;
 
   supplier_account.findByIdAndRemove(accountID, function(err){
@@ -938,7 +938,7 @@ app.post("/deleteSupplier", function(req,res){
   });
 });
 
-app.post("/viewAccount",function(req, res){
+app.post("/viewAccount",(req, res)=>{
   const accountID = req.body.viewAccount;
   bank_account.findOne({_id: accountID}, function(err, foundList){
     
@@ -956,7 +956,7 @@ app.post("/viewAccount",function(req, res){
   });
 });
 
-app.post("/viewSuppplier",function(req, res){
+app.post("/viewSuppplier",(req, res)=>{
   const accountID = req.body.viewAccount;
   supplier_account.findOne({_id: accountID}, function(err, foundList){
     
@@ -973,7 +973,7 @@ app.post("/viewSuppplier",function(req, res){
   });
 });
 
-app.post("/updateAccount", function(req,res){
+app.post("/updateAccount", (req,res)=>{
 
   bank_account.findOneAndUpdate({_id: req.body.accountID},
      {$set: {bank_name:  req.body.bankName,
@@ -991,7 +991,7 @@ app.post("/updateAccount", function(req,res){
 
 });
 
-app.post("/updateSupplier", function(req,res){
+app.post("/updateSupplier", (req,res)=>{
 
   supplier_account.findOneAndUpdate({_id: req.body.accountID},
      {$set: {supplier_name:  req.body.supplierName,
@@ -1018,7 +1018,7 @@ app.post("/updateSupplier", function(req,res){
 
 });
 
-app.get("/users", function(req, res){
+app.get("/users", (req, res)=>{
 
   if (req.isAuthenticated()){
 
@@ -1033,7 +1033,7 @@ app.get("/users", function(req, res){
 
 
 //--------------------------------------------------------ACCOUNT LEDGER SETTINGS //
-app.get("/master", function(req, res){
+app.get("/master", (req, res)=>{
   if (req.isAuthenticated()){
     cost_center.find({}, function(err,  costFoundItems){
     chart_of_account.find({}, function(err, chartFoundItems){
@@ -1046,7 +1046,7 @@ app.get("/master", function(req, res){
    }
 });
 
-app.post("/account-ledger", function(req, res){
+app.post("/account-ledger", (req, res) => {
   if (req.isAuthenticated()){
     const accountLedger = new chart_of_account({
       name:  req.body.ledgerName,
@@ -1061,7 +1061,7 @@ app.post("/account-ledger", function(req, res){
    }
 });
 
-app.post("/deleteAccLedger", function(req,res){
+app.post("/deleteAccLedger", (req,res) =>{
   chart_of_account.findByIdAndRemove(req.body.deleteAccount, function(err){
     if (!err) {
       alert=2;
@@ -1070,7 +1070,7 @@ app.post("/deleteAccLedger", function(req,res){
   });
 });
 
-app.post("/update-account-ledger", function(req,res){
+app.post("/update-account-ledger", (req,res) => {
 
   chart_of_account.findOneAndUpdate({_id: req.body.accountID},
      {$set: {name:  req.body.ledgerName,
@@ -1087,7 +1087,7 @@ app.post("/update-account-ledger", function(req,res){
 
 
 //-------------------------------------------------------- COST CENTER SETTINGS //
-app.get("/cost-center", function(req, res){
+app.get("/cost-center", (req, res) => {
   if (req.isAuthenticated()){
     chart_of_account.find({}, function(err, chartFoundItems){
     cost_center.find({}, function(err,  costFoundItems){
@@ -1116,7 +1116,7 @@ app.post("/add-cost-center", function(req, res){
    }
 });
 
-app.post("/deleteCostCenter", function(req,res){
+app.post("/deleteCostCenter", (req,res)=>{
   cost_center.findByIdAndRemove(req.body.deleteAccount, function(err){
     if (!err) {
       alert=2;
@@ -1125,7 +1125,7 @@ app.post("/deleteCostCenter", function(req,res){
   });
 });
 
-app.post("/update-cost-center", function(req,res){
+app.post("/update-cost-center", (req,res)=>{
 
   cost_center.findOneAndUpdate({_id: req.body.accountID},
      {$set: {cost_center:  req.body.costCenter,
@@ -1143,12 +1143,12 @@ app.post("/update-cost-center", function(req,res){
 
 
 //-------------------------------------------------------- COST SYSTEM SETTINGS //
-app.get("/system-settings", function(req, res){
+app.get("/system-settings", (req, res)=>{
   if (req.isAuthenticated()){
 
-    settings.find({}, function(err, foundItems){
+    settings.find({}, (err, foundItems)=>{
       if (foundItems.length === 0) {
-        settings.insertMany(defaultSettings, function(err){
+        settings.insertMany(defaultSettings, err =>{
           if (err) {
             console.log(err);
           } else {
@@ -1158,7 +1158,7 @@ app.get("/system-settings", function(req, res){
       res.redirect("system-settings");
      } else {
 
-      settings.findOne({name: "bill_settings"}, function(err, billSetting){
+      settings.findOne({name: "bill_settings"}, (err, billSetting)=>{
         settings.findOne({name: "payment_voucher_settings"}, function(err, PAVSetting){
 
           res.render("system-settings", {billSetting: billSetting,PAVSetting:PAVSetting, userName: req.user.name, userRole: req.user.userRole, alert: alert});
@@ -1175,17 +1175,17 @@ app.get("/system-settings", function(req, res){
 });
 
 
-app.post("/update-system-settings", function(req,res){
+app.post("/update-system-settings", (req,res)=>{
 
   settings.findOneAndUpdate({_id: req.body.billID},
      {$set: {prefix:  req.body.billPrefix,
-      starting_no:  req.body.billStartingNo}}, function(err, billFound){
+      starting_no:  req.body.billStartingNo}}, (err, billFound)=>{
     if (!err){
 
 
       settings.findOneAndUpdate({_id: req.body.payID},
         {$set: {prefix:  req.body.payPrefix,
-         starting_no:  req.body.payStartingNo}}, function(err2, payFound){
+         starting_no:  req.body.payStartingNo}}, (err2, payFound) =>{
           if (!err2){
             alert=3;
             res.redirect("/system-settings");
@@ -1211,6 +1211,6 @@ if (port == null || port == "") {
   port = 3000;
 }
 
-app.listen(port, function(){
+app.listen(port, ()=>{
 console.log("Server started successfully.");
 });
