@@ -150,9 +150,9 @@
                           <div class="row">
                           <div class="col-6"> 
                             <div class="mb-3">
-                              <input type="text" name="accountID" value="<%= accountID %>" hidden>
-                              <input type="text" name="supplierName" value="<%= supplierName %>" hidden>
-                              <input type="text" id="numOfAcc" name="numOfItem" value="1" hidden>
+                              <input type="text" name="supplierID" value="<%= accountID %>" hidden>
+                              <input type="text" name="supplierName" value="<%=supplierName%>" hidden>
+                              <input type="text" id="numOfAcc" name="numOfItem" hidden>
       
                               <div class="form-label">Payment Number</div>
                                  <input type="text" name="pavNo" class="form-control" value="<%=pavno%>" readonly>
@@ -165,7 +165,7 @@
                                 <select name="paymentFrom" class="form-select" required>
                                   <option value=""></option>
                                   <%  bankAccounts.forEach(function(account) { %>
-                                  <option value="<%=account.bank_name%> "><%=account.bank_name%> </option>
+                                  <option value="<%=account._id%>"><%=account.bank_name%></option>
                                   <%  }) %>
 
                                 </select>
@@ -184,7 +184,7 @@
                             <div class="col-6">
                               <div class="mb-3">
                                 <div class="form-label">Payment Mode</div>
-                                <select name="payment" class="form-select"  onchange="changePayment(this)">
+                                <select name="paymentMode" class="form-select paymentMode"  onchange="changePayment(this)">
                                   <option value=""></option>
                                   <option value="Cash">Cash</option>
                                   <option value="Cheque">Cheque</option>
@@ -237,21 +237,17 @@
 
                           <div class="col-12  mt-lg-4 totalInfo">
                             <div class="mb-3 fs-4 fw-bold">
-                              <small class="text-danger paymentAmountInfo">The bank transfer should balance with the bill.</small>
+                              <small class="text-danger paymentAmountInfo"></small>
                             </div>
                                   <div class="card">
                                     <ul class="nav nav-tabs" data-bs-toggle="tabs">
                                      
                                       <li id="itemTotal" class="nav-item">
                                         <a id="tabsBill" href="#tabs-bill-17" class="nav-link active" data-bs-toggle="tab">Bill 
-                                          <label class="ms-2 billTotal text-danger"> 0.0</label>
+                                          <label class="ms-2 billTotal text-danger">0.0</label>
                                         </a>
                                       </li>
-                                      <li  class="nav-item">
-                                        <a id="tabsBankTransfer" href="#tabs-bankTransfer-17" class="nav-link" data-bs-toggle="tab">Bank Transfer 
-                                          <label class="ms-2 bankTotal text-danger"> 0.0</label>
-                                        </a>
-                                      </li>
+                                     
 
                                     
                                     </ul>
@@ -268,7 +264,6 @@
                                               <thead>
                                                 <tr>
                                                   <th class="w-0">
-                                                    <!-- <input id="selectAll" class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select all invoices"> -->
                                                   </th>
                                                   <th class="w-5">Bill No</th>
                                                   <th class="w-5">Bill Date</th>
@@ -424,15 +419,23 @@
 
                                                     <div class="form-group mb-2 btn--smal ">
                                                       <label class="form-label"> Transfer Charge</label>
-                                                   
-                                                        <input type="email" class="form-control" >
+                                                      <select name="transferCharge" class="form-select" >
+                                                        <option value="Debit to my Account">Debit to my Account</option>
+                                                        <option value="Debit to beneficiary Account">Debit to beneficiary Account</option>
+                                                      </select>
 
                                                     </div>
 
                                                     <div class="form-group mb-2 btn--smal">
-                                                      <label class="form-label"> Reason</label>
+                                                      <label class="form-label"> Transfer Purpose</label>
                                                    
-                                                        <input type="text" class="form-control" >
+                                                      <select name="transferPurpose" class="form-select" >
+                                                        
+                                                        <%  purposeItems.forEach(function(item) { %>
+                                                        <option value="<%=item.purpose%> "><%=item.purpose%> </option>
+                                                        <%  }) %>
+                      
+                                                      </select>
 
                                                     </div>
 
@@ -448,18 +451,18 @@
                                                         <label class="form-label">Select Currency</label>
                                                         <div class="input-group mb-3">
                                                           <span>
-                                                            <select name="payment" class="form-select" >
-                                                              <option value="QAR"> QAR</option>
+                                                            <select name="curreny" class="form-select" >
+                                                              <option value="QAR">QAR</option>
                                                               <option value="USD">USD</option>
-                                                              <option value="PHP">PHP</option>
+                                                              <option value="PHP">EUR</option>
                                                             </select>
                                                           </span>
-                                                          <input type="number" name="number" class="form-control convert  fw-bold text-danger" placeholder="Enter Amount"/>
+                                                          <input type="number" name="bankAmount" class="form-control convert  fw-bold text-danger" placeholder="Enter Amount"/>
                                                           <a class="btn btn-primary btn--small" onclick="toWords($('.convert').val())">Convert to Words</a>
                                                         </div>
                                                       </div>
                                                       <div class=" form-group mb-3 fs-6">
-                                                        <textarea class="form-control 2word" name="description" rows="2" readonly></textarea>
+                                                        <textarea class="form-control 2word" name="amountInWords" rows="2" readonly></textarea>
                                                       </div>
                                                     
                                                     
@@ -472,13 +475,13 @@
                                                       <label class="form-label text-end">Bank Transfer Amount</label>
                                                       <div class="input-group mb-2">
                                                         
-                                                        <input type="text" id="bankAmount" class="form-control pe-3 text-danger fw-bold text-end bankAmount"  name="bankAmount"  placeholder="0.00" required>
+                                                        <input type="text" id="bankAmount" class="form-control pe-3 text-danger fw-bold text-end bankAmount"  name="bankTransferAmount"  placeholder="0.00">
                                                         <span class="input-group-text fs-5">
                                                           QAR
                                                         </span>
                                                       </div>
                                                       <div class="text-end bankInfo">
-                                                      <!-- <small class="form-hint mb-3 text-danger bankInfolbl"> The bank transfer should balance with the bill.</small> -->
+                                                     
                                                     </div>
                                                     </div>
                                                    
@@ -528,7 +531,7 @@
     
      <script>
       $(function () {
-        var count = 2;
+        var count = 0;
     
         $("#insertRowAcc").on("click",  event => {
     
@@ -539,25 +542,27 @@
           
             cols += '  <td><input type="text" name="chequeNo" class="form-control" placeholder="Cheque No" required></td>';
             
-            cols += '  <td><input type="text" name="chequeNo" class="form-control" value="<%=beneficiaryName%>"readonly></td>';
+            cols += '  <td><input type="text" name="beneficiaryName" class="form-control" value="<%=beneficiaryName%>"readonly></td>';
 
 
-            cols +=  ' <td> <input type="date" name="chequeData" class="form-control" required></td>';
+            cols +=  ' <td> <input type="date" name="chequeDate" class="form-control" required></td>';
               
          
 
-            cols +=  '<td><select name="costCenter" class="form-select" required><option value="PDC">PDC</option><option value="Cleared">Cleared</option></select></td>';
+            cols +=  '<td><select name="chequeStatus" class="form-select" required><option value="PDC">PDC</option><option value="Cleared">Cleared</option></select></td>';
             cols +=  '<td ><input type="text" name="chequeAmount" class="chequeAmount form-control form-control-rounded text-end pe-4" placeholder="0.0" required> </td></tr>';
 
          
           $('#tableAddAcc').append(cols);
               count++;
+              $("#numOfAcc").val(count)
            
         });
     
           $("#tableAddAcc").on("click", "#deleteRow", function (event) {
             $(this).closest("tr").remove();
-             count -= 1;
+             count --;
+             $("#numOfAcc").val(count)
             
         });
 
@@ -568,7 +573,7 @@
     </script>
      <script>
       $(function () {
-        var count = 2;
+        var count = 0;
     
         $("#insertRowCash").on("click",  event => {
     
@@ -579,26 +584,26 @@
           
             cols += '  <td><input type="text" name="chequeNo" class="form-control" placeholder="Cheque No" required></td>';
             
-            cols += '  <td><input type="text" name="chequeNo" class="form-control" value="Bearer"readonly></td>';
+            cols += '  <td><input type="text" name="beneficiaryName" class="form-control" value="Bearer"readonly></td>';
 
 
-            cols +=  ' <td> <input type="date" name="chequeData" class="form-control" required></td>';
+            cols +=  ' <td> <input type="date" name="chequeDate" class="form-control" required></td>';
               
          
 
-            cols +=  '<td><select name="costCenter" class="form-select" required><option value="PDC">PDC</option><option value="Cleared">Cleared</option></select></td>';
+            cols +=  '<td><select name="chequeStatus" class="form-select" required><option value="PDC">PDC</option><option value="Cleared">Cleared</option></select></td>';
             cols +=  '<td ><input type="text" name="chequeAmount" class="chequeAmount form-control form-control-rounded text-end pe-4" placeholder="0.0" required> </td></tr>';
 
          
           $('#tableAddcash').append(cols);
               count++;
-           
+              $("#numOfAcc").val(count)
         });
     
           $("#tableAddcash").on("click", "#deleteRow", function (event) {
             $(this).closest("tr").remove();
-             count -= 1;
-            
+             count --;
+             $("#numOfAcc").val(count)
         });
     
       });
@@ -632,6 +637,10 @@
           $('#paymentAmount').val((sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
           $(".billTotal").text((sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'))
 
+         
+          checkPaymentMode();
+        
+
       });
 
 
@@ -647,6 +656,7 @@
               });
                 $("div .totalAmount").html((calculated_total_sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
                 chanegPaymentAmmount();
+                checkPaymentMode();
         });
 
 
@@ -661,6 +671,7 @@
               });
               $("div .totalAmount").html((calculated_total_sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
                 chanegPaymentAmmount();
+                checkPaymentMode();
         });
 
 
@@ -676,6 +687,7 @@
               });
                 $("div .totalAmount").html((calculated_total_sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
                 chanegPaymentAmmount();
+                checkPaymentMode();
         });
 
         $("#tableAddcash").on('click','#deleteRow', function () {
@@ -689,6 +701,7 @@
               });
               $("div .totalAmount").html((calculated_total_sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
                 chanegPaymentAmmount();
+                checkPaymentMode();
         });
 
      
@@ -711,13 +724,60 @@
         })
 
         
+        function checkPaymentMode(){
+          if($('.paymentMode').val() === "Cash"){
 
+              var cashTotal = $('.cashTotal').text()
+              var billTotal = $('.billTotal').text()
+
+                if (cashTotal === billTotal){
+                  $('.paymentAmountInfo').text(""); 
+                  $('.bankSubmit').prop("disabled", false);
+                }else{
+                  $('.paymentAmountInfo').text("The cash should balance with the bill."); 
+                  $('.bankSubmit').prop("disabled", true);
+                }
+                
+              }else if($('.paymentMode').val() === "Cheque"){
+
+              var chequeTotal = $('.chequeTotal').text()
+              var billTotal = $('.billTotal').text()
+
+                if (chequeTotal === billTotal){
+                  $('.paymentAmountInfo').text(""); 
+                  $('.bankSubmit').prop("disabled", false);
+                }else{
+                  $('.paymentAmountInfo').text("The cheque should balance with the bill."); 
+                  $('.bankSubmit').prop("disabled", true);
+                }
+
+              }else if($('.paymentMode').val() === "Bank Transfer"){
+
+              var bankTotal = $('.bankTotal').text()
+              var billTotal = $('.billTotal').text()
+
+                if (bankTotal === billTotal){
+                  $('.paymentAmountInfo').text(""); 
+                  $('.bankSubmit').prop("disabled", false);
+                }else{
+                  $('.paymentAmountInfo').text("The bank transfer should balance with the bill."); 
+                  $('.bankSubmit').prop("disabled", true);
+                }
+
+              }else{
+              $('.paymentAmountInfo').text("Please Select Payment Mode."); 
+                  $('.bankSubmit').prop("disabled", true);
+              }
+
+        }
        
 
 
         function chanegPaymentAmmount(){
           $(".chequeTotal").text($('div .totalAmount').html()); 
           $(".cashTotal").text($('div .totalAmount').html()); 
+
+          
         }
 
     
@@ -725,11 +785,13 @@
     });
 
         function changePayment(selectObject) {
+          $("#bankAmount").val("");
+          $("#numOfAcc").val("")
             var value = selectObject.value;  
            
             if(value === "Cash"){  
 
-              $('.totalInfo').prepend('<small class="form-hint mb-3 text-danger cashInfolbl"> The cash should balance with the bill.</small>');
+              $('.paymentAmountInfo').text("The cash should balance with the bill."); 
 
               $("#itemTotal").after('<li id="paymentCash" class="nav-item"><a href="#tabs-cash-17" class="nav-link active" data-bs-toggle="tab">Cash<label class="ms-2 cashTotal text-danger"> 0.0</label></a></li>');
               $("#tabs-cash-17").addClass("active show");
@@ -739,14 +801,16 @@
 
               $('.tableChequeRow').remove();
               $("#paymentCheque").remove();
-              $('.chequeInfolbl').remove()
+              $('.chequeInfolbl').remove();
               $("#tabs-cheque-17").removeClass("active show");
+
+              $("#tabs-bankTransfer-17").removeClass("active show");
+              $("#tabsBankTransfer").remove();
           
           
            
             }else if(value === "Cheque"){
-              $('.totalInfo').prepend('<small class="form-hint mb-3 text-danger chequeInfolbl"> The cheque should balance with the bill.</small>');
-
+              $('.paymentAmountInfo').text("The cheque should balance with the bill."); 
              
               $("#itemTotal").after('<li id="paymentCheque" class="nav-item"><a href="#tabs-cheque-17" class="nav-link active" data-bs-toggle="tab">Cheques<label class="ms-2 chequeTotal text-danger"> 0.0</label></a></li>');
               $("#tabsBill").removeClass("active");
@@ -754,23 +818,114 @@
               $("#tabs-cheque-17").addClass("active show");
                     
               $('.tableChequeRow').remove();
-              $('.cashInfolbl').remove()
+              $('.cashInfolbl').remove();
               $("#paymentCash").remove();
               $("#tabs-cash-17").removeClass("active show");
-        
+
+              $("#tabs-bankTransfer-17").removeClass("active show");
+              $("#tabsBankTransfer").remove();
+
+
+            }else if(value === "Bank Transfer"){
+              $('.paymentAmountInfo').text("The bank transfer should balance with the bill."); 
+              
+              $("#itemTotal").after('<li id="tabsBankTransfer" class="nav-item"><a href="#tabs-bankTransfer-17" class="nav-link active" data-bs-toggle="tab">Bank Transfer <label class="ms-2 bankTotal text-danger"> 0.0</label></a></li>');
+              $("#tabs-bankTransfer-17").addClass("active show");
+              $("#tabsBill").removeClass("active");
+              $("#tabs-bill-17").removeClass("active show");
+
+              $('.tableChequeRow').remove();
+              $('.cashInfolbl').remove();
+              $("#paymentCash").remove();
+              $("#tabs-cash-17").removeClass("active show");
+
+              $('.tableChequeRow').remove();
+              $("#paymentCheque").remove();
+              $('.chequeInfolbl').remove();
+              $("#tabs-cheque-17").removeClass("active show");
+
             }else{
-              $('.chequeInfolbl').remove()
+              $('.paymentAmountInfo').text("Please Select Payment Mode."); 
+              
               $("#paymentCheque").remove();
               $("#tabsBill").addClass("active");
               $("#tabs-bill-17").addClass("active show");
               $("#tabs-cheque-17").removeClass("active show");
+              $("#tabs-bankTransfer-17").removeClass("active show");
+              $("#tabsBankTransfer").remove();
 
-              $('.cashInfolbl').remove()
+             
               $("#paymentCash").remove();
               $("#tabs-cash-17").removeClass("active show");
 
               $('.tableChequeRow').remove();
             }
+
+            
+            if($('.paymentMode').val() === "Cash"){
+
+              var cashTotal = $('.cashTotal').text()
+              var billTotal = $('.billTotal').text()
+
+                if (cashTotal === billTotal){
+                  $('.paymentAmountInfo').text(""); 
+                  $('.bankSubmit').prop("disabled", false);
+               
+                }else if(billTotal=== '0.0'){
+
+                    $('.paymentAmountInfo').text("Please Select Payment Mode."); 
+                    $('.bankSubmit').prop("disabled", true);
+
+                }else{
+                  $('.paymentAmountInfo').text("The cash should balance with the bill."); 
+                  $('.bankSubmit').prop("disabled", true);
+                }
+                
+              }else if($('.paymentMode').val() === "Cheque"){
+
+              var chequeTotal = $('.chequeTotal').text()
+              var billTotal = $('.billTotal').text()
+
+                if (chequeTotal === billTotal){
+                  $('.paymentAmountInfo').text(""); 
+                  $('.bankSubmit').prop("disabled", false);
+
+                }else if(billTotal=== '0.0'){
+
+                    $('.paymentAmountInfo').text("Please Select Payment Mode."); 
+                    $('.bankSubmit').prop("disabled", true);
+                    
+                }else{
+                  $('.paymentAmountInfo').text("The cheque should balance with the bill."); 
+                  $('.bankSubmit').prop("disabled", true);
+                }
+
+              }else if($('.paymentMode').val() === "Bank Transfer"){
+
+                var bankTotal = $('.bankTotal').text()
+                var billTotal = $('.billTotal').text()
+
+                if (bankTotal === billTotal){
+                  $('.paymentAmountInfo').text(""); 
+                  $('.bankSubmit').prop("disabled", false);
+                
+                }else if(billTotal=== '0.0'){
+
+                    $('.paymentAmountInfo').text("Please Select Payment Mode."); 
+                    $('.bankSubmit').prop("disabled", true);
+                    
+                }else{
+                  $('.paymentAmountInfo').text("The bank transfer should balance with the bill."); 
+                  $('.bankSubmit').prop("disabled", true);
+                }
+                
+                
+              }else{
+                  $('.paymentAmountInfo').text("Please Select Payment Mode."); 
+                  $('.bankSubmit').prop("disabled", true);
+              }
+
+            
         }
    
     

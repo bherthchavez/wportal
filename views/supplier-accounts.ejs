@@ -37,6 +37,14 @@
       setTimeout(function () {
         $(".alert-notif ").removeClass("alert-visible alert-green");
       }, 4000);
+    }else if(getAlert == 5) {
+
+    $(".alert-notif " ).addClass("alert-visible alert-green");
+    $("div .alert-msg ").text("Payment Voucher is successfully created."); 
+
+      setTimeout(function () {
+        $(".alert-notif ").removeClass("alert-visible alert-green");
+      }, 4000);
     }
   </script>
    
@@ -233,11 +241,11 @@
                       
                           <td>
               
-                            <div class="currency-formated">QAR</div> <div class="number-formated-tbl"> <%= (account.billed).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')%></div>
+                            <div class="currency-formated">QAR</div> <div class="number-formated-tbl"><%= (account.billed).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')%></div>
 
                           </td>
                           <td>
-                            <div class="currency-formated">QAR</div> <div class="number-formated-tbl"> <%= (account.paid).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')%></div>
+                            <div class="currency-formated">QAR</div> <div class="number-formated-tbl"><%= (account.paid).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')%></div>
                           </td>
                          
                           <td >
@@ -303,26 +311,26 @@
                                       <div class="mb-3">
                                         <label class="form-label">Supplier Name</label>
                                         <div class="input-group input-group-flat">
-                                          <input type="text" name="supplierName" class="form-control" value="<%=account.supplier_name%> " required  />
+                                          <input type="text" name="supplierName" class="form-control" value="<%=account.supplier_name%>" required  />
                                         </div>
                                       </div>
                                     </div>
                                     <div class="col-lg-6">
                                       <div class="mb-3">
                                         <label class="form-label">Arabic Supplier Name</label>
-                                        <input type="text" name="arabicName" class="form-control text-end" value="<%=account.a_name%> " required/>
+                                        <input type="text" name="arabicName" class="form-control text-end" value="<%=account.a_name%>" required/>
                                       </div>
                                     </div>
                                     <div class="col-lg-6">
                                       <div class="mb-3">
                                         <label class="form-label">Contact Peson Name</label> 
-                                        <input type="text" name="contactPerson" class="form-control" value="<%=account.contact_person%> " required/>
+                                        <input type="text" name="contactPerson" class="form-control" value="<%=account.contact_person%>" required/>
                                     </div>
                                     </div>
                                     <div class="col-lg-6">
                                       <div class="mb-3">
                                         <label class="form-label">Supplier Email</label>
-                                        <input type="email" name="supplierEmail" class="form-control" value="<%=account.email%> " required/>
+                                        <input type="email" name="supplierEmail" class="form-control" value="<%=account.email%>" required/>
                                       </div>
                                     </div>
                                     <div class="col-lg-6">
@@ -335,7 +343,7 @@
                                     <div class="col-lg-6">
                                       <div class="mb-3">
                                         <label class="form-label">Address</label>
-                                        <textarea name="address" class="form-control" rows="2"> <%=account.address%> </textarea>
+                                        <textarea name="address" class="form-control" rows="2"><%=account.address%></textarea>
                                       </div>
                                         <!-- <div class="mb-3"> -->
                                           <div>

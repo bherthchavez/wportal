@@ -124,30 +124,59 @@ let bill_item = mongoose.model("bill_item", bill_itemSchema);
 
 
 const payment_vouchersSchema = {
+  payment_voucher_no: String,
+  supplier_id: String,
+  supplier_name: String,
+  payment_from: String,
   bank_id: String,
-  bank_name: String,
-  voucher_number: String,
   payment_mode: String,
   date: String,
-  documents: String,
   description: String,
+  documents: String,
   total_payment: String,
-  total_items: String,
+  selected_bill_no: Array,
   status: String,
-  account_item: Array,
-  account_description: Array,
-  account_amount:Array,
-  created_by:String,
-  created_at:Date
+  created_by: String,
+  created_at: Date,
+  updated_at: Date
 }
 
 const payment_voucher = mongoose.model("payment_voucher", payment_vouchersSchema);
+
+
+const payment_modeSchema = {
+  payment_voucher_no: String,
+  cheque_no: String,
+  beneficiary_name: String,
+  cheque_date: String,
+  cheque_status: String,
+  cheque_amount: String,
+}
+
+const payment_mode = mongoose.model("payment_mode", payment_modeSchema);
+
+const bank_transferSchema = {
+  payment_voucher_no: String,
+  b_name: String,
+  b_address: String,
+  bank_name: String,
+  iban_no: String,
+  swift_code: String,
+  transfer_charge: String,
+  transfer_purpose: String,
+  currency: String,
+  amount: String,
+  transfer_amount: String
+}
+
+const bank_transfer = mongoose.model("bank_transfer", bank_transferSchema);
 
 const chart_of_accountsSchema = {
   name: String,
   code: String,
   created_by: String,
-  created_at:Date
+  created_at:Date,
+  updated_at:Date
 }
 
 const chart_of_account = mongoose.model("chart_of_account", chart_of_accountsSchema);
@@ -156,10 +185,21 @@ const cost_centerSchema = {
   cost_center: String,
   code: String,
   created_by: String,
-  created_at:Date
+  created_at:Date,
+  updated_at:Date
 }
 
 const cost_center = mongoose.model("cost_center", cost_centerSchema);
+
+const purpose_transferSchema = {
+  purpose: String,
+  code: String,
+  created_by: String,
+  created_at:Date,
+  updated_at:Date
+}
+
+const purpose_transfer = mongoose.model("purpose_transfer", purpose_transferSchema);
 
 const settingsSchema = {
   name: String,
@@ -418,7 +458,7 @@ app.get("/sign-in",(req,res)=>{
   res.render("sign-in", {alert: alert});
   });
 
-  app.get("/incorrect-sign-in",(req,res)=>{
+app.get("/incorrect-sign-in",(req,res)=>{
     alert = 1;
     res.render("sign-in", {alert: alert});
     alert = 0;
@@ -427,23 +467,25 @@ app.get("/sign-in",(req,res)=>{
 app.post("/sign-in", (req, res)=>{
 
 
+      const user = new User({
+        username: req.body.username,
+        password: req.body.password
+      });
 
-  const user = new User({
-    username: req.body.username,
-    password: req.body.password
-  });
-
- req.login(user, function(err){
-  if(err){
-    console.log(err);
-    
-  }else{
-    passport.authenticate("local", { failureRedirect: '/incorrect-sign-in'})(req, res, function(){
-      res.redirect("/");
+    req.login(user, function(err){
+      if(err){
+        console.log(err);
+        
+      }else{
+        passport.authenticate("local", { failureRedirect: '/incorrect-sign-in'})(req, res, function(){
+          res.redirect("/");
+        });
+      
+      }
     });
-   
-  }
- });
+
+
+
 });
 
 app.get("/sign-up",(req,res)=>{
@@ -451,14 +493,20 @@ app.get("/sign-up",(req,res)=>{
   });
 
 app.post("/sign-up", (req, res)=>{
-  let dateNow = Date.now;
-  User.register({name: req.body.name, userRole: req.body.userRole, email: req.body.userEmail, created_at: dateNow, username: req.body.username},req.body.password, function(err, user){
-    if(err){
-      console.log(err);
-    }else{
-      res.redirect("/users")
-    }
-  });
+  if (req.isAuthenticated()){
+
+      let dateNow = Date.now;
+      User.register({name: req.body.name, userRole: req.body.userRole, email: req.body.userEmail, created_at: dateNow, username: req.body.username},req.body.password, function(err, user){
+        if(err){
+          console.log(err);
+        }else{
+          res.redirect("/users")
+        }
+      });
+
+  }else{
+    res.redirect("/sign-in");
+  }
 });
 
 
@@ -470,215 +518,421 @@ app.get('/logout', (req, res)=>{
 });
 
 app.get("/view-journal",(req,res)=>{
-  res.render("view-journal", {userName: req.user.name, userRole: req.user.userRole});
+  if (req.isAuthenticated()){
+
+   res.render("view-journal", {userName: req.user.name, userRole: req.user.userRole});
+
+  }else{
+    res.redirect("/sign-in");
+  }
   });
 
 app.get("/journal-accounts",(req,res)=>{
-  journal_Entry.find({}, function(err, foundItems){
-    if (foundItems.length === 0) {
-      journal_Entry.insertMany(defaultJournalAccount, function(err){
-        if (err) {
-          console.log(err);
+
+    if (req.isAuthenticated()){
+
+        journal_Entry.find({}, function(err, foundItems){
+          if (foundItems.length === 0) {
+            journal_Entry.insertMany(defaultJournalAccount, function(err){
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Successfully saved default items to DB.");
+              }
+          });
+          res.redirect("journal-accounts");
         } else {
-          console.log("Successfully saved default items to DB.");
+          res.render("journal-accounts", {journalAccounts: foundItems, userName: req.user.name, userRole: req.user.userRole});
         }
-    });
-    res.redirect("journal-accounts");
-   } else {
-    res.render("journal-accounts", {journalAccounts: foundItems, userName: req.user.name, userRole: req.user.userRole});
-  }
-  });
+        });
+        
+    }else{
+      res.redirect("/sign-in");
+    }
+      
   });
 
 app.get("/bank-accounts", (req,res)=>{
+ 
+  if (req.isAuthenticated()){
 
-  bank_account.find({}, function(err, foundItems){
-      if (foundItems.length === 0){
-      bank_account.insertMany(defaultBankAccount, function(err){
-            supplier_account.insertMany(defaultSupplierAccount, function(err){
-              if (err) {
-                console.log(err);
-              } else {
-                console.log("Successfully saved supplier default items to DB.");
-              }
-            });
-        if (err) {
-          console.log(err);
+      bank_account.find({}, function(err, foundItems){
+          if (foundItems.length === 0){
+          bank_account.insertMany(defaultBankAccount, function(err){
+                supplier_account.insertMany(defaultSupplierAccount, function(err){
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log("Successfully saved supplier default items to DB.");
+                  }
+                });
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Successfully saved bank default items to DB.");
+            }
+          });
+          res.redirect("bank-accounts");
         } else {
-          console.log("Successfully saved bank default items to DB.");
+          res.render("bank-accounts", {bankAccount: foundItems, userName: req.user.name, userRole: req.user.userRole, alert: alert});
+        alert= 0;
         }
       });
-      res.redirect("bank-accounts");
-    } else {
-      res.render("bank-accounts", {bankAccount: foundItems, userName: req.user.name, userRole: req.user.userRole, alert: alert});
-    alert= 0;
+
+    }else{
+      res.redirect("/sign-in");
     }
-  });
 });
 
 app.get("/supplier-accounts", (req,res)=>{
+  if (req.isAuthenticated()){
 
-  supplier_account.find({active_status: 1}, function(err, foundItems){
-      if (foundItems.length === 0){
-     
-        supplier_account.insertMany(defaultSupplierAccount, function(err){
-              if (err) {
-                console.log(err);
-              } else {
-                console.log("Successfully saved supplier default items to DB.");
-              }
-            });
-      res.redirect("supplier-accounts");
-    } else {
-      res.render("supplier-accounts", {supplierAccount: foundItems, userName: req.user.name, userRole: req.user.userRole, alert: alert});
-    alert= 0;
-    }
-  });
+      supplier_account.find({active_status: 1}, function(err, foundItems){
+          if (foundItems.length === 0){
+        
+            supplier_account.insertMany(defaultSupplierAccount, function(err){
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log("Successfully saved supplier default items to DB.");
+                  }
+                });
+          res.redirect("supplier-accounts");
+        } else {
+          res.render("supplier-accounts", {supplierAccount: foundItems, userName: req.user.name, userRole: req.user.userRole, alert: alert});
+        alert= 0;
+        }
+      });
+
+  }else{
+    res.redirect("/sign-in");
+  }
 });
 
 app.get("/create-voucher", (req,res) =>{
-res.render("payment-voucher",{userName: req.user.name, userRole: req.user.userRole, alert: alert});
+  if (req.isAuthenticated()){
+    res.render("payment-voucher",{userName: req.user.name, userRole: req.user.userRole, alert: alert});
+
+  }else{
+    res.redirect("/sign-in");
+  }
 });
 
 
 app.post("/create-voucher", (req,res) =>{
- 
-  chart_of_account.find({}, function(err, foundItems){
-    if (foundItems.length === 0){
-      chart_of_account.insertMany(defaultChartAccount, function(err){
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("Successfully saved default items to DB.");
-       
-        }
-      });
-    }else{
-          const accountID =  req.body.accountID;
-          bank_account.findOne({_id: accountID}, function(err, foundItem){
+  if (req.isAuthenticated()){
+
+    chart_of_account.find({}, function(err, foundItems){
+      if (foundItems.length === 0){
+        chart_of_account.insertMany(defaultChartAccount, function(err){
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Successfully saved default items to DB.");
         
-            res.render("payment-voucher", {chartAccounts: foundItems, 
-              accountID:foundItem._id,
-              bankName: foundItem.bank_name, 
-              ownerName: foundItem.account_name, 
-              userName: req.user.name, 
-              userRole: req.user.userRole });
-            
-          });
-    }
-  });
+          }
+        });
+      }else{
+            const accountID =  req.body.accountID;
+            bank_account.findOne({_id: accountID}, function(err, foundItem){
+          
+              res.render("payment-voucher", {chartAccounts: foundItems, 
+                accountID:foundItem._id,
+                bankName: foundItem.bank_name, 
+                ownerName: foundItem.account_name, 
+                userName: req.user.name, 
+                userRole: req.user.userRole });
+              
+            });
+      }
+    });
+
+  }else{
+    res.redirect("/sign-in");
+  }
 });
 
 app.post("/create-supplier-bill", (req,res) =>{
+  if (req.isAuthenticated()){
 
- 
-  chart_of_account.find({}, function(err, chartOfAccount){
-    if(err){
-      console.log(err);
-    }else{
-    
-      cost_center.find({}, function(err, costCenter){
-        if (err){
+      chart_of_account.find({}, function(err, chartOfAccount){
+        if(err){
           console.log(err);
         }else{
-        supplier_account.findOne({_id: req.body.accountID}, function(err, foundItem){
-          if (err){
-            console.log(err);
-          }else{
-            supplier_bill.find({supplier_id: foundItem._id}, function(err, foundBill){
-              if (err){
-                console.log(err);
-              }else{
-                settings.findOne({name: "bill_settings"}, function(err, billSetting){
-                  if (err) {
-                    console.log(err);
-                  }else{
-                    let puvno = billSetting.prefix + billSetting.starting_no;
-                    res.render("create-supplier-bill", {puvno: puvno, chartAccounts: chartOfAccount, costCenter: costCenter,
-                      suppBills: foundBill,
-                      accountID:foundItem._id,
-                      supplierName: foundItem.supplier_name, 
-                      aName: foundItem.a_name, 
-                      userName: req.user.name, 
-                      userRole: req.user.userRole });
-                  }
-                 
-                });
-              }
-            });
-          }
-        });
-
-        }
-      });
-    }
-  });
-});
-
-app.post("/pay-supplier-bill", (req,res) =>{
- 
-  bank_account.find({}, function(err, foundItems){
-    if (foundItems.length === 0){
-      bank_account.insertMany(defaultBankAccount, (err)=>{
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("Successfully saved default items to DB.");
-       
-        }
-      });
-    }else{
-      supplier_account.findOne({_id: req.body.accountID}, (err, foundItem)=>{
-        if (err){
-          console.log(err);
-        }else{
-          supplier_bill.find({supplier_id: foundItem._id}, (err, foundBill)=>{
+        
+          cost_center.find({}, function(err, costCenter){
             if (err){
               console.log(err);
             }else{
-              settings.findOne({name: "payment_voucher_settings"}, (err, paySetting)=>{
-                if (err) {
-                  console.log(err);
-                }else{
-                  let pavno = paySetting.prefix + paySetting.starting_no;
-           
-                  res.render("pay-supplier-bill", {pavno:pavno, bankAccounts: foundItems,
-                    suppBills: foundBill,
-                    accountID:foundItem._id,
-                    supplierName: foundItem.supplier_name,
-                    beneficiaryName: foundItem.beneficiary_name,
-                    aName: foundItem.a_name, 
-                    userName: req.user.name, 
-                    userRole: req.user.userRole });
+            supplier_account.findOne({_id: req.body.accountID}, function(err, foundItem){
+              if (err){
+                console.log(err);
+              }else{
+                supplier_bill.find({supplier_id: foundItem._id, status: "Pending"}, function(err, foundBill){
+                  if (err){
+                    console.log(err);
+                  }else{
+                  
+                    settings.findOne({name: "bill_settings"}, function(err, billSetting){
+                      if (err) {
+                        console.log(err);
+                      }else{
+                        let puvno = billSetting.prefix + billSetting.starting_no;
+                        res.render("create-supplier-bill", {puvno: puvno, chartAccounts: chartOfAccount, costCenter: costCenter,
+                          suppBills: foundBill,
+                          accountID:foundItem._id,
+                          supplierName: foundItem.supplier_name, 
+                          aName: foundItem.a_name, 
+                          userName: req.user.name, 
+                          userRole: req.user.userRole });
+                      }
+                    
+                    });
                   }
                 });
+              }
+            });
+
             }
           });
         }
       });
+
+  }else{
+    res.redirect("/sign-in");
+  }
+
+});
+
+app.post("/pay-supplier-bill", (req,res) =>{
+  if (req.isAuthenticated()){
+
+      bank_account.find({}, function(err, foundItems){
+        if (foundItems.length === 0){
+          bank_account.insertMany(defaultBankAccount, (err)=>{
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Successfully saved default items to DB.");
+          
+            }
+          });
+        }else{
+          supplier_account.findOne({_id: req.body.accountID}, (err, foundItem)=>{
+            if (err){
+              console.log(err);
+            }else{
+              supplier_bill.find({supplier_id: foundItem._id, status: "Pending"}, (err, foundBill)=>{
+                if (err){
+                  console.log(err);
+                }else{
+                  settings.findOne({name: "payment_voucher_settings"}, (err, paySetting)=>{
+                    if (err) {
+                      console.log(err);
+                    }else{
+
+                        purpose_transfer.find({}, function(err, purposeItems){
+                          if(!err){
+
+                            let pavno = paySetting.prefix + paySetting.starting_no;
+                    
+                            res.render("pay-supplier-bill", {purposeItems: purposeItems, pavno:pavno, bankAccounts: foundItems,
+                              suppBills: foundBill,
+                              accountID:foundItem._id,
+                              supplierName: foundItem.supplier_name,
+                              beneficiaryName: foundItem.beneficiary_name,
+                              aName: foundItem.a_name, 
+                              userName: req.user.name, 
+                              userRole: req.user.userRole });
+
+                          }
+
+                            
+                        });
+                      }
+                    });
+                }
+              });
+            }
+          });
+        }
+      });
+
+    }else{
+      res.redirect("/sign-in");
     }
-  });
+
 });
 
 app.post("/supplier-billed", (req,res) =>{
+  if (req.isAuthenticated()){
 
-  console.log(req.body)
-  res.redirect("supplier-accounts");
+
+         
+      let Bank_Withdrawal = 0;   
+      let Bank_Deposited = 0;    
+      let payment_amount = 0;
+
+      bank_account.findOne({_id: req.body.paymentFrom,}, function(bankerr, foundItem){ 
+         
+        if (bankerr){
+            console.log(bankerr);
+          }else{
+           
+            const  Bank_Name = foundItem.bank_name;
+            Bank_Withdrawal += parseFloat(foundItem.withdrawal);
+            Bank_Deposited += parseFloat(foundItem.deposited);
+            payment_amount += parseFloat(req.body.totalPayment);
+           
+           
+           
+            const pay = new payment_voucher({
+              payment_voucher_no:  req.body.pavNo,
+              supplier_id: req.body.supplierID,
+              supplier_name: req.body.supplierName,
+              payment_from: Bank_Name,
+              bank_id:  req.body.paymentFrom,
+              payment_mode:  req.body.paymentMode,
+              date: req.body.billDate,
+              description:  req.body.description,
+              documents: req.body.documents,
+              total_payment: req.body.totalPayment,
+              selected_bill_no: req.body.selectedbillNo,
+              status: "Pending",
+              created_by: req.user.name,
+              created_at: Date.now(),
+              updated_at: Date.now()
+  
+            });
+            pay.save((Error, saved) =>{
+            
+  
+              if(Error){
+                console.log(err);
+              }else{
+
+                Bank_Withdrawal += payment_amount;
+                Bank_Deposited -= payment_amount;
+
+                bank_account.findOneAndUpdate({_id: req.body.paymentFrom},
+                  {$set: {
+                  deposited: (Bank_Deposited).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'),
+                  withdrawal: (Bank_Withdrawal).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') }}, function(err){
+                    if (err){
+                      console.log(err);
+                    }else{
+                      console.log("The bank of " + Bank_Name + " successully updated.")
+                    }
+                });
+
+
+
+  
+                 
+                  supplier_account.findOne({_id: req.body.supplierID,}, function(err, foundItem){ 
+                  if (err){
+                    console.log(err);
+                  }else{
+                   
+                    let totalBilled = foundItem.billed;
+                    let totalPaid = foundItem.paid;
+
+                    totalPaid +=payment_amount;
+                    totalBilled -= payment_amount;
+  
+                      supplier_account.findOneAndUpdate({_id: req.body.supplierID},
+                        {$set: {
+                        billed: (totalBilled).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'),
+                        paid: (totalPaid).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') }}, function(err){
+                          if (err){
+                            console.log(err);
+                          }else{
+                            console.log("The supplier account of " + foundItem.supplier_name + " successully updated.")
+                          }
+                      });
+
+                
+
+                      if (parseFloat(req.body.numOfItem) == 1){
+                            
+                        supplier_bill.findOneAndUpdate({bill_number: req.body.selectedbillNo},
+                          {$set: {status: "Paid" }}, function(err, foundSupBill){
+                            console.log(foundSupBill);
+                            if (err){
+                              console.log(err);
+                            }else{
+                              
+                              console.log("The supplier bills"+ req.body.selectedbillNo  +"status is Paid.")
+                            }
+                        });
+
+                      }else{
+
+                        for(var i = 0; i < req.body.selectedbillNo.length; i++){
+                        
+                          supplier_bill.findOneAndUpdate({bill_number: req.body.selectedbillNo[i]},
+                            {$set: {status: "Paid" }}, function(err, foundSupBill){
+                              console.log(foundSupBill);
+                              if (err){
+                                console.log(err);
+                              }else{
+                                
+                                console.log("The supplier bills"+ req.body.selectedbillNo[i]  +"status is Paid.")
+                              }
+                          });
+
+                         }
+                      }
+
+                      
+                         
+
+                    }
+
+                  });
+
+  
+                  settings.findOne({name: "payment_voucher_settings"}, function(err, billSetting){
+                
+                  let pavno = parseFloat(billSetting.starting_no) + 1;
+  
+                      settings.findOneAndUpdate({name: "payment_voucher_settings"},
+                        {$set: {starting_no:  pavno}}, function(err, foundList){
+                      });
+                  }); 
+  
+  
+                  alert = 4;
+                  res.redirect("supplier-accounts");
+                }
+            });
+            
+          }
+      });
+
+   
  
-
+  }else{
+    res.redirect("/sign-in");
+  }
 });
 
 
 app.get("/voucher-item", (req,res) =>{
-  
-  payment_voucher.find({}, function(err, foundItems){
-    res.render("voucher-items",{voucherItems: foundItems, userName: req.user.name, userRole: req.user.userRole, alert: alert});
-  
-  });
+  if (req.isAuthenticated()){
+
+    payment_voucher.find({}, function(err, foundItems){
+      res.render("voucher-items",{voucherItems: foundItems, userName: req.user.name, userRole: req.user.userRole, alert: alert});
+    });
+
+  }else{
+    res.redirect("/sign-in");
+  } 
 });
 
 app.post("/voucher-item", (req,res) =>{
-  
+  if (req.isAuthenticated()){
+   
     payment_voucher.findOne({_id: req.body.accountID}, function(err, foundItem){
       if (err){
         console.log(err);
@@ -687,147 +941,144 @@ app.post("/voucher-item", (req,res) =>{
       }
       
     });
+
+  }else{
+    res.redirect("/sign-in");
+  }
 });
 
 
 app.post("/payment-voucher", (req,res)=>{
-  let totalBalance = 0;
+  if (req.isAuthenticated()){
 
-  bank_account.findOne({_id: req.body.accountID,}, function(err, foundItem){ 
+      let totalBalance = 0;
 
-    totalBalance =  foundItem.balance_amount - req.body.totalPayment ;
+      bank_account.findOne({_id: req.body.accountID,}, function(err, foundItem){ 
 
-    bank_account.findOneAndUpdate({_id: req.body.accountID},
-      {$set: {
-       withdrawal: req.body.totalPayment,
-       balance_amount: totalBalance }}, function(err, foundList){
-     });
+        totalBalance =  foundItem.balance_amount - req.body.totalPayment ;
 
-  });
+        bank_account.findOneAndUpdate({_id: req.body.accountID},
+          {$set: {
+          withdrawal: req.body.totalPayment,
+          balance_amount: totalBalance }}, function(err, foundList){
+        });
 
-// console.log(req.body);
-  const voucher = new payment_voucher({
-    bank_id:  req.body.accountID,
-    bank_name: req.body.pVbankName,
-    voucher_number: "PVR/2022/001",
-    payment_mode:  req.body.payment,
-    date:  req.body.date,
-    documents:  req.body.document,
-    description:  req.body.description,
-    total_payment: req.body.totalPayment,
-    total_items: req.body.numOfAcc,
-    status: "Pending",
-    account_item: req.body.account,
-    account_description: req.body.memo,
-    account_amount:req.body.amount,
-    created_by: req.user.name,
-    created_at: Date.now()
-  });
-  voucher.save();
-  res.redirect("/bank-accounts")
+      });
 
+      const voucher = new payment_voucher({
+        bank_id:  req.body.accountID,
+        bank_name: req.body.pVbankName,
+        voucher_number: "PVR/2022/001",
+        payment_mode:  req.body.payment,
+        date:  req.body.date,
+        documents:  req.body.document,
+        description:  req.body.description,
+        total_payment: req.body.totalPayment,
+        total_items: req.body.numOfAcc,
+        status: "Pending",
+        account_item: req.body.account,
+        account_description: req.body.memo,
+        account_amount:req.body.amount,
+        created_by: req.user.name,
+        created_at: Date.now()
+      });
+      voucher.save();
+      res.redirect("/bank-accounts")
+
+  }else{
+    res.redirect("/sign-in");
+  }
 });
 
 app.post("/supplier-bill", (req,res)=>{
-  let totalBilled = 0;
+  if (req.isAuthenticated()){
 
-  console.log(req.body);
-
-    supplier_account.findOne({_id: req.body.accountID,}, function(err, foundItem){ 
-    if (err){
-      console.log(err);
-    }else{
-
-      for(var i = 0; i < req.body.total.length; i++ ) {
-        totalBilled += parseFloat(req.body.total[i]);
-      }
-
-      totalBilled += foundItem.billed;
-
-
-    
-    supplier_account.findOneAndUpdate({_id: req.body.accountID},
-        {$set: {
-        billed: (totalBilled).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') }}, function(err){
+        let totalBilled = 0;
+          supplier_account.findOne({_id: req.body.accountID,}, function(err, foundItem){ 
           if (err){
             console.log(err);
+          }else{
+            for(var i = 0; i < req.body.total.length; i++ ) {
+              totalBilled += parseFloat(req.body.total[i]);
+            }
+            totalBilled += foundItem.billed;
+
+          supplier_account.findOneAndUpdate({_id: req.body.accountID},
+              {$set: {
+              billed: (totalBilled).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') }}, function(err){
+                if (err){
+                  console.log(err);
+                }
+            });
           }
-      });
-    }
-  });
-
- 
-  settings.findOne({name: "bill_settings"}, function(err, billSetting){
-   
-    let puvno = parseFloat(billSetting.starting_no) + 1;
-
-        settings.findOneAndUpdate({name: "bill_settings"},
-          {$set: {starting_no:  puvno}}, function(err, foundList){
-      
         });
 
-    });    
+        settings.findOne({name: "bill_settings"}, function(err, billSetting){
+        
+          let puvno = parseFloat(billSetting.starting_no) + 1;
 
-console.log(req.body);
+              settings.findOneAndUpdate({name: "bill_settings"},
+                {$set: {starting_no:  puvno}}, function(err, foundList){
+              });
+          });    
 
-  const bill = new supplier_bill({
-    supplier_id:  req.body.accountID,
-    supplier_name: req.body.supplierName,
-    bill_number: req.body.puvNo,
-    bill_date:  req.body.date,
-    documents:  req.body.documents,
-    description:  req.body.description,
-    total_payment: req.body.totalPayment,
-    total_items: req.body.numOfItem,
-    status: "Pending",
-    created_by: req.user.name,
-    created_at: Date.now(),
-    updated_at: Date.now()
-  });
-  bill.save( function(err, docs){
-    if(err){
-      console.log(err);
-    }else{
-
-      let totalItem = +  req.body.numOfItem;
-      
-      for (var i = 0; i < totalItem; i++){
-
-
-        let newitem = new bill_item({
-          bill_number:  req.body.puvNo,
-          items:  req.body.item[i],
-          items_description: req.body.itemDesc[i],
-          cost_center:  req.body.costCenter[i],
-          inv_no:  req.body.invNo[i],
-          inv_date:  req.body.invDate[i],
-          lpo:  req.body.lpo[i],
-          items_price: req.body.price[i],
-          items_qty: req.body.qty[i],
-          sub_total: req.body.total[i], 
-          created_by:  req.user.name,
+        const bill = new supplier_bill({
+          supplier_id:  req.body.accountID,
+          supplier_name: req.body.supplierName,
+          bill_number: req.body.puvNo,
+          bill_date:  req.body.date,
+          documents:  req.body.documents,
+          description:  req.body.description,
+          total_payment: req.body.totalPayment,
+          total_items: req.body.numOfItem,
+          status: "Pending",
+          created_by: req.user.name,
           created_at: Date.now(),
           updated_at: Date.now()
         });
-        newitem.save(function(err, saved){
+        bill.save( function(err, docs){
           if(err){
             console.log(err);
           }else{
-            console.log("Bill saved!!");
+
+            let totalItem = +  req.body.numOfItem;
+            
+            for (var i = 0; i < totalItem; i++){
+
+
+              let newitem = new bill_item({
+                bill_number:  req.body.puvNo,
+                items:  req.body.item[i],
+                items_description: req.body.itemDesc[i],
+                cost_center:  req.body.costCenter[i],
+                inv_no:  req.body.invNo[i],
+                inv_date:  req.body.invDate[i],
+                lpo:  req.body.lpo[i],
+                items_price: req.body.price[i],
+                items_qty: req.body.qty[i],
+                sub_total: req.body.total[i], 
+                created_by:  req.user.name,
+                created_at: Date.now(),
+                updated_at: Date.now()
+              });
+              newitem.save(function(err, saved){
+                if(err){
+                  console.log(err);
+                }else{
+                  console.log("Bill saved!!");
+                }
+              });
+            }
+          
+
           }
         });
-       }
-    
+        alert = 4;
+        res.redirect("/supplier-accounts")
 
-    }
-  });
-
-
-
- 
-
-  alert = 4;
-  res.redirect("/supplier-accounts")
+  }else{
+    res.redirect("/sign-in");
+  }
 
 });
 
@@ -886,135 +1137,167 @@ app.post("/bank-accounts", (req, res)=>{
 app.post("/supplier-accounts", (req, res)=>{
   if (req.isAuthenticated()){
 
-console.log(typeof(req.body.status));
-console.log(req.body);
-
-  const account = new supplier_account({
-    supplier_name: req.body.supplierName,
-    a_name: req.body.arabicName,
-    contact_personal: req.body.contactPerson,
-    email: req.body.supplierEmail,
-    address: req.body.address,
-    opening_balance: req.body.openingBalance,
-    beneficiary_name: req.body.bName,
-    beneficiary_address: req.body.bAddress,
-    bank_name: req.body.bBankName,
-    iban_no: req.body.ibanNo,
-    swift_code: req.body.swiftCode,
-    billed: 0,
-    paid: 0,
-    balance_amount: 0,
-    active_status: parseInt(req.body.status),
-    created_at: Date.now(),
-    updated_at: Date.now()
-  });
-  account.save();
-  alert = 1;
-  res.redirect("/supplier-accounts");
+      const account = new supplier_account({
+        supplier_name: req.body.supplierName,
+        a_name: req.body.arabicName,
+        contact_personal: req.body.contactPerson,
+        email: req.body.supplierEmail,
+        address: req.body.address,
+        opening_balance: req.body.openingBalance,
+        beneficiary_name: req.body.bName,
+        beneficiary_address: req.body.bAddress,
+        bank_name: req.body.bBankName,
+        iban_no: req.body.ibanNo,
+        swift_code: req.body.swiftCode,
+        billed: 0,
+        paid: 0,
+        balance_amount: 0,
+        active_status: parseInt(req.body.status),
+        created_at: Date.now(),
+        updated_at: Date.now()
+      });
+      account.save();
+      alert = 1;
+      res.redirect("/supplier-accounts");
   }else{
     res.redirect("/sign-in");
   }
 });
 
 app.post("/deleteAccount", (req,res)=>{
-  const accountID =  req.body.deleteAccount;
+  if (req.isAuthenticated()){
 
-  bank_account.findByIdAndRemove(accountID, function(err){
-    if (!err) {
-      alert=2;
-      res.redirect("/bank-accounts");
-    }
-  });
+    const accountID =  req.body.deleteAccount;
+    bank_account.findByIdAndRemove(accountID, function(err){
+      if (!err) {
+        alert=2;
+        res.redirect("/bank-accounts");
+      }
+    });
+
+  }else{
+    res.redirect("/sign-in");
+   } 
 });
 
 app.post("/deleteSupplier", (req,res)=>{
-  const accountID =  req.body.deleteAccount;
+  if (req.isAuthenticated()){
 
-  supplier_account.findByIdAndRemove(accountID, function(err){
-    if (!err) {
-      alert=2;
-      res.redirect("/supplier-accounts");
-    }
-  });
+    const accountID =  req.body.deleteAccount;
+    supplier_account.findByIdAndRemove(accountID, function(err){
+      if (!err) {
+        alert=2;
+        res.redirect("/supplier-accounts");
+      }
+    });
+
+  }else{
+    res.redirect("/sign-in");
+   } 
 });
 
 app.post("/viewAccount",(req, res)=>{
-  const accountID = req.body.viewAccount;
-  bank_account.findOne({_id: accountID}, function(err, foundList){
-    
-    res.render("view-update-account", {accountID:foundList._id ,
-      bankName: foundList.bank_name, 
-      ownerName: foundList.account_name,
-      accountNumber: foundList.account_number,
-      accountType: foundList.account_type, 
-      bankEmail: foundList.bank_email,
-      deposited: foundList.deposited,
-      withdrawal:foundList.withdrawal, userName: req.user.name, userRole: req.user.userRole,
-      balanceAmount: foundList.balance_amount
+  if (req.isAuthenticated()){
+
+    const accountID = req.body.viewAccount;
+    bank_account.findOne({_id: accountID}, function(err, foundList){
       
+      res.render("view-update-account", {accountID:foundList._id ,
+        bankName: foundList.bank_name, 
+        ownerName: foundList.account_name,
+        accountNumber: foundList.account_number,
+        accountType: foundList.account_type, 
+        bankEmail: foundList.bank_email,
+        deposited: foundList.deposited,
+        withdrawal:foundList.withdrawal, userName: req.user.name, userRole: req.user.userRole,
+        balanceAmount: foundList.balance_amount
+        
+      });
     });
-  });
+
+  }else{
+    res.redirect("/sign-in");
+   }
+    
 });
 
 app.post("/viewSuppplier",(req, res)=>{
-  const accountID = req.body.viewAccount;
-  supplier_account.findOne({_id: accountID}, function(err, foundList){
-    
-    res.render("view-supplier-account", {accountID:foundList._id ,
-      supplierName: foundList.supplier_name, 
-      arabicName: foundList.a_name,
-      contactPerson: foundList.contact_person,
-      email: foundList.email, 
-      bankEmail: foundList.bank_email,
-     userName: req.user.name, userRole: req.user.userRole,
-    
+  if (req.isAuthenticated()){ 
+  
+    const accountID = req.body.viewAccount;
+    supplier_account.findOne({_id: accountID}, function(err, foundList){
       
+      res.render("view-supplier-account", {accountID:foundList._id ,
+        supplierName: foundList.supplier_name, 
+        arabicName: foundList.a_name,
+        contactPerson: foundList.contact_person,
+        email: foundList.email, 
+        bankEmail: foundList.bank_email,
+      userName: req.user.name, userRole: req.user.userRole,
+      
+        
+      });
     });
-  });
+
+  }else{
+    res.redirect("/sign-in");
+   }
 });
 
 app.post("/updateAccount", (req,res)=>{
 
-  bank_account.findOneAndUpdate({_id: req.body.accountID},
-     {$set: {bank_name:  req.body.bankName,
-      account_name:  req.body.ownerName,
-      account_number: req.body.accountNumber, 
-      account_type:  req.body.accountType, 
-      bank_email: req.body.bankEmail, 
-      deposited: req.body.deposited}}, function(err, foundList){
-    if (!err){
-      res.redirect("/bank-accounts");
-    }else{
-      console.log(err);
-    }
-  });
+  if (req.isAuthenticated()){
+
+      bank_account.findOneAndUpdate({_id: req.body.accountID},
+        {$set: {bank_name:  req.body.bankName,
+          account_name:  req.body.ownerName,
+          account_number: req.body.accountNumber, 
+          account_type:  req.body.accountType, 
+          bank_email: req.body.bankEmail, 
+          deposited: req.body.deposited}}, function(err, foundList){
+        if (!err){
+          res.redirect("/bank-accounts");
+        }else{
+          console.log(err);
+        }
+      });
+
+  }else{
+   res.redirect("/sign-in");
+  }   
 
 });
 
 app.post("/updateSupplier", (req,res)=>{
 
-  supplier_account.findOneAndUpdate({_id: req.body.accountID},
-     {$set: {supplier_name:  req.body.supplierName,
-      a_name:  req.body.arabicName,
-      contact_person: req.body.contactPerson, 
-      email:  req.body.email,
-      address: req.body.address,
-      opening_balance: parseFloat(req.body.openingBalance),
-      beneficiary_name: req.body.bName,
-      beneficiary_address: req.body.bAddress,
-      bank_name: req.body.bBankName,
-      iban_no: req.body.ibanNo,
-      swift_code: req.body.swiftCode,
-      active_status: parseInt(req.body.status),
-      updated_at: Date.now()
-    }}, function(err, foundList){
-    if (!err){
-      alert = 3;
-      res.redirect("/supplier-accounts");
-    }else{
-      console.log(err);
-    }
-  });
+  if (req.isAuthenticated()){
+
+    supplier_account.findOneAndUpdate({_id: req.body.accountID},
+      {$set: {supplier_name:  req.body.supplierName,
+        a_name:  req.body.arabicName,
+        contact_person: req.body.contactPerson, 
+        email:  req.body.email,
+        address: req.body.address,
+        opening_balance: parseFloat(req.body.openingBalance),
+        beneficiary_name: req.body.bName,
+        beneficiary_address: req.body.bAddress,
+        bank_name: req.body.bBankName,
+        iban_no: req.body.ibanNo,
+        swift_code: req.body.swiftCode,
+        active_status: parseInt(req.body.status),
+        updated_at: Date.now()
+      }}, function(err, foundList){
+      if (!err){
+        alert=3;
+        res.redirect("/supplier-accounts");
+      }else{
+        console.log(err);
+      }
+    });
+
+  }else{
+    res.redirect("/sign-in");
+   }  
 
 });
 
@@ -1035,12 +1318,16 @@ app.get("/users", (req, res)=>{
 //--------------------------------------------------------ACCOUNT LEDGER SETTINGS //
 app.get("/master", (req, res)=>{
   if (req.isAuthenticated()){
-    cost_center.find({}, function(err,  costFoundItems){
-    chart_of_account.find({}, function(err, chartFoundItems){
-      res.render("account-ledger", {chartFoundItems: chartFoundItems, costFoundItems: costFoundItems, userName: req.user.name, userRole: req.user.userRole, alert: alert});
-      alert=0;
+   
+    purpose_transfer.find({}, function(err,  purposeFoundItems){
+      cost_center.find({}, function(err,  costFoundItems){
+       chart_of_account.find({}, function(err, chartFoundItems){
+          res.render("account-ledger", {chartFoundItems: chartFoundItems, purposeFoundItems:purposeFoundItems, costFoundItems: costFoundItems, userName: req.user.name, userRole: req.user.userRole, alert: alert});
+          alert=0;
+       });
+      });
     });
-  });
+    
    }else{
     res.redirect("/sign-in");
    }
@@ -1048,6 +1335,7 @@ app.get("/master", (req, res)=>{
 
 app.post("/account-ledger", (req, res) => {
   if (req.isAuthenticated()){
+    
     const accountLedger = new chart_of_account({
       name:  req.body.ledgerName,
       code: req.body.ledgerCode,
@@ -1056,32 +1344,41 @@ app.post("/account-ledger", (req, res) => {
     accountLedger.save();
     alert=1;
     res.redirect("/master");
-   }else{
+   
+  }else{
     res.redirect("/sign-in");
    }
 });
 
 app.post("/deleteAccLedger", (req,res) =>{
-  chart_of_account.findByIdAndRemove(req.body.deleteAccount, function(err){
-    if (!err) {
-      alert=2;
-      res.redirect("/master");
-    }
-  });
+  if (req.isAuthenticated()){
+      chart_of_account.findByIdAndRemove(req.body.deleteAccount, function(err){
+        if (!err) {
+          alert=2;
+          res.redirect("/master");
+        }
+      });
+ }else{
+    res.redirect("/sign-in");
+ }
 });
 
 app.post("/update-account-ledger", (req,res) => {
+  if (req.isAuthenticated()){
+    chart_of_account.findOneAndUpdate({_id: req.body.accountID},
+      {$set: {name:  req.body.ledgerName,
+        code:  req.body.ledgerCode}}, function(err, foundList){
+      if (!err){
+        alert=3;
+        res.redirect("/master");
+      }else{
+        console.log(err);
+      }
+    });
 
-  chart_of_account.findOneAndUpdate({_id: req.body.accountID},
-     {$set: {name:  req.body.ledgerName,
-      code:  req.body.ledgerCode}}, function(err, foundList){
-    if (!err){
-      alert=3;
-      res.redirect("/master");
-    }else{
-      console.log(err);
-    }
-  });
+  }else{
+    res.redirect("/sign-in");
+   }
 
 });
 
@@ -1089,12 +1386,14 @@ app.post("/update-account-ledger", (req,res) => {
 //-------------------------------------------------------- COST CENTER SETTINGS //
 app.get("/cost-center", (req, res) => {
   if (req.isAuthenticated()){
-    chart_of_account.find({}, function(err, chartFoundItems){
-    cost_center.find({}, function(err,  costFoundItems){
-      res.render("cost-center", {costFoundItems: costFoundItems, chartFoundItems: chartFoundItems, userName: req.user.name, userRole: req.user.userRole, alert: alert});
-      alert=0;
+    purpose_transfer.find({}, function(err,  purposeFoundItems){
+     chart_of_account.find({}, function(err, chartFoundItems){
+      cost_center.find({}, function(err,  costFoundItems){
+        res.render("cost-center", {costFoundItems: costFoundItems,purposeFoundItems:purposeFoundItems, chartFoundItems: chartFoundItems, userName: req.user.name, userRole: req.user.userRole, alert: alert});
+        alert=0;
+      });
+     });
     });
-  });
    }else{
     res.redirect("/sign-in");
    }
@@ -1126,20 +1425,91 @@ app.post("/deleteCostCenter", (req,res)=>{
 });
 
 app.post("/update-cost-center", (req,res)=>{
+  if (req.isAuthenticated()){
+    
+    cost_center.findOneAndUpdate({_id: req.body.accountID},
+      {$set: {cost_center:  req.body.costCenter,
+        code:  req.body.cCcode}}, function(err, foundList){
+      if (!err){
+        alert=3;
+        res.redirect("/cost-center");
+      }else{
+        console.log(err);
+      }
+    });
 
-  cost_center.findOneAndUpdate({_id: req.body.accountID},
-     {$set: {cost_center:  req.body.costCenter,
-      code:  req.body.cCcode}}, function(err, foundList){
-    if (!err){
-      alert=3;
-      res.redirect("/cost-center");
-    }else{
-      console.log(err);
-    }
-  });
+  }else{
+    res.redirect("/sign-in");
+   }
 
 });
 
+//-------------------------------------------------------- Purpose Transfer SETTINGS //
+app.get("/purpose-transfer", (req, res) => {
+  if (req.isAuthenticated()){
+    chart_of_account.find({}, function(err, chartFoundItems){
+     cost_center.find({}, function(err,  costFoundItems){
+        purpose_transfer.find({}, function(err,  purposeFoundItems){
+          res.render("bank-transfer-purpose", {purposeFoundItems: purposeFoundItems, costFoundItems: costFoundItems, chartFoundItems: chartFoundItems, userName: req.user.name, userRole: req.user.userRole, alert: alert});
+          alert=0;
+        });
+      });
+     });
+   }else{
+    res.redirect("/sign-in");
+   }
+});
+
+app.post("/add-purpose-transfer", function(req, res){
+  if (req.isAuthenticated()){
+    const transPurpose = new purpose_transfer({
+      purpose:  req.body.purpose,
+      code: req.body.purposeCode,
+      created_by: req.user.name,
+      created_at: Date.now(),
+      updated_at: Date.now()
+    });
+    transPurpose.save();
+    alert=1;
+    res.redirect("/purpose-transfer");
+   }else{
+    res.redirect("/sign-in");
+   }
+   
+});
+
+app.post("/delete-purpose-transfer", (req,res)=>{
+  if (req.isAuthenticated()){
+    
+    purpose_transfer.findByIdAndRemove(req.body.deleteAccount, function(err){
+      if (!err) {
+        alert=2;
+        res.redirect("/purpose-transfer");
+      }
+    });
+
+  }else{
+    res.redirect("/sign-in");
+  }
+});
+
+app.post("/update-purpose-transfer", (req,res)=>{
+  if (req.isAuthenticated()){
+    purpose_transfer.findOneAndUpdate({_id: req.body.accountID},
+        {$set: {purpose:  req.body.purpose,
+          code:  req.body.purposeCode,
+          updated_at: Date.now()}}, function(err, foundList){
+        if (!err){
+          alert=3;
+          res.redirect("/purpose-transfer");
+        }else{
+          console.log(err);
+        }
+      });
+  }else{
+    res.redirect("/sign-in");
+  }
+});
 
 
 //-------------------------------------------------------- COST SYSTEM SETTINGS //
@@ -1176,27 +1546,31 @@ app.get("/system-settings", (req, res)=>{
 
 
 app.post("/update-system-settings", (req,res)=>{
+  if (req.isAuthenticated()){
+    
+    settings.findOneAndUpdate({_id: req.body.billID},
+      {$set: {prefix:  req.body.billPrefix,
+        starting_no:  req.body.billStartingNo}}, (err, billFound)=>{
+      if (!err){
 
-  settings.findOneAndUpdate({_id: req.body.billID},
-     {$set: {prefix:  req.body.billPrefix,
-      starting_no:  req.body.billStartingNo}}, (err, billFound)=>{
-    if (!err){
 
+        settings.findOneAndUpdate({_id: req.body.payID},
+          {$set: {prefix:  req.body.payPrefix,
+          starting_no:  req.body.payStartingNo}}, (err2, payFound) =>{
+            if (!err2){
+              alert=3;
+              res.redirect("/system-settings");
+            }
+          });
+      
+      }else{
+        console.log(err);
+      }
+    });
 
-      settings.findOneAndUpdate({_id: req.body.payID},
-        {$set: {prefix:  req.body.payPrefix,
-         starting_no:  req.body.payStartingNo}}, (err2, payFound) =>{
-          if (!err2){
-            alert=3;
-            res.redirect("/system-settings");
-          }
-        });
-     
-    }else{
-      console.log(err);
-    }
-  });
-
+  }else{
+    res.redirect("/sign-in");
+  }
  
 
 
