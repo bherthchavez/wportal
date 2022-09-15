@@ -91,12 +91,17 @@ body {
 
 .hr,
 hr {
-    margin: 2rem 0;
-    color: inherit;
-    background-color: currentColor;
-    border: 0;
-    opacity: .16
+    /* margin: 1rem 0; */
+    color: rgb(60, 60, 60);
+   
+    /* background-color: currentColor; */
+    /* border: 0; */
+    opacity: .20
 }
+hr.letterHeader {
+    border-bottom: 0.01rem solid rgb(60, 60, 60);
+    background-color: rgb(62, 62, 62);
+  }
 
 .hr:not([size]),
 hr:not([size]) {
@@ -21161,3 +21166,9 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+
+@media print {
+    @page { margin: 0; }
+    body { margin: -1cm 1cm; }
+  }

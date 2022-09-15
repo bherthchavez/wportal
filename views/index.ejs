@@ -139,7 +139,7 @@
                   </div>
                   <div class="card-table table-responsive">
 
-                    <div class="table-responsive">
+                    <div class="table-responsive"  style="max-height: 30rem">
                       <table class="table card-table table-vcenter text-nowrap datatable">
                         <thead>
                           <tr>
@@ -148,8 +148,9 @@
                             <th>Payment From</th>
                             <th>Payment Mode</th>
                             <th>Description</th>
-                            <th>Created By</th>
+                            
                             <th>Amount</th>
+                            <th>Created By</th>
                             <th>Status</th>
                            
                           </tr>
@@ -158,11 +159,11 @@
                           <%  voucherItems.forEach(function(item){ %>
                           <tr>
                             <td>
-                              <form action="/view-voucher" method="post">
-                                <button action="submit" value="<%=item._id%>" class="btn btn-outline-secondary w-70 btn-sm">
-                                  <%=item.voucher_number%>
+                              <!-- <form action="/print-bank-voucher" method="post"> -->
+                                <button action="submit" value="<%=item.payment_voucher_no%>" name="pavNO" class="btn btn-outline-secondary w-70 btn-sm">
+                                  <%=item.payment_voucher_no%>
                                 </button>
-                              </form>
+                              <!-- </form> -->
                              
                             </td>
                         
@@ -170,21 +171,34 @@
                               <%=item.date%>
                             </td>
                             <td>
-                              <%=item.bank_name%>
+                             
+                              <%=item.payment_from%>
+                           
                             </td>
                             <td>
-                              <%=item.payment_mode%>
+                              <% if(item.payment_mode ==="Bank Transfer"){%>
+                                <form action="/print-bank-voucher" method="post">
+                                  <%=item.payment_mode%>
+                                  <button action="submit" value="<%=item.payment_voucher_no%>" name="pavNO" class="btn btn-ghost-dark w-1 btn--small" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="Print Bank Letter">
+                                    <i class="ti ti-clipboard-text"></i>
+                                  </button>
+                                  </form>
+
+                              <%}else{ %>
+                                <%=item.payment_mode%>
+                                <% } %>
                             </td>
                             <td>
                               <%=item.description%>
                             </td>
-                            <td>
-                              <%=item.created_by%>
-                            </td>
+     
                             <td>
                               <div class="currency-formated">QAR</div> 
                               <div class="text-danger d-md-inline-flex"> <%= (item.total_payment)%></div>
                              
+                            </td>
+                            <td>
+                              <%=item.created_by%>
                             </td>
                             <td>
                               <span class="status status-red  fs-5">

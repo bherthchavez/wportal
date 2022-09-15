@@ -152,7 +152,8 @@
                             <div class="mb-3">
                               <input type="text" name="supplierID" value="<%= accountID %>" hidden>
                               <input type="text" name="supplierName" value="<%=supplierName%>" hidden>
-                              <input type="text" id="numOfAcc" name="numOfItem" hidden>
+                              <input type="text" id="numOfAcc" name="numOfItem" value="0" hidden>
+                              <input type="text" id="numOfBill" name="numOfBill" value="0" hidden>
       
                               <div class="form-label">Payment Number</div>
                                  <input type="text" name="pavNo" class="form-control" value="<%=pavno%>" readonly>
@@ -454,7 +455,7 @@
                                                             <select name="curreny" class="form-select" >
                                                               <option value="QAR">QAR</option>
                                                               <option value="USD">USD</option>
-                                                              <option value="PHP">EUR</option>
+                                                              <option value="EUR">EUR</option>
                                                             </select>
                                                           </span>
                                                           <input type="number" name="bankAmount" class="form-control convert  fw-bold text-danger" placeholder="Enter Amount"/>
@@ -622,11 +623,14 @@
 
    
       $(".selectBill").click(function(e){ 
-     
+        let billNo =  $("#numOfBill").val()
+
         if ($(this).is(":checked")){
           $(this).closest("tr").find("td input.amountPay").val($(this).closest("tr").find("td input.selectedBillAmount").val());
+          billNo ++;
         }else{
           $(this).closest("tr").find("td input.amountPay").val("");
+          billNo --;
         }
 
         var sum =0;
@@ -637,7 +641,7 @@
           $('#paymentAmount').val((sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
           $(".billTotal").text((sum).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'))
 
-         
+          $("#numOfBill").val(billNo);
           checkPaymentMode();
         
 
@@ -786,7 +790,7 @@
 
         function changePayment(selectObject) {
           $("#bankAmount").val("");
-          $("#numOfAcc").val("")
+          $("#numOfAcc").val(0)
             var value = selectObject.value;  
            
             if(value === "Cash"){  

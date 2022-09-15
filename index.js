@@ -144,21 +144,22 @@ const payment_vouchersSchema = {
 const payment_voucher = mongoose.model("payment_voucher", payment_vouchersSchema);
 
 
-const payment_modeSchema = {
+let payment_modeSchema = new Schema({
   payment_voucher_no: String,
   cheque_no: String,
   beneficiary_name: String,
   cheque_date: String,
   cheque_status: String,
   cheque_amount: String,
-}
+});
 
-const payment_mode = mongoose.model("payment_mode", payment_modeSchema);
+let payment_mode = mongoose.model("payment_mode", payment_modeSchema);
 
 const bank_transferSchema = {
   payment_voucher_no: String,
   b_name: String,
   b_address: String,
+  payment_from: String,
   bank_name: String,
   iban_no: String,
   swift_code: String,
@@ -166,6 +167,7 @@ const bank_transferSchema = {
   transfer_purpose: String,
   currency: String,
   amount: String,
+  amountInWords: String,
   transfer_amount: String
 }
 
@@ -769,8 +771,7 @@ app.post("/supplier-billed", (req,res) =>{
 
 
          
-      let Bank_Withdrawal = 0;   
-      let Bank_Deposited = 0;    
+    
       let payment_amount = 0;
 
       bank_account.findOne({_id: req.body.paymentFrom,}, function(bankerr, foundItem){ 
@@ -780,11 +781,16 @@ app.post("/supplier-billed", (req,res) =>{
           }else{
            
             const  Bank_Name = foundItem.bank_name;
-            Bank_Withdrawal += parseFloat(foundItem.withdrawal);
-            Bank_Deposited += parseFloat(foundItem.deposited);
-            payment_amount += parseFloat(req.body.totalPayment);
+            let Bank_Withdrawal = '' + foundItem.withdrawal;
+            let Bank_Deposited = '' + foundItem.deposited;
+
+            
+            payment_amount += +(req.body.totalPayment).split(',').join('');
            
-           
+            Bank_Withdrawal = +(Bank_Withdrawal).split(',').join('');
+            Bank_Deposited = +(Bank_Deposited).split(',').join('');
+
+
            
             const pay = new payment_voucher({
               payment_voucher_no:  req.body.pavNo,
@@ -811,24 +817,99 @@ app.post("/supplier-billed", (req,res) =>{
                 console.log(err);
               }else{
 
+                supplier_account.findOne({_id: req.body.supplierID,}, function(err, foundSuppItem){ 
+                  if (err){
+                    console.log(err);
+                  }else{
+
+                  
+
+                // -------------------------------> saving payment mode
+
+
+                      if (req.body.paymentMode === "Bank Transfer"){
+                       
+                        console.log("Bank Transfer Here")
+                        const transfer = new bank_transfer({
+                          payment_voucher_no: req.body.pavNo,
+                          b_name:  foundSuppItem.beneficiary_name,
+                          b_address: foundSuppItem.beneficiary_address,
+                          payment_from: Bank_Name,
+                          bank_name:  foundSuppItem.bank_name,
+                          iban_no: foundSuppItem.iban_no,
+                          swift_code: foundSuppItem.swift_code,
+                          transfer_charge: req.body.transferCharge,
+                          transfer_purpose: req.body.transferPurpose,
+                          currency: req.body.curreny,
+                          amount: req.body.bankAmount,
+                          amountInWords: req.body.amountInWords,
+                          transfer_amount: req.body.bankTransferAmount
+              
+                        });
+                        transfer.save()
+
+                      }else{
+
+                     
+                      
+                        let totalItem = +  req.body.numOfItem;
+                       
+                        if (totalItem === 1) {
+
+                          let cheque = new payment_mode({
+                            payment_voucher_no: req.body.pavNo,
+                            cheque_no:  req.body.chequeNo,
+                            beneficiary_name:  req.body.beneficiaryName,
+                            cheque_date:  req.body.chequeDate,
+                            cheque_status: req.body.chequeStatus,
+                            cheque_amount:  req.body.chequeAmount
+                          });
+                          cheque.save(function(err, saved){
+                            if(err){
+                              console.log(err);
+                            }
+                          });
+
+                        }else{
+
+                              for (var i = 0; i < totalItem; i++){
+                
+                              let cheque = new payment_mode({
+                                payment_voucher_no: req.body.pavNo,
+                                cheque_no:  req.body.chequeNo[i],
+                                beneficiary_name:  req.body.beneficiaryName[i],
+                                cheque_date:  req.body.chequeDate[i],
+                                cheque_status: req.body.chequeStatus[i],
+                                cheque_amount:  req.body.chequeAmount[i]
+                              });
+                              cheque.save(function(err, saved){
+                                if(err){
+                                  console.log(err);
+                                }
+                              });
+                            }
+                          }
+                      }
+                    }
+                  });
+
+
+                // -------------------------------> updating bank account deposited and withdrawal
                 Bank_Withdrawal += payment_amount;
                 Bank_Deposited -= payment_amount;
 
+
                 bank_account.findOneAndUpdate({_id: req.body.paymentFrom},
                   {$set: {
-                  deposited: (Bank_Deposited).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'),
-                  withdrawal: (Bank_Withdrawal).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') }}, function(err){
+                  deposited: Bank_Deposited,
+                  withdrawal: Bank_Withdrawal }}, function(err){
                     if (err){
                       console.log(err);
-                    }else{
-                      console.log("The bank of " + Bank_Name + " successully updated.")
                     }
                 });
 
 
-
-  
-                 
+                   // -------------------------------> updating supplier account billed and paid
                   supplier_account.findOne({_id: req.body.supplierID,}, function(err, foundItem){ 
                   if (err){
                     console.log(err);
@@ -842,56 +923,45 @@ app.post("/supplier-billed", (req,res) =>{
   
                       supplier_account.findOneAndUpdate({_id: req.body.supplierID},
                         {$set: {
-                        billed: (totalBilled).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'),
-                        paid: (totalPaid).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') }}, function(err){
+                        billed: totalBilled,
+                        paid: totalPaid }}, function(err){
                           if (err){
                             console.log(err);
-                          }else{
-                            console.log("The supplier account of " + foundItem.supplier_name + " successully updated.")
                           }
                       });
 
+                    
                 
-
-                      if (parseFloat(req.body.numOfItem) == 1){
+                     // -------------------------------> updating supllier bill status
+                      if (parseFloat(req.body.numOfBill) <= 1){
                             
                         supplier_bill.findOneAndUpdate({bill_number: req.body.selectedbillNo},
                           {$set: {status: "Paid" }}, function(err, foundSupBill){
-                            console.log(foundSupBill);
+                          
                             if (err){
                               console.log(err);
-                            }else{
-                              
-                              console.log("The supplier bills"+ req.body.selectedbillNo  +"status is Paid.")
                             }
                         });
 
-                      }else{
+                      }else if (parseFloat(req.body.numOfBill) >= 2){
 
                         for(var i = 0; i < req.body.selectedbillNo.length; i++){
                         
                           supplier_bill.findOneAndUpdate({bill_number: req.body.selectedbillNo[i]},
                             {$set: {status: "Paid" }}, function(err, foundSupBill){
-                              console.log(foundSupBill);
+                           
                               if (err){
                                 console.log(err);
-                              }else{
-                                
-                                console.log("The supplier bills"+ req.body.selectedbillNo[i]  +"status is Paid.")
                               }
                           });
 
                          }
                       }
-
-                      
-                         
-
                     }
 
                   });
 
-  
+                 // -------------------------------> updating setting for payment voucher number
                   settings.findOne({name: "payment_voucher_settings"}, function(err, billSetting){
                 
                   let pavno = parseFloat(billSetting.starting_no) + 1;
@@ -1098,6 +1168,28 @@ app.get("/view-voucher",(req,res)=>{
 app.post("/view-voucher", (req,res)=>{
   if (req.isAuthenticated()){
     res.redirect("/view-voucher");
+  }else{
+    res.redirect("/sign-in");
+  }
+
+});
+
+app.get("/print-bank-voucher",(req,res)=>{
+  res.render("print-bank-voucher", {userName: req.user.name, userRole: req.user.userRole});
+  });
+
+app.post("/print-bank-voucher", (req,res)=>{
+  if (req.isAuthenticated()){
+
+    bank_transfer.findOne({payment_voucher_no: req.body.pavNO}, function(err, foundItem){
+    
+      if(!err){
+        res.render("print-bank-voucher", {foundItems: foundItem,userName: req.user.name, userRole: req.user.userRole});
+
+      } 
+    
+    });
+
   }else{
     res.redirect("/sign-in");
   }
