@@ -101,7 +101,7 @@
       <div class="row g-2 align-items-center">
         <div class="col">
           <h2 class="page-title">
-            Invoice Detail
+            Payment Voucher Detail
           </h2>
         </div>
         <!-- Page title actions -->
@@ -120,12 +120,36 @@
       <div class="card card-lg">
         <div class="card-body">
           <div class="row">
+          
+
             <div class="col-6">
-              <div class="col-12 my-1">
-                <h1>EL NAAEL COMPANY W.L.L</h1>
+              <div class="col-12 mt-5">
+                <h1 class="fw-bolder">EL NAAEL COMPANY W.L.L</h1>
               </div>
+            </div>
+
+            <div class="col-6 text-end">
+              <div class="col-12 mt-5">
+                <h1>د.ناصر عـبـدالــغني </h1>
+              </div>
+            </div>
+            
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="col-12 mt-5 text-center">
+                <h2>Bank Payment Voucher</h2>
+              </div>
+
+            </div>
+          </div>
+          <div class="row">
+          
+
+            <div class="col-6">
+          
                 <div class="my-5">
-                  <p class="h3">Bank Account: </p>
+                  <p class="h3">CR. </p>
                   <address>
                     65753213216 <br>
                     Arab Bank <br>
@@ -133,62 +157,89 @@
                   </address>
                 </div>
             </div>
+
             <div class="col-6 text-end">
-              <div class="col-12 my-2">
-                <h2>Bank Payment Voucher</h2>
-              </div>
               <div class="my-5">
-                <p class="h3">Voucher No :#PVR00001</p>
-                <p class="h3">Date: 06/05/2022</p>
-                <p class="h3 text-primary">QAR: 23,090.00</p>
+                <ul class="list-unstyled lh-lg fs-4">
+                  <li> Vr. No.  <strong>  <%=foundItems.payment_voucher_no%></strong></li>
+                  <li> Date:  <strong>  <%=foundItems.date%></strong></li>
+                  <li> Amount:  <strong>QAR  <%=foundItems.total_payment%></strong></li>
+                
+                </ul>
               </div>
             </div>
-            <!-- <div class="col-12 my-5">
-              <h1>Voucher No : #PVR00001</h1>
-            </div> -->
-          </div>
-          <table class="table table-transparent table-responsive my-5">
-            <thead>
-              <tr>
-                <th class="text-center" style="width: 1%"></th>
-                <th>Account</th>
-                <th>Description</th>
-                <th class="text-end" style="width: 2%">Amount</th>
-              </tr>
-            </thead>
-            <tr>
-              <td class="text-center">1</td>
-              <td>
-                <p class="strong mb-1">Office Stationery</p>
-              </td>
-              <td> Payment for all office paper and pen</td>
-              <td class="text-end">10,000.00</td>
-            </tr>
-            <tr>
-              <td class="text-center">2</td>
-              <td>
-                <p class="strong mb-1">Repair and Maintenance</p>
-              </td>
-              <td> Payment for AC maintenance</td>
-              <td class="text-end"> 10,000.00</td>
-            </tr>
-            <tr>
-              <td class="text-">3</td>
-              <td>
-                <p class="strong mb-1">Ticket & and hotel booking</p>
-              </td>
-              <td> Payment for all vacation expenses</td>
-              <td class="text-end">3,090.00</td>
-              
-            </tr>
-            <tr>
-              <td colspan="3" class="strong text-end">Total Amount (QAR)</td>
-              <td class="text-end"> 23,090.00</td>
-            </tr>
             
-           
-           
-          </table>
+          </div>
+          <div class="row">
+            <div class="col-auto">
+              <div class="strong mb-1 ">Paid to Mr/Ms.</div>
+            </div>
+           <div class="col py-0 ">
+            
+            <div class=" py-0 "><%=foundItems.supplier_name%></div>
+            <hr class="pvContent py-0 ">
+           </div>
+         
+          </div>
+          <div class="row">
+            <div class="col-auto">
+              <div class="strong mb-1 ">a sum of Qatari Riyas</div>
+            </div>
+           <div class="col py-0 ">
+            
+            <div class=" py-0 "> <%=foundItems.amountInWords%></div>
+            <hr class="pvContent py-0 ">
+           </div>
+         
+          </div>
+          <div class="row">
+            <div class="col-auto">
+              <div class="strong mb-1 ">Being</div>
+            </div>
+           <div class="col py-0 ">
+            
+            <div class=" py-0 "> <%=foundItems.description%></div>
+            <hr class="pvContent py-0 ">
+           </div>
+         
+          </div>
+          <div class="row mb-3">
+            <div class="col-auto">
+              <div class="strong mb-1 ">towards the settlement of the following bills.</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-auto">
+                <table class="table table-transparent table-responsive datatable mb-5">
+                  <thead>
+                    <tr>
+                      <th class="w-10"> Bill No</th>
+                      <th class="w-10">Date</th>
+                      <th class="text-end">Amount</th>
+                    </tr>
+                
+                  </thead>
+                  <tbody >
+                    <%  foundBills.forEach(function(bill){ %>
+                      <tr>
+
+                        <td>
+                          <div > <%=bill.bill_number%></div>
+                        </td>
+                        <td>
+                          <div> <%=bill.bill_date%></div>
+                        </td>
+                        <td>
+                          <div class="strong text-end"><%=bill.total_payment%></div>
+                        </td>
+                
+                      </tr>
+                      <%  }) %>
+                  </tbody>
+                </table>
+            </div>
+          </div>
+
           <div class="row">
             <div class="col-3">
             <p class="text-muted text-center">Prepared by</p>

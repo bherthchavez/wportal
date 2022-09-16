@@ -123,11 +123,15 @@
                    
                     <div class="row align-items-center">
                       <div class="col">
-                         <h3 class="card-title">All Transaction List</h3>
+                         <h3 class="card-title">Payment Transaction List</h3>
+                         <form>
+                         <input id="fileupload" type="file" name="fileupload" />
+                          <button id="upload-button" onclick="uploadFile()" > Upload </button>
+                        </form>
                        </div>
                        <div class="col-auto">
                         <div class="input-icon">
-                          <input type="text" value="" class="form-control form-control-rounded btn--small" placeholder="Search…">
+                          <input type="text" id="searchPV" class="form-control form-control-rounded btn--small" placeholder="Search…">
                           <span class="input-icon-addon">
                             <!-- Download SVG icon from http://tabler-icons.io/i/search -->
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><circle cx="10" cy="10" r="7"></circle><line x1="21" y1="21" x2="15" y2="15"></line></svg>
@@ -155,15 +159,15 @@
                            
                           </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="payVoucher" >
                           <%  voucherItems.forEach(function(item){ %>
                           <tr>
                             <td>
-                              <!-- <form action="/print-bank-voucher" method="post"> -->
+                              <form action="/view-voucher" method="post">
                                 <button action="submit" value="<%=item.payment_voucher_no%>" name="pavNO" class="btn btn-outline-secondary w-70 btn-sm">
                                   <%=item.payment_voucher_no%>
                                 </button>
-                              <!-- </form> -->
+                              </form>
                              
                             </td>
                         
@@ -294,6 +298,29 @@
             </div>
           </div>
         </div>
+
+        <script>
+          $(document).ready(function(){
+            $("#searchPV").on("keyup", function() {
+              var value = $(this).val().toLowerCase();
+              $("#payVoucher tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+              });
+            });
+          });
+
+            async function uploadFile() {
+            let formData = new FormData(); 
+            formData.append("fileupload", fileupload.files[0]);
+              await fetch('http://localhost/upload', {
+              method: "POST", 
+              body: formData
+            }); 
+          }
+          </script>
+
+
+
         <%- include("create/modals") -%>
 
         <%- include("partial/footer") -%>

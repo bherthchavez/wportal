@@ -134,6 +134,7 @@ const payment_vouchersSchema = {
   description: String,
   documents: String,
   total_payment: String,
+  amountInWords: String,
   selected_bill_no: Array,
   status: String,
   created_by: String,
@@ -791,6 +792,16 @@ app.post("/supplier-billed", (req,res) =>{
             Bank_Deposited = +(Bank_Deposited).split(',').join('');
 
 
+            var x =(req.body.totalPayment).split(',').join('');
+                x = parseFloat(x)
+              console.log(x , typeof(x))
+
+              x = "" + x
+              console.log(x , typeof(x))
+
+              console.log(toWords(x));
+
+            const totalAmountInWords = toWords(x);
            
             const pay = new payment_voucher({
               payment_voucher_no:  req.body.pavNo,
@@ -803,6 +814,7 @@ app.post("/supplier-billed", (req,res) =>{
               description:  req.body.description,
               documents: req.body.documents,
               total_payment: req.body.totalPayment,
+              amountInWords: totalAmountInWords,
               selected_bill_no: req.body.selectedbillNo,
               status: "Pending",
               created_by: req.user.name,
@@ -1167,7 +1179,32 @@ app.get("/view-voucher",(req,res)=>{
 
 app.post("/view-voucher", (req,res)=>{
   if (req.isAuthenticated()){
-    res.redirect("/view-voucher");
+
+    payment_voucher.findOne({payment_voucher_no: req.body.pavNO}, function(errVoucher, foundVoucher){
+     
+      if(!errVoucher){
+
+          supplier_bill.find({bill_number: { $in: foundVoucher.selected_bill_no}}, function(errBill, foundBills){
+            
+            if(!errBill){
+
+                console.log(foundVoucher.selected_bill_no);
+                console.log(foundBills);
+                
+                res.render("view-voucher", {foundBills: foundBills, foundItems: foundVoucher,userName: req.user.name, userRole: req.user.userRole});
+            
+             }else{
+              console.log(errVoucher)
+             }
+          
+          });  
+              
+        }else{
+          console.log(errVoucher)
+        } 
+      
+      });
+   
   }else{
     res.redirect("/sign-in");
   }
@@ -1185,9 +1222,7 @@ app.post("/print-bank-voucher", (req,res)=>{
     
       if(!err){
         res.render("print-bank-voucher", {foundItems: foundItem,userName: req.user.name, userRole: req.user.userRole});
-
       } 
-    
     });
 
   }else{
@@ -1680,3 +1715,85 @@ if (port == null || port == "") {
 app.listen(port, ()=>{
 console.log("Server started successfully.");
 });
+
+
+
+function toWords(s) {
+
+  var th = ['', 'Thousand', 'Million', 'Billion', 'Trillion'];
+  var dg = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+  var tn = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  var tw = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+
+    s = s.toString();
+    s = s.replace(/[\, ]/g, '');
+    if (s != parseFloat(s)) return 'not a number';
+    var x = s.indexOf('.');
+	var fulllength=s.length;
+	
+    if (x == -1) x = s.length;
+    if (x > 15) return 'too big';
+	var startpos=fulllength-(fulllength-x-1);
+    var n = s.split('');
+	
+    var str = '';
+    var str1 = ''; 
+    var sk = 0;
+    for (var i = 0; i < x; i++) {
+        if ((x - i) % 3 == 2) {
+            if (n[i] == '1') {
+                str += tn[Number(n[i + 1])] + ' ';
+                i++;
+                sk = 1;
+            } else if (n[i] != 0) {
+                str += tw[n[i] - 2] + ' ';
+
+                sk = 1;
+            }
+        } else if (n[i] != 0) {
+            str += dg[n[i]] + ' ';
+            if ((x - i) % 3 == 0) str += 'Hundred ';
+            sk = 1;
+        }
+        if ((x - i) % 3 == 1) {
+            if (sk) str += th[(x - i - 1) / 3] + ' ';
+            sk = 0;
+        }
+    }
+    if (x != s.length) {
+        
+        str += 'and '; 
+		 var j=startpos;
+		
+		 for (var i = j; i < fulllength; i++) {
+		 
+        if ((fulllength - i) % 3 == 2) {
+            if (n[i] == '1') {
+                str += tn[Number(n[i + 1])] + ' ';
+                i++;
+                sk = 1;
+            } else if (n[i] != 0) {
+                str += tw[n[i] - 2] + ' ';
+				
+                sk = 1;
+            }
+        } else if (n[i] != 0) {
+		
+            str += dg[n[i]] + ' ';
+            if ((fulllength - i) % 3 == 0) str += 'Hundred ';
+            sk = 1;
+        }
+        if ((fulllength - i) % 3 == 1) {
+		
+            if (sk) str += th[(fulllength - i - 1) / 3] + ' ';
+            sk = 0;
+        }
+    }
+    }
+	var result=str.replace(/\s+/g, ' ');
+    return result  + "Riyals Only";
+    
+	
+	
+}

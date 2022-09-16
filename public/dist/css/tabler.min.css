@@ -103,6 +103,12 @@ hr.letterHeader {
     background-color: rgb(62, 62, 62);
   }
 
+  hr.pvContent {
+    border-top: 1.5px dashed black;
+    margin: 0;
+    opacity: .30
+  }
+
 .hr:not([size]),
 hr:not([size]) {
     height: 1px
@@ -7145,6 +7151,9 @@ fieldset:disabled .btn {
 
 .w-5 {
     width: 4rem !important
+}
+.w-10 {
+    width: 10rem !important
 }
 .w-15 {
     width: 15rem !important

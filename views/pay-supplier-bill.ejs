@@ -458,8 +458,8 @@
                                                               <option value="EUR">EUR</option>
                                                             </select>
                                                           </span>
-                                                          <input type="number" name="bankAmount" class="form-control convert  fw-bold text-danger" placeholder="Enter Amount"/>
-                                                          <a class="btn btn-primary btn--small" onclick="toWords($('.convert').val())">Convert to Words</a>
+                                                          <input type="text" name="bankAmount" class="form-control convert  fw-bold text-danger" placeholder="Enter Amount"/>
+                                                          <!-- <a class="btn btn-primary btn--small" onclick="toWords($('.convert').val())">Convert to Words</a> -->
                                                         </div>
                                                       </div>
                                                       <div class=" form-group mb-3 fs-6">
@@ -849,7 +849,7 @@
               $("#tabs-cheque-17").removeClass("active show");
 
             }else{
-              $('.paymentAmountInfo').text("Please Select Payment Mode."); 
+              $('.paymentAmountInfo').text("Please Select Payment Mode1."); 
               
               $("#paymentCheque").remove();
               $("#tabsBill").addClass("active");
@@ -866,7 +866,7 @@
             }
 
             
-            if($('.paymentMode').val() === "Cash"){
+            if($('.paymentMode').val() == "Cash"){
 
               var cashTotal = $('.cashTotal').text()
               var billTotal = $('.billTotal').text()
@@ -877,7 +877,7 @@
                
                 }else if(billTotal=== '0.0'){
 
-                    $('.paymentAmountInfo').text("Please Select Payment Mode."); 
+                    $('.paymentAmountInfo').text("Please Select Bill."); 
                     $('.bankSubmit').prop("disabled", true);
 
                 }else{
@@ -885,7 +885,7 @@
                   $('.bankSubmit').prop("disabled", true);
                 }
                 
-              }else if($('.paymentMode').val() === "Cheque"){
+              }else if($('.paymentMode').val() == "Cheque"){
 
               var chequeTotal = $('.chequeTotal').text()
               var billTotal = $('.billTotal').text()
@@ -896,7 +896,7 @@
 
                 }else if(billTotal=== '0.0'){
 
-                    $('.paymentAmountInfo').text("Please Select Payment Mode."); 
+                    $('.paymentAmountInfo').text("Please Select Bill."); 
                     $('.bankSubmit').prop("disabled", true);
                     
                 }else{
@@ -904,7 +904,7 @@
                   $('.bankSubmit').prop("disabled", true);
                 }
 
-              }else if($('.paymentMode').val() === "Bank Transfer"){
+              }else if($('.paymentMode').val() == "Bank Transfer"){
 
                 var bankTotal = $('.bankTotal').text()
                 var billTotal = $('.billTotal').text()
@@ -915,7 +915,7 @@
                 
                 }else if(billTotal=== '0.0'){
 
-                    $('.paymentAmountInfo').text("Please Select Payment Mode."); 
+                    $('.paymentAmountInfo').text("Please Select Bill."); 
                     $('.bankSubmit').prop("disabled", true);
                     
                 }else{
@@ -939,14 +939,27 @@
 
 <script>
   
+  $('.convert').keyup(()=>{
+    
+    var x = $('.convert').val();
+     
+      x = (x).split(',').join('');
+      x = parseFloat(x)
+      x = "" + x
+      toWords(x);
+   
+  });
 
-var th = ['', 'Thousand', 'Million', 'Billion', 'Trillion'];
+
+
+function toWords(s) {
+
+  var th = ['', 'Thousand', 'Million', 'Billion', 'Trillion'];
 
 var dg = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
 var tn = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
 var tw = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
 
-function toWords(s) {
 
     s = s.toString();
     s = s.replace(/[\, ]/g, '');
@@ -986,7 +999,7 @@ function toWords(s) {
     if (x != s.length) {
         
         str += 'and '; //i change the word point to and 
-        str1 += 'Cents '; //i added another word called cent
+        // str1 += 'Cents '; //i added another word called cent
         //for (var i = x + 1; i < y; i++) str += dg[n[i]] + ' ' ;
 		 var j=startpos;
 		
@@ -1015,10 +1028,13 @@ function toWords(s) {
         }
     }
     }
-	var result=str.replace(/\s+/g, ' ') + str1;
+	var result=str.replace(/\s+/g, ' ') + "Only";
     //return str.replace(/\s+/g, ' ');
-	$('.2word').text(result + "Only");
+   
+      $('.2word').text(result);
     return result; //i added the word cent to the last part of the return value to get desired output
+    
+	
 	
 }
 
