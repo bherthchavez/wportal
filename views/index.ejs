@@ -76,18 +76,6 @@
                 </li>
                 
               </ul>
-              <div class="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
-                <form action="." method="get">
-              
-                  <div class="input-icon">
-                    <span class="input-icon-addon">
-                      <!-- Download SVG icon from http://tabler-icons.io/i/search -->
-                      <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="10" cy="10" r="7" /><line x1="21" y1="21" x2="15" y2="15" /></svg>
-                    </span>
-                    <input type="text" value="" class="form-control" placeholder="Search…" aria-label="Search in website">
-                  </div>
-                </form>
-              </div>
             </div>
           </div>
         </div>
@@ -124,19 +112,16 @@
                     <div class="row align-items-center">
                       <div class="col">
                          <h3 class="card-title">Payment Transaction List</h3>
-                         <form>
-                         <input id="fileupload" type="file" name="fileupload" />
-                          <button id="upload-button" onclick="uploadFile()" > Upload </button>
-                        </form>
+                        
                        </div>
                        <div class="col-auto">
+
                         <div class="input-icon">
-                          <input type="text" id="searchPV" class="form-control form-control-rounded btn--small" placeholder="Search…">
                           <span class="input-icon-addon">
-                            <!-- Download SVG icon from http://tabler-icons.io/i/search -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><circle cx="10" cy="10" r="7"></circle><line x1="21" y1="21" x2="15" y2="15"></line></svg>
+                            <i class="ti ti-search"></i>
                           </span>
-                        </div>                        
+                          <input type="text" id="searchPV"  class="form-control" placeholder="Search…" aria-label="Search in website">
+                        </div>                
                       </div>
                     </div>
              
@@ -198,7 +183,7 @@
      
                             <td>
                               <div class="currency-formated">QAR</div> 
-                              <div class="text-danger d-md-inline-flex"> <%= (item.total_payment)%></div>
+                              <div class="text-danger d-md-inline-flex"> <%= (item.total_payment).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')%></div>
                              
                             </td>
                             <td>
@@ -308,15 +293,6 @@
               });
             });
           });
-
-            async function uploadFile() {
-            let formData = new FormData(); 
-            formData.append("fileupload", fileupload.files[0]);
-              await fetch('http://localhost/upload', {
-              method: "POST", 
-              body: formData
-            }); 
-          }
           </script>
 
 

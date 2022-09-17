@@ -94,22 +94,7 @@
               </div>
             </li>
           </ul>
-          <div class="my-2 my-md-0 flex-grow-1 flex-md-grow-0 order-first order-md-last">
-            <form action="." method="get">
-              <div class="input-icon">
-                <span class="input-icon-addon">
-                  <!-- Download SVG icon from http://tabler-icons.io/i/search -->
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
-                    stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <circle cx="10" cy="10" r="7" />
-                    <line x1="21" y1="21" x2="15" y2="15" />
-                  </svg>
-                </span>
-                <input type="text" value="" class="form-control" placeholder="Search…" aria-label="Search in website">
-              </div>
-            </form>
-          </div>
+       
         </div>
       </div>
     </div>
@@ -297,7 +282,7 @@
                                                   <td>
                                                   
                                                     <div class="currency-formated">QAR</div> 
-                                                    <div class="number-details text-danger bill"> <%= bill.total_payment %></div>
+                                                    <div class="number-details text-danger bill"> <%= parseFloat(bill.total_payment).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') %></div>
                                                    
                                                   </td>
                                                   <td>
@@ -791,6 +776,7 @@
         function changePayment(selectObject) {
           $("#bankAmount").val("");
           $("#numOfAcc").val(0)
+          $('div .totalAmount').html("0.00")
             var value = selectObject.value;  
            
             if(value === "Cash"){  
@@ -863,6 +849,7 @@
               $("#tabs-cash-17").removeClass("active show");
 
               $('.tableChequeRow').remove();
+             
             }
 
             

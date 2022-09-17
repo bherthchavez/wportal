@@ -163,7 +163,7 @@
                 <ul class="list-unstyled lh-lg fs-4">
                   <li> Vr. No.  <strong>  <%=foundItems.payment_voucher_no%></strong></li>
                   <li> Date:  <strong>  <%=foundItems.date%></strong></li>
-                  <li> Amount:  <strong>QAR  <%=foundItems.total_payment%></strong></li>
+                  <li> Amount:  <strong>QAR  <%= (foundItems.total_payment).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')%></strong></li>
                 
                 </ul>
               </div>
@@ -230,7 +230,7 @@
                           <div> <%=bill.bill_date%></div>
                         </td>
                         <td>
-                          <div class="strong text-end"><%=bill.total_payment%></div>
+                          <div class="strong text-end"><%= (bill.total_payment).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')%></div>
                         </td>
                 
                       </tr>

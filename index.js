@@ -58,7 +58,9 @@ const bank_accountsSchema = {
   deposited: Number,
   withdrawal: Number,
   balance_amount: Number,
-  created_at:Date
+  created_by: String,
+  created_at:Date,
+  updated_at: Date
 }
 
 const bank_account = mongoose.model("bank_account", bank_accountsSchema);
@@ -93,7 +95,7 @@ const supplier_billSchema = {
   bill_date: String,
   documents: String,
   description: String,
-  total_payment: String,
+  total_payment: Number,
   total_items: String,
   status: String,
   created_by:String,
@@ -112,9 +114,9 @@ let bill_itemSchema = new Schema({
   inv_no: String,
   inv_date: String,
   lpo: String,
-  items_price:String,
-  items_qty:String,
-  sub_total:String,
+  items_price:Number,
+  items_qty:Number,
+  sub_total:Number,
   created_by:String,
   created_at:Date,
   updated_at:Date
@@ -133,7 +135,7 @@ const payment_vouchersSchema = {
   date: String,
   description: String,
   documents: String,
-  total_payment: String,
+  total_payment: Number,
   amountInWords: String,
   selected_bill_no: Array,
   status: String,
@@ -151,7 +153,7 @@ let payment_modeSchema = new Schema({
   beneficiary_name: String,
   cheque_date: String,
   cheque_status: String,
-  cheque_amount: String,
+  cheque_amount: Number
 });
 
 let payment_mode = mongoose.model("payment_mode", payment_modeSchema);
@@ -167,9 +169,9 @@ const bank_transferSchema = {
   transfer_charge: String,
   transfer_purpose: String,
   currency: String,
-  amount: String,
+  amount: Number,
   amountInWords: String,
-  transfer_amount: String
+  transfer_amount: Number
 }
 
 const bank_transfer = mongoose.model("bank_transfer", bank_transferSchema);
@@ -343,6 +345,7 @@ const supplier1 = new supplier_account({
   paid: 0,
   balance_amount: 0,
   active_status: 1,
+  created_by: "Admin",
   created_at: Date.now(),
   updated_at: Date.now()
 
@@ -364,6 +367,7 @@ const supplier2 = new supplier_account({
   paid: 0,
   balance_amount: 0,
   active_status: 1,
+  created_by: "Admin",
   created_at: Date.now(),
   updated_at: Date.now()
 });
@@ -375,10 +379,12 @@ const account1 = new bank_account({
   account_number: "65753213216",
   account_type: "Current Account",
   bank_email: "jhon@arabbank.com",
-  deposited: 100.30,
+  deposited: 10000,
   withdrawal: 0,
-  balance_amount: 100.30,
-  created_at: Date.now()
+  balance_amount: 10000,
+  created_by: "Admin",
+  created_at: Date.now(),
+  updated_at: Date.now()
 });
 
 const account2 = new bank_account({
@@ -387,10 +393,12 @@ const account2 = new bank_account({
   account_number: "216545432",
   account_type: "Fixed Deposit",
   bank_email: "go@icb.com",
-  deposited: 1706000,
+  deposited: 10000,
   withdrawal: 0,
-  balance_amount: 1706000,
-  created_at: Date.now()
+  balance_amount: 10000,
+  created_by: "Admin",
+  created_at: Date.now(),
+  updated_at: Date.now()
 });
 
 const account3 = new bank_account({
@@ -399,10 +407,12 @@ const account3 = new bank_account({
   account_number: "98198291",
   account_type: "Fusion Account",
   bank_email: "mark@dohabank.com",
-  deposited: 17303750,
+  deposited: 10000,
   withdrawal: 0,
-  balance_amount: 17303750,
-  created_at: Date.now()
+  balance_amount: 10000,
+  created_by: "Admin",
+  created_at: Date.now(),
+  updated_at: Date.now()
 });
 
 const defaultChartAccount = [chartOfAccount1,
@@ -771,10 +781,6 @@ app.post("/supplier-billed", (req,res) =>{
   if (req.isAuthenticated()){
 
 
-         
-    
-      let payment_amount = 0;
-
       bank_account.findOne({_id: req.body.paymentFrom,}, function(bankerr, foundItem){ 
          
         if (bankerr){
@@ -786,7 +792,7 @@ app.post("/supplier-billed", (req,res) =>{
             let Bank_Deposited = '' + foundItem.deposited;
 
             
-            payment_amount += +(req.body.totalPayment).split(',').join('');
+           const payment_amount = +(req.body.totalPayment).split(',').join('');
            
             Bank_Withdrawal = +(Bank_Withdrawal).split(',').join('');
             Bank_Deposited = +(Bank_Deposited).split(',').join('');
@@ -794,13 +800,7 @@ app.post("/supplier-billed", (req,res) =>{
 
             var x =(req.body.totalPayment).split(',').join('');
                 x = parseFloat(x)
-              console.log(x , typeof(x))
-
               x = "" + x
-              console.log(x , typeof(x))
-
-              console.log(toWords(x));
-
             const totalAmountInWords = toWords(x);
            
             const pay = new payment_voucher({
@@ -813,7 +813,7 @@ app.post("/supplier-billed", (req,res) =>{
               date: req.body.billDate,
               description:  req.body.description,
               documents: req.body.documents,
-              total_payment: req.body.totalPayment,
+              total_payment: payment_amount,
               amountInWords: totalAmountInWords,
               selected_bill_no: req.body.selectedbillNo,
               status: "Pending",
@@ -822,10 +822,10 @@ app.post("/supplier-billed", (req,res) =>{
               updated_at: Date.now()
   
             });
-            pay.save((Error, saved) =>{
+            pay.save((err, saved) =>{
             
   
-              if(Error){
+              if(err){
                 console.log(err);
               }else{
 
@@ -853,9 +853,9 @@ app.post("/supplier-billed", (req,res) =>{
                           transfer_charge: req.body.transferCharge,
                           transfer_purpose: req.body.transferPurpose,
                           currency: req.body.curreny,
-                          amount: req.body.bankAmount,
+                          amount: + (req.body.bankAmount).split(',').join(''),
                           amountInWords: req.body.amountInWords,
-                          transfer_amount: req.body.bankTransferAmount
+                          transfer_amount: + (req.body.bankTransferAmount).split(',').join('')
               
                         });
                         transfer.save()
@@ -874,7 +874,7 @@ app.post("/supplier-billed", (req,res) =>{
                             beneficiary_name:  req.body.beneficiaryName,
                             cheque_date:  req.body.chequeDate,
                             cheque_status: req.body.chequeStatus,
-                            cheque_amount:  req.body.chequeAmount
+                            cheque_amount:  + (req.body.chequeAmount).split(',').join('')
                           });
                           cheque.save(function(err, saved){
                             if(err){
@@ -999,7 +999,6 @@ app.post("/supplier-billed", (req,res) =>{
   }
 });
 
-
 app.get("/voucher-item", (req,res) =>{
   if (req.isAuthenticated()){
 
@@ -1028,7 +1027,6 @@ app.post("/voucher-item", (req,res) =>{
     res.redirect("/sign-in");
   }
 });
-
 
 app.post("/payment-voucher", (req,res)=>{
   if (req.isAuthenticated()){
@@ -1076,18 +1074,22 @@ app.post("/supplier-bill", (req,res)=>{
   if (req.isAuthenticated()){
 
         let totalBilled = 0;
+      
+       
           supplier_account.findOne({_id: req.body.accountID,}, function(err, foundItem){ 
           if (err){
             console.log(err);
           }else{
-            for(var i = 0; i < req.body.total.length; i++ ) {
-              totalBilled += parseFloat(req.body.total[i]);
-            }
-            totalBilled += foundItem.billed;
 
+
+          totalBilled = + foundItem.billed;
+          
+          totalBilled += +(req.body.totalPayment).split(',').join('');
+      
+           
           supplier_account.findOneAndUpdate({_id: req.body.accountID},
               {$set: {
-              billed: (totalBilled).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') }}, function(err){
+              billed: totalBilled }}, function(err){
                 if (err){
                   console.log(err);
                 }
@@ -1104,6 +1106,8 @@ app.post("/supplier-bill", (req,res)=>{
               });
           });    
 
+          const totalPayment = + (req.body.totalPayment).split(',').join('');
+
         const bill = new supplier_bill({
           supplier_id:  req.body.accountID,
           supplier_name: req.body.supplierName,
@@ -1111,7 +1115,7 @@ app.post("/supplier-bill", (req,res)=>{
           bill_date:  req.body.date,
           documents:  req.body.documents,
           description:  req.body.description,
-          total_payment: req.body.totalPayment,
+          total_payment: totalPayment,
           total_items: req.body.numOfItem,
           status: "Pending",
           created_by: req.user.name,
@@ -1124,37 +1128,64 @@ app.post("/supplier-bill", (req,res)=>{
           }else{
 
             let totalItem = +  req.body.numOfItem;
-            
-            for (var i = 0; i < totalItem; i++){
+       
+             if (totalItem == 1){
+
+                  let newitem = new bill_item({
+                    bill_number:  req.body.puvNo,
+                    items:  req.body.item,
+                    items_description: req.body.itemDesc,
+                    cost_center:  req.body.costCenter,
+                    inv_no:  req.body.invNo,
+                    inv_date:  req.body.invDate,
+                    lpo:  req.body.lpo,
+                    items_price: + (req.body.price).split(',').join(''),
+                    items_qty: + (req.body.qty).split(',').join(''),
+                    sub_total: +(req.body.total).split(',').join(''), 
+                    created_by:  req.user.name,
+                    created_at: Date.now(),
+                    updated_at: Date.now()
+                  });
+                  newitem.save(function(err, saved){
+                    if(err){
+                      console.log(err);
+                    }
+                  });
+
+             }else{
+              
+              for (var i = 0; i < totalItem; i++){
 
 
-              let newitem = new bill_item({
-                bill_number:  req.body.puvNo,
-                items:  req.body.item[i],
-                items_description: req.body.itemDesc[i],
-                cost_center:  req.body.costCenter[i],
-                inv_no:  req.body.invNo[i],
-                inv_date:  req.body.invDate[i],
-                lpo:  req.body.lpo[i],
-                items_price: req.body.price[i],
-                items_qty: req.body.qty[i],
-                sub_total: req.body.total[i], 
-                created_by:  req.user.name,
-                created_at: Date.now(),
-                updated_at: Date.now()
-              });
-              newitem.save(function(err, saved){
-                if(err){
-                  console.log(err);
-                }else{
-                  console.log("Bill saved!!");
-                }
-              });
-            }
+                let newitem = new bill_item({
+                  bill_number:  req.body.puvNo,
+                  items:  req.body.item[i],
+                  items_description: req.body.itemDesc[i],
+                  cost_center:  req.body.costCenter[i],
+                  inv_no:  req.body.invNo[i],
+                  inv_date:  req.body.invDate[i],
+                  lpo:  req.body.lpo[i],
+                  items_price: + (req.body.price[i]).split(',').join(''),
+                  items_qty: + (req.body.qty[i]).split(',').join(''),
+                  sub_total: +(req.body.total[i]).split(',').join(''), 
+                  created_by:  req.user.name,
+                  created_at: Date.now(),
+                  updated_at: Date.now()
+                });
+                newitem.save(function(err, saved){
+                  if(err){
+                    console.log(err);
+                  }
+                });
+              }
+
+             } 
+                  
           
 
           }
         });
+
         alert = 4;
         res.redirect("/supplier-accounts")
 
@@ -1239,8 +1270,7 @@ app.post("/bank-accounts", (req, res)=>{
   const accountNumber = req.body.accountNumber;
   const accountType = req.body.accountType;
   const bankEmail = req.body.bankEmail;
-  const balanceAmount = parseFloat(req.body.openingBalance);
- 
+  const balanceAmount = + (req.body.openingBalance).split(',').join('');
 
   const account = new bank_account({
     bank_name: bankName,
@@ -1251,7 +1281,9 @@ app.post("/bank-accounts", (req, res)=>{
     deposited: balanceAmount,
     withdrawal: 0,
     balance_amount: balanceAmount,
-    created_at: Date.now()
+    created_by: req.user.name,
+    created_at: Date.now(),
+    updated_at: Date.Now()
   });
   account.save();
   alert = 1;
@@ -1264,13 +1296,15 @@ app.post("/bank-accounts", (req, res)=>{
 app.post("/supplier-accounts", (req, res)=>{
   if (req.isAuthenticated()){
 
+    const openingBalance = + (req.body.openingBalance).split(',').join('');
+
       const account = new supplier_account({
         supplier_name: req.body.supplierName,
         a_name: req.body.arabicName,
         contact_personal: req.body.contactPerson,
         email: req.body.supplierEmail,
         address: req.body.address,
-        opening_balance: req.body.openingBalance,
+        opening_balance: openingBalance,
         beneficiary_name: req.body.bName,
         beneficiary_address: req.body.bAddress,
         bank_name: req.body.bBankName,
@@ -1280,6 +1314,7 @@ app.post("/supplier-accounts", (req, res)=>{
         paid: 0,
         balance_amount: 0,
         active_status: parseInt(req.body.status),
+        created_by: req.user.name,
         created_at: Date.now(),
         updated_at: Date.now()
       });
@@ -1707,17 +1742,6 @@ app.post("/update-system-settings", (req,res)=>{
 
 //----------------------------------------------------------  Serrver setup//
 
-let port = process.env.PORT;
-if (port == null || port == "") {
-  port = 3000;
-}
-
-app.listen(port, ()=>{
-console.log("Server started successfully.");
-});
-
-
-
 function toWords(s) {
 
   var th = ['', 'Thousand', 'Million', 'Billion', 'Trillion'];
@@ -1797,3 +1821,21 @@ function toWords(s) {
 	
 	
 }
+
+
+
+
+
+
+
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+}
+
+app.listen(port, ()=>{
+console.log("Server started successfully.");
+});
+
+
+
